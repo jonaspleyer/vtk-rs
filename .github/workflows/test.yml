@@ -1,0 +1,95 @@
+on: [push, pull_request]
+
+name: Test
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        toolchain: [stable, beta, nightly]
+        os: [ubuntu-latest]
+    name: Check
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      # - uses: jwlawson/actions-setup-cmake@v2
+      # - uses: dtolnay/rust-toolchain@master
+      #  with:
+      #    toolchain: ${{ matrix.toolchain }}
+      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+
+      # - name: Run cargo check
+      #   run: cargo check
+
+  test:
+    strategy:
+      matrix:
+        toolchain: [stable, beta, nightly]
+        os: [ubuntu-latest]
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jwlawson/actions-setup-cmake@v2
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+
+      - name: Run cargo test
+        run: cargo test
+
+  doctest:
+    strategy:
+      matrix:
+        toolchain: [stable, beta, nightly]
+        os: [ubuntu-latest]
+    name: DocTest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jwlawson/actions-setup-cmake@v2
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+
+      - name: Run cargo test
+        run: cargo test --doc
+
+  miri:
+    name: Miri
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jwlawson/actions-setup-cmake@v2
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+
+      - name: Install Miri
+        run: |
+          rustup toolchain install nightly --component miri
+          rustup override set nightly
+          cargo miri setup
+
+      - name: Test with Miri
+        run: cargo miri test
+
+  codecov:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Generate code coverage
+        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: lcov.info
+          fail_ci_if_error: true
