@@ -58,6 +58,9 @@ jobs:
         run: cargo test --doc
 
   miri:
+    strategy:
+      matrix:
+        toolchain: [stable, beta, nightly]
     name: Miri
     runs-on: ubuntu-latest
     steps:
