@@ -8,6 +8,11 @@ fn main() {
 
     let dst = Config::new("libvtk").build();
 
+    if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-search=/usr/lib/");
+        println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu/");
+    }
+
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=vtkrs");
     println!("cargo:rustc-link-lib=dylib=stdc++");
