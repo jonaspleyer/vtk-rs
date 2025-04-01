@@ -6,9 +6,9 @@ fn main() {
         return;
     }
 
-    println!("cargo:rerun-if-changed=libvtk");
+    println!("cargo:rerun-if-changed=libvtkrs");
 
-    let dst = Config::new("libvtk").build();
+    let dst = Config::new("libvtkrs").build();
 
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-search=/usr/lib/");
