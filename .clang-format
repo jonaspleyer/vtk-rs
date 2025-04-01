@@ -1,0 +1,16 @@
+Language: Cpp
+IndentWidth: 4
+PointerAlignment: Right
+ColumnLimit: 100
+
+AlignConsecutiveAssignments:
+    Enabled: true
+    AcrossEmptyLines: false
+    AcrossComments: true
+
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeInheritanceColon: false
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
