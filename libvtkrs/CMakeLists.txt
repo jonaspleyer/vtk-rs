@@ -24,12 +24,14 @@ set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response
 add_library(vtkrs STATIC
     vtkObjectBase.h
     vtkSphere.h
+    vtkNamedColors.h
 )
 
 target_sources(vtkrs
     PRIVATE
         ${PROJECT_SOURCE_DIR}/vtkObjectBase.cpp
         ${PROJECT_SOURCE_DIR}/vtkSphere.cpp
+        ${PROJECT_SOURCE_DIR}/vtkNamedColors.cpp
 )
 set_target_properties(vtkrs PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(vtkrs PRIVATE ${VTK_LIBRARIES})
