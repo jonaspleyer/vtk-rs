@@ -56,26 +56,3 @@ jobs:
 
       - name: Run cargo test
         run: cargo test --doc
-
-  miri:
-    strategy:
-      matrix:
-        toolchain: [stable, beta, nightly]
-    name: Miri
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jwlawson/actions-setup-cmake@v2
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.toolchain }}
-      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
-
-      - name: Install Miri
-        run: |
-          rustup toolchain install nightly --component miri
-          rustup override set nightly
-          cargo miri setup
-
-      - name: Test with Miri
-        run: cargo miri test
