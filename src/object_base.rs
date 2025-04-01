@@ -5,6 +5,8 @@ unsafe extern "C" {
     fn object_delete(object: *mut c_void);
     fn object_fast_delete(object: *mut c_void);
     fn object_new() -> *mut c_void;
+    fn object_get_class_name(object: *mut c_void) -> *const c_char;
+    fn object_get_object_description(object: *mut c_void) -> *const c_char;
 }
 
 pub struct ObjectBase {
@@ -22,6 +24,21 @@ impl ObjectBase {
 
     pub fn FastDelete(self) {
         unsafe { object_fast_delete(self.object) }
+    }
+
+    pub fn GetClassName(&self) -> Result<&str, core::str::Utf8Error> {
+        unsafe {
+            let char_ptr = object_get_class_name(self.object);
+            let c_str = core::ffi::CStr::from_ptr(char_ptr);
+            c_str.to_str()
+        }
+    }
+
+    pub fn GetObjectDescription(&self) -> CString {
+        unsafe {
+            let char_ptr = object_get_object_description(self.object);
+            CString::from_raw(char_ptr.cast_mut())
+        }
     }
 }
 
