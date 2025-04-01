@@ -1,3 +1,3 @@
 fn main() {
-    vtk_rs::object_base::ObjectBase::New();
+    let object = vtk_rs::vtk::vtkObjectBase::New();
 }
