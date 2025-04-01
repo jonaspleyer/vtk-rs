@@ -1,3 +1,2 @@
 CompileFlags:
-  Add: -I/usr/lib/
-  Add: -I/usr/include/
+  Add: -I/usr/include/vtk/
