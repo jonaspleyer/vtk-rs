@@ -37,7 +37,9 @@ jobs:
       - run: |
           sudo apt update
           sudo apt install -y libvtk9.1 libvtk9-dev
-          RUSTFLAGS='-L /usr/lib/x86_64-linux-gnu/' && cargo test
+          LD_LIBRARY_PATH=/usr/lib/
+          export LD_LIBRARY_PATH
+          RUSTFLAGS='-L native=/usr/lib/x86_64-linux-gnu/' && cargo test
 
   doctest:
     strategy:
