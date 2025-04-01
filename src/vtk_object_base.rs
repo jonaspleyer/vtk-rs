@@ -2,11 +2,11 @@ use core::ffi::{c_char, c_void};
 use std::ffi::CString;
 
 unsafe extern "C" {
-    fn object_delete(object: *mut c_void);
-    fn object_fast_delete(object: *mut c_void);
-    fn object_new() -> *mut c_void;
-    fn object_get_class_name(object: *mut c_void) -> *const c_char;
-    fn object_get_object_description(object: *mut c_void) -> *const c_char;
+    fn object_base_delete(object: *mut c_void);
+    fn object_base_fast_delete(object: *mut c_void);
+    fn object_base_new() -> *mut c_void;
+    fn object_base_get_class_name(object: *mut c_void) -> *const c_char;
+    fn object_base_get_object_description(object: *mut c_void) -> *const c_char;
 }
 
 pub struct vtkObjectBase {
@@ -17,17 +17,17 @@ pub struct vtkObjectBase {
 impl vtkObjectBase {
     pub fn New() -> Self {
         Self {
-            object: unsafe { object_new() },
+            object: unsafe { object_base_new() },
         }
     }
 
     pub fn FastDelete(self) {
-        unsafe { object_fast_delete(self.object) }
+        unsafe { object_base_fast_delete(self.object) }
     }
 
     pub fn GetClassName(&self) -> Result<&str, core::str::Utf8Error> {
         unsafe {
-            let char_ptr = object_get_class_name(self.object);
+            let char_ptr = object_base_get_class_name(self.object);
             let c_str = core::ffi::CStr::from_ptr(char_ptr);
             c_str.to_str()
         }
@@ -35,7 +35,7 @@ impl vtkObjectBase {
 
     pub fn GetObjectDescription(&self) -> CString {
         unsafe {
-            let char_ptr = object_get_object_description(self.object);
+            let char_ptr = object_base_get_object_description(self.object);
             CString::from_raw(char_ptr.cast_mut())
         }
     }
@@ -43,7 +43,7 @@ impl vtkObjectBase {
 
 impl Drop for vtkObjectBase {
     fn drop(&mut self) {
-        unsafe { object_delete(self.object) };
+        unsafe { object_base_delete(self.object) };
     }
 }
 
