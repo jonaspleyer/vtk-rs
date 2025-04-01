@@ -21,13 +21,15 @@ endif()
 # Prevent a "command line is too long" failure in Windows.
 set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response files.")
 
-add_library(vtkrs
-    STATIC ObjectBase.h
+add_library(vtkrs STATIC
+    ObjectBase.h
+    vtkSphere.h
 )
 
 target_sources(vtkrs
     PRIVATE
         ${PROJECT_SOURCE_DIR}/ObjectBase.cpp
+        ${PROJECT_SOURCE_DIR}/vtkSphere.cpp
 )
 set_target_properties(vtkrs PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(vtkrs PRIVATE ${VTK_LIBRARIES})
