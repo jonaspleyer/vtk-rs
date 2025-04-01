@@ -6,6 +6,8 @@ fn main() {
         return;
     }
 
+    println!("cargo:rerun-if-changed=libvtk");
+
     let dst = Config::new("libvtk").build();
 
     if cfg!(target_os = "linux") {
