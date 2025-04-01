@@ -1,2 +1,3 @@
-extern "C" void testcall(float value);
-extern "C" void test_cpp(float value);
+extern "C" void object_delete(void *object);
+extern "C" void object_fast_delete(void *object);
+extern "C" void *object_new();
