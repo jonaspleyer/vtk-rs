@@ -47,3 +47,26 @@ impl Drop for ObjectBase {
         unsafe { object_delete(self.object) };
     }
 }
+
+#[allow(non_snake_case)]
+#[cfg(test)]
+mod vtkObjectBase {
+    use super::*;
+
+    #[test]
+    fn GetClassName() {
+        let object = ObjectBase::New();
+        let name = object.GetClassName().unwrap();
+        assert_eq!("vtkObjectBase", name);
+    }
+
+    #[test]
+    fn GetObjectDescription() {
+        let object = ObjectBase::New();
+        let name = object.GetObjectDescription();
+        assert_eq!(
+            &name.as_bytes()[0..13],
+            CString::new("vtkObjectBase").unwrap().as_bytes()
+        );
+    }
+}
