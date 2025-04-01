@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <vtkObjectBase.h>
+#include <vtk/vtkObjectBase.h>
 
 extern "C" void object_delete(void *object_ptr) {
   vtkObjectBase *object;
