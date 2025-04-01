@@ -1,3 +1,5 @@
+use vtk_rs::*;
+
 fn main() {
-    let object = vtk_rs::vtk::vtkObjectBase::New();
+    let colors = vtkNamedColors::New();
 }
