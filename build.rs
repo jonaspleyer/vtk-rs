@@ -1,6 +1,11 @@
 use cmake::Config;
 
 fn main() {
+    // Exit early without doing anything if we are building for docsrs
+    if std::env::var("DOCS_RS").is_ok() {
+        return;
+    }
+
     let dst = Config::new("libvtk").build();
 
     println!("cargo:rustc-link-search=native={}", dst.display());
