@@ -9,13 +9,12 @@ unsafe extern "C" {
     fn object_get_object_description(object: *mut c_void) -> *const c_char;
 }
 
-pub struct ObjectBase {
+pub struct vtkObjectBase {
     // Raw pointer to the vtkObjectBase
     object: *mut c_void,
 }
 
-#[allow(non_snake_case)]
-impl ObjectBase {
+impl vtkObjectBase {
     pub fn New() -> Self {
         Self {
             object: unsafe { object_new() },
@@ -42,27 +41,26 @@ impl ObjectBase {
     }
 }
 
-impl Drop for ObjectBase {
+impl Drop for vtkObjectBase {
     fn drop(&mut self) {
         unsafe { object_delete(self.object) };
     }
 }
 
-#[allow(non_snake_case)]
 #[cfg(test)]
-mod vtkObjectBase {
+mod test {
     use super::*;
 
     #[test]
     fn GetClassName() {
-        let object = ObjectBase::New();
+        let object = vtkObjectBase::New();
         let name = object.GetClassName().unwrap();
         assert_eq!("vtkObjectBase", name);
     }
 
     #[test]
     fn GetObjectDescription() {
-        let object = ObjectBase::New();
+        let object = vtkObjectBase::New();
         let name = object.GetObjectDescription();
         assert_eq!(
             &name.as_bytes()[0..13],
