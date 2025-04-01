@@ -15,7 +15,7 @@ find_package(VTK COMPONENTS
 )
 
 if (NOT VTK_FOUND)
-  message(FATAL_ERROR "Vtk: Unable to find the VTK build folder.")
+    message(FATAL_ERROR "Vtk: Unable to find the VTK build folder.")
 endif()
 
 # Prevent a "command line is too long" failure in Windows.
