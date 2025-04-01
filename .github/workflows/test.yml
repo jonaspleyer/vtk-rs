@@ -37,7 +37,7 @@ jobs:
       - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
 
       - name: Run cargo test
-        run: cargo test
+        run: RUSTFLAGS='-L /usr/lib/x86_64-linux-gnu/' && cargo test
 
   doctest:
     strategy:
