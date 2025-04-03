@@ -19,7 +19,8 @@ def os_to_features(os):
 
 for toolchain in toolchains:
     for os in oss:
-        filename = "test_{}_{}.yml".format(toolchain, os.replace(".", "_"))
+        os_re = os.replace(".", "_")
+        filename = f"test_{toolchain}_{os_re}.yml"
         features = os_to_features(os)
         contents = f"""\
 on: [push, pull_request]
@@ -27,7 +28,7 @@ on: [push, pull_request]
 name: Test-Suite {toolchain} {os}
 
 jobs:
-  CI-{toolchain}-{os.replace(".", "_")}:
+  CI-{toolchain}-{os_re}:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: {toolchain}
@@ -40,13 +41,12 @@ jobs:
 print("| | " + " | ".join(toolchains) + " | Build |")
 print("|---" * (len(toolchains) + 1) + "|---|")
 for os in oss:
+    os_re = os.replace(".", "_")
     line = f"| `{os}` | "
     for toolchain in toolchains:
-        badge_md = (
-            f"![{toolchain}-{os.replace('.', '_')}](https://img.shields.io/github/\
+        badge_md = f"![{toolchain}-{os_re}](https://img.shields.io/github/\
 actions/workflow/status/jonaspleyer/vtk-rs/\
-test_{toolchain}_{os}.yml?style=flat-square&label=CI)"
-        )
+test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)"
         line += badge_md + " |"
     line += f"`cargo build {os_to_features(os)}` |"
     print(line)
