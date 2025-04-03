@@ -8,5 +8,5 @@ jobs:
     with:
       toolchain: stable
       os: ubuntu-22.04
-      packages: libvtk9.1 libvtk9.1-dev
+      packages: libvtk9.1 libvtk9-dev
       features: --features vtk9-1

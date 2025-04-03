@@ -5,13 +5,13 @@ toolchains = ["stable", "beta", "nightly"]
 def os_to_features_packages(os):
     if os == "ubuntu-24.04":
         features = "--features vtk9-1"
-        packages = "libvtk9.1 libvtk9.1-dev"
+        packages = "libvtk9.1 libvtk9-dev"
     elif os == "ubuntu-22.04":
         features = "--features vtk9-1"
-        packages = "libvtk9.1 libvtk9.1-dev"
+        packages = "libvtk9.1 libvtk9-dev"
     elif os == "ubuntu-20.04":
         features = "--features vtk7-0"
-        packages = "libvtk7 libvtk7-dev"
+        packages = "libvtk7.1p libvtk7-dev"
     elif os == "macos-13":
         features = "--features vtk9-4"
         packages = "vtk"
@@ -50,10 +50,11 @@ print("|---" * (len(toolchains) + 1) + "|---|")
 for os in oss:
     os_re = os.replace(".", "_")
     line = f"| `{os}` | "
+    features, _ = os_to_features_packages(os)
     for toolchain in toolchains:
         badge_md = f"![{toolchain}-{os_re}](https://img.shields.io/github/\
 actions/workflow/status/jonaspleyer/vtk-rs/\
 test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)"
         line += badge_md + " |"
-    line += f"`cargo build {os_to_features_packages(os)}` |"
+    line += f"`cargo build {features}` |"
     print(line)

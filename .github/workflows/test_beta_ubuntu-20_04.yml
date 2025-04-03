@@ -8,5 +8,5 @@ jobs:
     with:
       toolchain: beta
       os: ubuntu-20.04
-      packages: libvtk7 libvtk7-dev
+      packages: libvtk7.1p libvtk7-dev
       features: --features vtk7-0
