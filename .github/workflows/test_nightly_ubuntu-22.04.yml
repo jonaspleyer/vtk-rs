@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: Test-Suite nightly ubuntu-22.04
+
+jobs:
+  CI-nightly-ubuntu-22.04:
+    uses: ./.github/workflows/reuse.yml
+    with:
+      toolchain: nightly
+      os: ubuntu-22.04
+      features: --features vtk9-1

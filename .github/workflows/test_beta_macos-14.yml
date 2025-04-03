@@ -8,4 +8,4 @@ jobs:
     with:
       toolchain: beta
       os: macos-14
-      features: 
+      features: --features vtk9-4

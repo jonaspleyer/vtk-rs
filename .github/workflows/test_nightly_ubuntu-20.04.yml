@@ -1,11 +1,11 @@
 on: [push, pull_request]
 
-name: Test-Suite nightly ubuntu-latest
+name: Test-Suite nightly ubuntu-20.04
 
 jobs:
-  CI-nightly-ubuntu-latest:
+  CI-nightly-ubuntu-20.04:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: nightly
-      os: ubuntu-latest
+      os: ubuntu-20.04
       features: --features vtk9-1

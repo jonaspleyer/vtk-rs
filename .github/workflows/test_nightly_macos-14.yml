@@ -8,4 +8,4 @@ jobs:
     with:
       toolchain: nightly
       os: macos-14
-      features: 
+      features: --features vtk9-4
