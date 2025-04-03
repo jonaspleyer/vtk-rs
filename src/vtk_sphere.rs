@@ -15,6 +15,12 @@ pub struct Sphere {
     sphere_ptr: *mut c_void,
 }
 
+impl Default for Sphere {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sphere {
     pub fn new() -> Self {
         Self {

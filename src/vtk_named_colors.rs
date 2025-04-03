@@ -23,6 +23,12 @@ pub trait Colors {
     fn get_synonyms(&self) -> String;
 }
 
+impl Default for NamedColors {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl NamedColors {
     pub fn new() -> Self {
         Self {
