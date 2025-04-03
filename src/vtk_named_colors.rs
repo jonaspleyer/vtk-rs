@@ -1,7 +1,6 @@
 //! This module is still incomplete!
 
-use core::ffi::{c_char, c_void};
-use std::ffi::CString;
+use core::ffi::c_void;
 
 unsafe extern "C" {
     fn named_colors_new() -> *mut c_void;
