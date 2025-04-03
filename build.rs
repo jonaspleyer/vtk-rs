@@ -36,7 +36,37 @@ fn main() {
     } else if cfg!(feature = "vtk9-1") {
         "9.1"
     } else if cfg!(feature = "vtk9-0") {
-        "9.0"
+        "9-0"
+    } else if cfg!(feature = "vtk8-2") {
+        "8-2"
+    } else if cfg!(feature = "vtk8-1") {
+        "8-1"
+    } else if cfg!(feature = "vtk8-0") {
+        "8-0"
+    } else if cfg!(feature = "vtk7-1") {
+        "7-1"
+    } else if cfg!(feature = "vtk7-0") {
+        "7-0"
+    } else if cfg!(feature = "vtk6-3") {
+        "6-3"
+    } else if cfg!(feature = "vtk6-2") {
+        "6-2"
+    } else if cfg!(feature = "vtk6-1") {
+        "6-1"
+    } else if cfg!(feature = "vtk6-0") {
+        "6-0"
+    } else if cfg!(feature = "vtk5-10") {
+        "5-10"
+    } else if cfg!(feature = "vtk5-8") {
+        "5-8"
+    } else if cfg!(feature = "vtk5-6") {
+        "5-6"
+    } else if cfg!(feature = "vtk5-4") {
+        "5-4"
+    } else if cfg!(feature = "vtk5-2") {
+        "5-2"
+    } else if cfg!(feature = "vtk5-0") {
+        "5-0"
     } else {
         ""
     };
