@@ -1,5 +1,54 @@
 use cmake::Config;
 
+fn evaluate_feature<F, G>(func: F) -> Option<G>
+where
+    F: Fn(&str) -> G,
+{
+    if cfg!(feature = "vtk9-4") {
+        Some(func("-9.4"))
+    } else if cfg!(feature = "vtk9-3") {
+        Some(func("-9.3"))
+    } else if cfg!(feature = "vtk9-2") {
+        Some(func("-9.2"))
+    } else if cfg!(feature = "vtk9-1") {
+        Some(func("-9.1"))
+    } else if cfg!(feature = "vtk9-0") {
+        Some(func("-9-0"))
+    } else if cfg!(feature = "vtk8-2") {
+        Some(func("-8-2"))
+    } else if cfg!(feature = "vtk8-1") {
+        Some(func("-8-1"))
+    } else if cfg!(feature = "vtk8-0") {
+        Some(func("-8-0"))
+    } else if cfg!(feature = "vtk7-1") {
+        Some(func("-7-1"))
+    } else if cfg!(feature = "vtk7-0") {
+        Some(func("-7-0"))
+    } else if cfg!(feature = "vtk6-3") {
+        Some(func("-6-3"))
+    } else if cfg!(feature = "vtk6-2") {
+        Some(func("-6-2"))
+    } else if cfg!(feature = "vtk6-1") {
+        Some(func("-6-1"))
+    } else if cfg!(feature = "vtk6-0") {
+        Some(func("-6-0"))
+    } else if cfg!(feature = "vtk5-10") {
+        Some(func("-5-10"))
+    } else if cfg!(feature = "vtk5-8") {
+        Some(func("-5-8"))
+    } else if cfg!(feature = "vtk5-6") {
+        Some(func("-5-6"))
+    } else if cfg!(feature = "vtk5-4") {
+        Some(func("-5-4"))
+    } else if cfg!(feature = "vtk5-2") {
+        Some(func("-5-2"))
+    } else if cfg!(feature = "vtk5-0") {
+        Some(func("-5-0"))
+    } else {
+        None
+    }
+}
+
 fn main() {
     // Exit early without doing anything if we are building for docsrs
     if std::env::var("DOCS_RS").is_ok() {
@@ -27,50 +76,11 @@ fn main() {
 
     let linker_args_raw = include_str!("linker-args.txt");
 
-    let suffix = if cfg!(feature = "vtk9-4") {
-        "-9.4"
-    } else if cfg!(feature = "vtk9-3") {
-        "-9.3"
-    } else if cfg!(feature = "vtk9-2") {
-        "-9.2"
-    } else if cfg!(feature = "vtk9-1") {
-        "-9.1"
-    } else if cfg!(feature = "vtk9-0") {
-        "-9-0"
-    } else if cfg!(feature = "vtk8-2") {
-        "-8-2"
-    } else if cfg!(feature = "vtk8-1") {
-        "-8-1"
-    } else if cfg!(feature = "vtk8-0") {
-        "-8-0"
-    } else if cfg!(feature = "vtk7-1") {
-        "-7-1"
-    } else if cfg!(feature = "vtk7-0") {
-        "-7-0"
-    } else if cfg!(feature = "vtk6-3") {
-        "-6-3"
-    } else if cfg!(feature = "vtk6-2") {
-        "-6-2"
-    } else if cfg!(feature = "vtk6-1") {
-        "-6-1"
-    } else if cfg!(feature = "vtk6-0") {
-        "-6-0"
-    } else if cfg!(feature = "vtk5-10") {
-        "-5-10"
-    } else if cfg!(feature = "vtk5-8") {
-        "-5-8"
-    } else if cfg!(feature = "vtk5-6") {
-        "-5-6"
-    } else if cfg!(feature = "vtk5-4") {
-        "-5-4"
-    } else if cfg!(feature = "vtk5-2") {
-        "-5-2"
-    } else if cfg!(feature = "vtk5-0") {
-        "-5-0"
-    } else {
-        ""
-    };
-
+    let suffix = evaluate_feature(|version| {
+        let chunks: Vec<_> = version[3..].split("-").collect();
+        format!("-{}.{}", chunks[0], chunks[1])
+    })
+    .unwrap_or("".to_string());
     for line in linker_args_raw.lines() {
         println!("cargo:rustc-link-lib=dylib={}{}", line, suffix);
     }
