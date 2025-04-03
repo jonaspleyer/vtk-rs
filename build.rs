@@ -27,13 +27,26 @@ fn main() {
 
     let linker_args_raw = include_str!("linker-args.txt");
 
-    let suffix = if cfg!(feature = "vtk9-1") {
-        "-9.1"
-    } else if cfg!(feature = "vtk9-0") {
-        "-9.0"
-    } else {
+    macro_rules! get_suffix(
+        () => {""};
+        ($feature_name:literal -> $version_string:literal $($tokens:tt)*) => {
+            if cfg!(feature = $feature_name) {
+                return $version_string;
+            }
+        };
+    );
+
+    fn suffix() -> &'static str {
+        get_suffix!(
+            "vtk9-4" -> "9.4"
+            "vtk9-3" -> "9.3"
+            "vtk9-2" -> "9.2"
+            "vtk9-1" -> "9.1"
+            "vtk9-0" -> "9.0"
+        );
         ""
-    };
+    }
+    let suffix = suffix();
 
     for line in linker_args_raw.lines() {
         println!("cargo:rustc-link-lib=dylib={}{}", line, suffix);
