@@ -39,7 +39,7 @@ jobs:
           sudo apt install -y libvtk9.1 libvtk9-dev
           LD_LIBRARY_PATH=/usr/lib/
           export LD_LIBRARY_PATH
-          RUSTFLAGS='-L native=/usr/lib/x86_64-linux-gnu/' && cargo test
+          RUSTFLAGS='-L native=/usr/lib/x86_64-linux-gnu/' && cargo test --features vtk9-1
 
   doctest:
     strategy:
@@ -57,4 +57,4 @@ jobs:
       - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
 
       - name: Run cargo test
-        run: cargo test --doc
+        run: cargo test --doc --features vtk9-1
