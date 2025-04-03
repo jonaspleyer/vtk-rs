@@ -3,7 +3,7 @@ on: [push, pull_request]
 name: Test-Suite nightly ubuntu-24.04
 
 jobs:
-  CI-nightly-ubuntu-24.04:
+  CI-nightly-ubuntu-24_04:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: nightly

@@ -27,7 +27,7 @@ on: [push, pull_request]
 name: Test-Suite {toolchain} {os}
 
 jobs:
-  CI-{toolchain}-{os}:
+  CI-{toolchain}-{os.replace(".", "_")}:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: {toolchain}

@@ -3,7 +3,7 @@ on: [push, pull_request]
 name: Test-Suite stable ubuntu-22.04
 
 jobs:
-  CI-stable-ubuntu-22.04:
+  CI-stable-ubuntu-22_04:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: stable
