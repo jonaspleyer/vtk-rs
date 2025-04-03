@@ -11,6 +11,9 @@ on:
         required: false
         type: string
         default: ""
+      packages:
+        required: true
+        type: string
 
 jobs:
   test:
@@ -27,11 +30,11 @@ jobs:
 
       - name: Install VTK Macos
         if: contains(inputs.os, 'macos')
-        run: brew install vtk
+        run: brew install ${{ inputs.packages }}
 
       - name: Install VTK Ubuntu
         if: contains(inputs.os, 'ubuntu')
-        run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+        run: sudo apt update && sudo apt install -y ${{ inputs.packages }}
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master

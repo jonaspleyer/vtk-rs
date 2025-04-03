@@ -8,4 +8,5 @@ jobs:
     with:
       toolchain: stable
       os: macos-14
+      packages: vtk
       features: --features vtk9-4
