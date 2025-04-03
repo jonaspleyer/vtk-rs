@@ -9,5 +9,4 @@ extern "C" void *named_colors_new() {
 extern "C" void named_colors_delete(void *object_ptr) {
     vtkNamedColors *object;
     static_cast<vtkNamedColors *>(object_ptr)->Delete();
-    printf("Done from cpp");
 }
