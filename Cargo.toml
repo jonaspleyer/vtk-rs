@@ -6,6 +6,7 @@ build = "build.rs"
 license = "MIT"
 description = "Rust bindings for the Visualization Toolkit (VTK)"
 repository = "https://github.com/jonaspleyer/vtk-rs"
+links = "vtk"
 
 [build-dependencies]
 cmake = "0.1.54"
