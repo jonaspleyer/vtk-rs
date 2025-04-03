@@ -24,30 +24,6 @@ where
         Some(func("vtk8-1"))
     } else if cfg!(feature = "vtk8-0") {
         Some(func("vtk8-0"))
-    } else if cfg!(feature = "vtk7-1") {
-        Some(func("vtk7-1"))
-    } else if cfg!(feature = "vtk7-0") {
-        Some(func("vtk7-0"))
-    } else if cfg!(feature = "vtk6-3") {
-        Some(func("vtk6-3"))
-    } else if cfg!(feature = "vtk6-2") {
-        Some(func("vtk6-2"))
-    } else if cfg!(feature = "vtk6-1") {
-        Some(func("vtk6-1"))
-    } else if cfg!(feature = "vtk6-0") {
-        Some(func("vtk6-0"))
-    } else if cfg!(feature = "vtk5-10") {
-        Some(func("vtk5-10"))
-    } else if cfg!(feature = "vtk5-8") {
-        Some(func("vtk5-8"))
-    } else if cfg!(feature = "vtk5-6") {
-        Some(func("vtk5-6"))
-    } else if cfg!(feature = "vtk5-4") {
-        Some(func("vtk5-4"))
-    } else if cfg!(feature = "vtk5-2") {
-        Some(func("vtk5-2"))
-    } else if cfg!(feature = "vtk5-0") {
-        Some(func("vtk5-0"))
     } else {
         None
     }

@@ -1,4 +1,4 @@
-oss = ["ubuntu-24.04", "ubuntu-22.04", "ubuntu-20.04", "macos-13", "macos-14"]
+oss = ["ubuntu-24.04", "ubuntu-22.04", "macos-13", "macos-14"]
 toolchains = ["stable", "beta", "nightly"]
 
 
@@ -9,9 +9,6 @@ def os_to_features_packages(os):
     elif os == "ubuntu-22.04":
         features = "--features vtk9-1"
         packages = "libvtk9.1 libvtk9-dev"
-    elif os == "ubuntu-20.04":
-        features = "--features vtk7-0"
-        packages = "libvtk7.1p libvtk7-dev"
     elif os == "macos-13":
         features = "--features vtk9-4"
         packages = "vtk"
