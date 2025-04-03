@@ -12,3 +12,8 @@ cmake = "0.1.54"
 
 [dev-dependencies]
 approx = { package = "approxim", version = "0.6.4", features = ["array_impl"]}
+
+[features]
+default = []
+vtk9-0 = []
+vtk9-1 = []
