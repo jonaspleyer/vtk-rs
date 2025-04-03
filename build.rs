@@ -17,7 +17,13 @@ fn main() {
 
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=vtkrs");
-    println!("cargo:rustc-link-lib=dylib=stdc++");
+
+    if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
+    if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-lib=dylib=c++");
+    }
 
     let linker_args_raw = include_str!("linker-args.txt");
 
