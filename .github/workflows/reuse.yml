@@ -25,11 +25,13 @@ jobs:
 
       - uses: jwlawson/actions-setup-cmake@v2
 
-      - if: contains(${{ inputs.os }}, 'ubuntu')
-        run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
-
-      - if: contains(${{ inputs.os }}, 'macos')
+      - name: Install VTK Macos
+        if: contains(inputs.os, 'macos')
         run: brew install vtk
+
+      - name: Install VTK Ubuntu
+        if: contains(inputs.os, 'ubuntu')
+        run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master
