@@ -4,6 +4,8 @@
 
 mod vtk_named_colors;
 mod vtk_sphere;
+mod vtk_sphere_source;
 
 pub use vtk_named_colors::*;
 pub use vtk_sphere::*;
+pub use vtk_sphere_source::*;
