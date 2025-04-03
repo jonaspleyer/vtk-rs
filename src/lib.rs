@@ -2,8 +2,6 @@
 //!
 //! It depends on system libraries which need to be preinstalled.
 
-#![allow(non_snake_case)]
-
 mod vtk_named_colors;
 mod vtk_sphere;
 

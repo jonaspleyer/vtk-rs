@@ -16,25 +16,29 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn New() -> Self {
+    pub fn new() -> Self {
         Self {
             sphere_ptr: unsafe { sphere_new() },
         }
     }
 
-    pub fn SetRadius(&mut self, radius: f64) {
+    #[doc(alias = "SetRadius")]
+    pub fn set_radius(&mut self, radius: f64) {
         unsafe { sphere_set_radius(self.sphere_ptr, radius) };
     }
 
-    pub fn GetRadius(&self) -> f64 {
+    #[doc(alias = "GetRadius")]
+    pub fn radius(&self) -> f64 {
         unsafe { sphere_get_radius(self.sphere_ptr) }
     }
 
-    pub fn SetCenter(&mut self, center: [f64; 3]) {
+    #[doc(alias = "SetCenter")]
+    pub fn set_center(&mut self, center: [f64; 3]) {
         unsafe { sphere_set_center(self.sphere_ptr, center.as_ptr()) };
     }
 
-    pub fn GetCenter(&self) -> [f64; 3] {
+    #[doc(alias = "GetCenter")]
+    pub fn center(&self) -> [f64; 3] {
         unsafe {
             let mut center = [0.; 3];
             sphere_get_center(self.sphere_ptr, center.as_mut_ptr());
@@ -42,7 +46,8 @@ impl Sphere {
         }
     }
 
-    pub fn PrintSelf(&self, indent: usize) -> CString {
+    #[doc(alias = "PrintSelf")]
+    pub fn print(&self, indent: usize) -> CString {
         unsafe {
             let char_ptr = sphere_print_self(self.sphere_ptr, indent);
             CString::from_raw(char_ptr.cast_mut())
@@ -51,6 +56,7 @@ impl Sphere {
 }
 
 impl Drop for Sphere {
+    #[doc(alias = "Delete")]
     fn drop(&mut self) {
         unsafe { sphere_delete(self.sphere_ptr) };
     }
@@ -62,29 +68,29 @@ mod test {
     use approx::*;
 
     #[test]
-    fn GetSetRadius() {
-        let mut sphere = Sphere::New();
-        let r1 = sphere.GetRadius();
+    fn get_set_radius() {
+        let mut sphere = Sphere::new();
+        let r1 = sphere.radius();
         assert_abs_diff_eq!(r1, 0.5);
-        sphere.SetRadius(1.0);
-        let r2 = sphere.GetRadius();
+        sphere.set_radius(1.0);
+        let r2 = sphere.radius();
         assert_abs_diff_eq!(r2, 1.0);
     }
 
     #[test]
-    fn GetSetCenter() {
-        let mut sphere = Sphere::New();
-        let c1 = sphere.GetCenter();
+    fn get_set_center() {
+        let mut sphere = Sphere::new();
+        let c1 = sphere.center();
         assert_abs_diff_eq!(c1, [0.0; 3]);
-        sphere.SetCenter([1., 2., 3.]);
-        let c2 = sphere.GetCenter();
+        sphere.set_center([1., 2., 3.]);
+        let c2 = sphere.center();
         assert_abs_diff_eq!(c2, [1., 2., 3.]);
     }
 
     #[test]
-    fn PrintSelf() {
-        let sphere = Sphere::New();
-        let result = sphere.PrintSelf(3);
+    fn print_self() {
+        let sphere = Sphere::new();
+        let result = sphere.print(3);
         let string = result.to_str().unwrap().to_string();
         assert!(string.contains("   Debug"));
         assert!(string.contains("   Reference Count: 1"));

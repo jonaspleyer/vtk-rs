@@ -1,12 +1,12 @@
 use vtk_rs as vtk;
 
 fn main() {
-    let colors = vtk::NamedColors::New();
+    let colors = vtk::NamedColors::new();
 
     // Create a sphere
-    let mut sphere_source = vtk::SphereSource::New();
-    sphere_source.SetCenter([0.; 3]);
-    sphere_source.SetRadius(5.0);
+    let mut sphere_source = vtk::SphereSource::new();
+    sphere_source.set_center([0.; 3]);
+    sphere_source.set_radius(5.0);
 
     // Make the surface smooth
     /* sphere_source.SetPhiResolution(100.);

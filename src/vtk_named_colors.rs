@@ -16,15 +16,15 @@ pub struct NamedColors {
 
 pub trait Colors {
     type Color;
-    fn GetColor(&self) -> Self::Color;
-    fn ResetColors(&mut self);
-    fn SetColor(&mut self, name: &str, color: &Self::Color);
-    fn GetColorNames(&self) -> String;
-    fn GetSynonyms(&self) -> String;
+    fn get_color(&self) -> Self::Color;
+    fn reset_colors(&mut self);
+    fn set_color(&mut self, name: &str, color: &Self::Color);
+    fn get_color_names(&self) -> String;
+    fn get_synonyms(&self) -> String;
 }
 
 impl NamedColors {
-    pub fn New() -> Self {
+    pub fn new() -> Self {
         Self {
             named_colors_ptr: unsafe { named_colors_new() },
         }
@@ -40,10 +40,9 @@ impl Drop for NamedColors {
 #[cfg(test)]
 mod test {
     use super::*;
-    use approx::*;
 
     #[test]
-    fn SetResetColors() {
-        let colors = NamedColors::New();
+    fn set_reset_colors() {
+        let colors = NamedColors::new();
     }
 }
