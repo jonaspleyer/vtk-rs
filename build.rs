@@ -78,7 +78,11 @@ fn main() {
 
     let suffix = evaluate_feature(|version| {
         let chunks: Vec<_> = version[3..].split("-").collect();
-        format!("-{}.{}", chunks[0], chunks[1])
+        if chunks[1] == "0" {
+            format!("-{}", chunks[0])
+        } else {
+            format!("-{}.{}", chunks[0], chunks[1])
+        }
     })
     .unwrap_or("".to_string());
     for line in linker_args_raw.lines() {
