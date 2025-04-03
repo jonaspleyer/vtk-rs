@@ -1,0 +1,47 @@
+on:
+  workflow_call:
+    inputs:
+      toolchain:
+        required: true
+        type: string
+      os:
+        required: true
+        type: string
+      features:
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  test:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
+          lfs: 'false'
+
+      - uses: jwlawson/actions-setup-cmake@v2
+
+      - run: sudo apt update && sudo apt install -y libvtk9.1 libvtk9-dev
+        if: ${{ inputs.os == 'ubuntu-latest' }}
+
+      - run: brew install vtk
+        if: ${{ inputs.os == 'macos-13' }}
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ inputs.toolchain }}
+
+      - name: cargo check
+
+        run: cargo check ${{ inputs.features }}
+
+      - name: cargo test
+        run: cargo test ${{ inputs.features }}
+
+      - name: cargo test --doc
+        run: cargo test --doc ${{ inputs.features }}

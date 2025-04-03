@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: Test-Suite stable windows-latest
+
+jobs:
+  CI-stable-windows-latest:
+    uses: ./.github/workflows/reuse.yml
+    with:
+      toolchain: stable
+      os: windows-latest
+      features: 

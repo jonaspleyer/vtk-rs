@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: Test-Suite nightly windows-latest
+
+jobs:
+  CI-nightly-windows-latest:
+    uses: ./.github/workflows/reuse.yml
+    with:
+      toolchain: nightly
+      os: windows-latest
+      features: 

@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: Test-Suite beta windows-latest
+
+jobs:
+  CI-beta-windows-latest:
+    uses: ./.github/workflows/reuse.yml
+    with:
+      toolchain: beta
+      os: windows-latest
+      features: 

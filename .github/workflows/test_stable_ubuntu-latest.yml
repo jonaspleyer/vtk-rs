@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: Test-Suite stable ubuntu-latest
+
+jobs:
+  CI-stable-ubuntu-latest:
+    uses: ./.github/workflows/reuse.yml
+    with:
+      toolchain: stable
+      os: ubuntu-latest
+      features: --features vtk9-1
