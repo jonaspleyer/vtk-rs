@@ -8,7 +8,7 @@ unsafe extern "C" {
     fn named_colors_delete(named_colors_ptr: *mut c_void);
 }
 
-pub struct vtkNamedColors {
+pub struct NamedColors {
     named_colors_ptr: *mut c_void,
     // TODO replace the above
     // named_colors_ptr: vtkObject,
@@ -23,7 +23,7 @@ pub trait Colors {
     fn GetSynonyms(&self) -> String;
 }
 
-impl vtkNamedColors {
+impl NamedColors {
     pub fn New() -> Self {
         Self {
             named_colors_ptr: unsafe { named_colors_new() },
@@ -31,7 +31,7 @@ impl vtkNamedColors {
     }
 }
 
-impl Drop for vtkNamedColors {
+impl Drop for NamedColors {
     fn drop(&mut self) {
         unsafe { named_colors_delete(self.named_colors_ptr) };
     }
@@ -44,6 +44,6 @@ mod test {
 
     #[test]
     fn SetResetColors() {
-        let colors = vtkNamedColors::New();
+        let colors = NamedColors::New();
     }
 }

@@ -11,11 +11,11 @@ unsafe extern "C" {
     fn sphere_print_self(sphere_ptr: *mut c_void, indent: usize) -> *const c_char;
 }
 
-pub struct vtkSphere {
+pub struct Sphere {
     sphere_ptr: *mut c_void,
 }
 
-impl vtkSphere {
+impl Sphere {
     pub fn New() -> Self {
         Self {
             sphere_ptr: unsafe { sphere_new() },
@@ -50,7 +50,7 @@ impl vtkSphere {
     }
 }
 
-impl Drop for vtkSphere {
+impl Drop for Sphere {
     fn drop(&mut self) {
         unsafe { sphere_delete(self.sphere_ptr) };
     }
@@ -63,7 +63,7 @@ mod test {
 
     #[test]
     fn GetSetRadius() {
-        let mut sphere = vtkSphere::New();
+        let mut sphere = Sphere::New();
         let r1 = sphere.GetRadius();
         assert_abs_diff_eq!(r1, 0.5);
         sphere.SetRadius(1.0);
@@ -73,7 +73,7 @@ mod test {
 
     #[test]
     fn GetSetCenter() {
-        let mut sphere = vtkSphere::New();
+        let mut sphere = Sphere::New();
         let c1 = sphere.GetCenter();
         assert_abs_diff_eq!(c1, [0.0; 3]);
         sphere.SetCenter([1., 2., 3.]);
@@ -83,7 +83,7 @@ mod test {
 
     #[test]
     fn PrintSelf() {
-        let sphere = vtkSphere::New();
+        let sphere = Sphere::New();
         let result = sphere.PrintSelf(3);
         let string = result.to_str().unwrap().to_string();
         assert!(string.contains("   Debug"));

@@ -1,10 +1,10 @@
-use vtk_rs::*;
+use vtk_rs as vtk;
 
 fn main() {
-    let colors = vtkNamedColors::New();
+    let colors = vtk::NamedColors::New();
 
     // Create a sphere
-    let mut sphere_source = vtkSphereSource::New();
+    let mut sphere_source = vtk::SphereSource::New();
     sphere_source.SetCenter([0.; 3]);
     sphere_source.SetRadius(5.0);
 
