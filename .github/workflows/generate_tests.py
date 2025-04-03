@@ -19,7 +19,7 @@ def os_to_features(os):
 
 for toolchain in toolchains:
     for os in oss:
-        filename = "test_{}_{}.yml".format(toolchain, os)
+        filename = "test_{}_{}.yml".format(toolchain, os.replace(".", "_"))
         features = os_to_features(os)
         contents = f"""\
 on: [push, pull_request]
@@ -42,9 +42,11 @@ print("|---" * (len(toolchains) + 1) + "|---|")
 for os in oss:
     line = f"| `{os}` | "
     for toolchain in toolchains:
-        badge_md = f"![{toolchain}-{os}](https://img.shields.io/github/\
+        badge_md = (
+            f"![{toolchain}-{os.replace('.', '_')}](https://img.shields.io/github/\
 actions/workflow/status/jonaspleyer/vtk-rs/\
 test_{toolchain}_{os}.yml?style=flat-square&label=CI)"
+        )
         line += badge_md + " |"
     line += f"`cargo build {os_to_features(os)}` |"
     print(line)
