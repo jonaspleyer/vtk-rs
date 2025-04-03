@@ -9,7 +9,7 @@ def os_to_features(os):
     elif os == "ubuntu-22.04":
         features = "--features vtk9-1"
     elif os == "ubuntu-20.04":
-        features = "--features vtk9-1"
+        features = "--features vtk7-0"
     elif os == "macos-13":
         features = "--features vtk9-4"
     elif os == "macos-14":
