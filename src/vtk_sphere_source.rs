@@ -1,5 +1,5 @@
 use core::ffi::{c_char, c_void};
-use std::ffi::CString;
+use std::ffi::{c_int, CString};
 
 unsafe extern "C" {
     fn sphere_source_new() -> *mut c_void;
