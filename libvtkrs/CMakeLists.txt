@@ -34,7 +34,7 @@ target_sources(vtkrs
         ${PROJECT_SOURCE_DIR}/vtkNamedColors.cpp
 )
 set_target_properties(vtkrs PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(vtkrs PRIVATE ${VTK_LIBRARIES})
+target_link_libraries(vtkrs PUBLIC ${VTK_LIBRARIES})
 
 install(TARGETS vtkrs DESTINATION .)
 
