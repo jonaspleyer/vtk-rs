@@ -38,8 +38,6 @@ target_link_libraries(vtkrs PRIVATE ${VTK_LIBRARIES})
 
 install(TARGETS vtkrs DESTINATION .)
 
-message(VTK_LIBS="${VTK_LIBRARIES}")
-
 vtk_module_autoinit(
   TARGETS vtkrs
   MODULES ${VTK_LIBRARIES}
