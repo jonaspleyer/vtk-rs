@@ -30,6 +30,16 @@ where
 }
 
 fn main() {
+    let version = evaluate_feature(|version| {
+        let chunks: Vec<_> = version[3..].split("-").collect();
+        if chunks[1] == "0" {
+            chunks[0].to_string()
+        } else {
+            format!("{}.{}", chunks[0], chunks[1])
+        }
+    })
+    .unwrap_or("".to_string());
+
     // Exit early without doing anything if we are building for docsrs
     if std::env::var("DOCS_RS").is_ok() {
         return;
@@ -56,15 +66,12 @@ fn main() {
 
     let linker_args_raw = include_str!("linker-args.txt");
 
-    let suffix = evaluate_feature(|version| {
-        let chunks: Vec<_> = version[3..].split("-").collect();
-        if chunks[1] == "0" {
-            format!("-{}", chunks[0])
-        } else {
-            format!("-{}.{}", chunks[0], chunks[1])
-        }
-    })
-    .unwrap_or("".to_string());
+    let suffix = if version.is_empty() {
+        version
+    } else {
+        format!("-{version}")
+    };
+
     for line in linker_args_raw.lines() {
         println!("cargo:rustc-link-lib=dylib={}{}", line, suffix);
     }
