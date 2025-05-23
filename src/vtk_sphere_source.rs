@@ -8,6 +8,8 @@ unsafe extern "C" {
     fn sphere_source_get_radius(sphere_source_ptr: *mut c_void) -> f64;
     fn sphere_source_set_center(spherr_ptr: *mut c_void, center: *const f64);
     fn sphere_source_get_center(sphere_source_ptr: *mut c_void, center: *mut f64);
+    fn sphere_source_set_phi_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
+    fn sphere_source_set_theta_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
     fn sphere_source_print_self(sphere_source_ptr: *mut c_void, indent: usize) -> *const c_char;
 }
 
@@ -51,6 +53,16 @@ impl SphereSource {
             sphere_source_get_center(self.sphere_source_ptr, center.as_mut_ptr());
             center
         }
+    }
+
+    #[doc(alias = "SetPhiResolution")]
+    pub fn set_phi_resolution(&mut self, resolution: c_int) {
+        unsafe { sphere_source_set_phi_resolution(self.sphere_source_ptr, resolution) }
+    }
+
+    #[doc(alias = "SetThetaResolution")]
+    pub fn set_theta_resolution(&mut self, resolution: c_int) {
+        unsafe { sphere_source_set_theta_resolution(self.sphere_source_ptr, resolution) }
     }
 
     #[doc(alias = "PrintSelf")]
