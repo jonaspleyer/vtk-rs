@@ -39,7 +39,7 @@ fn main() {
 
     let dst = Config::new("libvtkrs").build();
 
-    if cfg!(target_os = "linux") {
+    if cfg!(unix) {
         println!("cargo:rustc-link-search=/usr/lib/");
         println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu/");
     }
