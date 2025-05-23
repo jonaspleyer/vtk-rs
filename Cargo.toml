@@ -8,9 +8,6 @@ description = "Rust bindings for the Visualization Toolkit (VTK)"
 repository = "https://github.com/jonaspleyer/vtk-rs"
 links = "vtk"
 
-[build-dependencies]
-cmake = "0.1.54"
-
 [dev-dependencies]
 approx = { package = "approxim", version = "0.6.4", features = ["array_impl"]}
 
@@ -24,3 +21,9 @@ vtk9-0 = []
 vtk8-2 = []
 vtk8-1 = []
 vtk8-0 = []
+
+[dependencies]
+cxx = "1.0.158"
+
+[build-dependencies]
+cmake = "0.1.54"
