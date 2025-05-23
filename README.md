@@ -33,3 +33,12 @@ We manually write code for individual modules of `vtk` from which we generate ap
 with `cxx::bridge` using the provided CLI tool
 [`cxxbridge`](https://crates.io/crates/cxxbridge-cmd).
 However, we do not use `cxx` to compile the code but rather let `cmake` handle this task.
+
+## Roadmap
+1. Stabilize Build system
+2. Automate system library detection and generate linker flags
+3. Gradually implement functionality for examples. Start with 3D geometry.
+- *SphereSource*
+  https://examples.vtk.org/site/Cxx/GeometricObjects/SphereSource/
+- *CylinderExample*
+  https://examples.vtk.org/site/Cxx/GeometricObjects/CylinderExample/
