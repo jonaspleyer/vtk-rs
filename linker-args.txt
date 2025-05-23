@@ -5,8 +5,13 @@ vtkCommonDataModel
 vtkCommonExecutionModel
 vtkCommonMath
 vtkCommonMisc
-vtkCommonPython
 vtkCommonSystem
 vtkCommonTransforms
 vtkFiltersSources
+vtkRenderingCore
+vtkRenderingContextOpenGL2
+vtkRenderingOpenGL2
+vtkRenderingGL2PSOpenGL2
+vtkInteractionStyle
+vtkRenderingFreeType
 vtksys
