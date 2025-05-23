@@ -72,6 +72,10 @@ fn main() {
         format!("-{version}")
     };
 
+    if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
+        println!("cargo:rustc-link-search={vtk_dir}");
+    }
+
     for line in linker_args_raw.lines() {
         println!("cargo:rustc-link-lib=dylib={}{}", line, suffix);
     }
