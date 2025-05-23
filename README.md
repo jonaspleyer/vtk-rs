@@ -26,3 +26,10 @@ Otherwise, compilation of the `cmake` part might fail linker errors.
 | Archlinux | `pacman -S clang cmake vtk openmpi fast_float nlohmann-json gl2ps utf8cpp` |
 | Ubuntu 22 & 24 | `sudo apt install libvtk9.1 libvtk9-dev` |
 
+## Internals
+This crate builds on [`cmake`](https://docs.rs/cmake/latest/cmake/) and [`cxx`](https://cxx.rs/)
+in order to generate the necessary code and bindings.
+We manually write code for individual modules of `vtk` from which we generate appropriate bindings
+with `cxx::bridge` using the provided CLI tool
+[`cxxbridge`](https://crates.io/crates/cxxbridge-cmd).
+However, we do not use `cxx` to compile the code but rather let `cmake` handle this task.
