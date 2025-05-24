@@ -1,0 +1,32 @@
+jobs:
+  compare-headers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
+          lfs: 'false'
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Install cxxbridge
+        run: cargo install cxxbridge-cmd
+
+      - name: Generate Headers
+        run: chmod + x generate_headers.sh && ./generate_headers.sh
+
+      - name: Compare Headers
+        run: |
+          for header in libvtkrs/include/*.rs.h; do
+            lines=$(git diff $header | wc -l)
+            if [ $lines -gt 0 ]; then
+              echo "Error Headers differ"
+              git --no-pager diff $header
+              return 1
+            fi
+          done
