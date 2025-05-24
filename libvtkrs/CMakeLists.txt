@@ -28,7 +28,6 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/named_colors.h
    ${PROJECT_SOURCE_DIR}/include/cxx.h
    # ${PROJECT_SOURCE_DIR}/include/vtkPolyDataMapper.h
-   ${PROJECT_SOURCE_DIR}/include/cxx_sphere.h
    ${PROJECT_SOURCE_DIR}/include/poly_data_mapper.h
 )
 
@@ -39,7 +38,6 @@ target_sources(vtkrs
         ${PROJECT_SOURCE_DIR}/src/sphere.cpp
         ${PROJECT_SOURCE_DIR}/src/sphere_source.cpp
         ${PROJECT_SOURCE_DIR}/src/named_colors.cpp
-        ${PROJECT_SOURCE_DIR}/src/cxx_sphere.cpp
         ${PROJECT_SOURCE_DIR}/src/poly_data_mapper.cpp
 )
 set_target_properties(vtkrs PROPERTIES LINKER_LANGUAGE CXX)
