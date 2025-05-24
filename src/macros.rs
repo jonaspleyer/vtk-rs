@@ -30,6 +30,14 @@ macro_rules! implement_class(
                 unsafe { ($drop_func)(self.ptr) };
             }
         }
+
+        #[test]
+        fn create_delete() {
+            let obj1 = $name::new();
+            let obj2 = $name::default();
+            core::mem::drop(obj1);
+            core::mem::drop(obj2);
+        }
     }
 );
 
