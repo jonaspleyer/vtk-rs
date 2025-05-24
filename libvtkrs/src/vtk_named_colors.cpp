@@ -1,13 +1,13 @@
-#include <stdio.h>
-#include <vtkNamedColors.h>
+#include "cxx.h"
 #include "vtk_named_colors.h"
+#include "vtk_named_colors.rs.h"
 
-extern "C" void *named_colors_new() {
-    vtkNamedColors *colors = vtkNamedColors::New();
-    return static_cast<void *>(colors);
+#include <vtkNamedColors.h>
+
+vtkNamedColors* named_colors_new() {
+    return vtkNamedColors::New();
 }
 
-extern "C" void named_colors_delete(void *object_ptr) {
-    vtkNamedColors *object;
-    static_cast<vtkNamedColors *>(object_ptr)->Delete();
+void named_colors_delete(vtkNamedColors* named_colors) {
+    named_colors->Delete();
 }
