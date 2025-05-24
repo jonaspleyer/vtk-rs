@@ -33,10 +33,12 @@ It is also possible to specify said path directly with the `VTK_DIR` environment
 ## Internals
 This crate builds on [`cmake`](https://docs.rs/cmake/latest/cmake/) and [`cxx`](https://cxx.rs/)
 in order to generate the necessary code and bindings.
-We manually write code for individual modules of `vtk` from which we generate appropriate bindings
-with `cxx::bridge` using the provided CLI tool
+The bindings for `vtk` modules are written manually in `C++`.
+From there, we generate appropriate bindings with `cxx::bridge` using the CLI tool
 [`cxxbridge`](https://crates.io/crates/cxxbridge-cmd).
 However, we do not use `cxx` to compile the code but rather let `cmake` handle this task.
+To implement the desired class methods, we use Rust
+[macros](https://doc.rust-lang.org/reference/macros-by-example.html).
 
 ## Roadmap
 1. Stabilize Build system
