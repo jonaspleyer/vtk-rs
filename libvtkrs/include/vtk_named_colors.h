@@ -1,6 +1,5 @@
 #pragma once
 #include "cxx.h"
-#include <memory>
 
 #include <vtkNamedColors.h>
 
