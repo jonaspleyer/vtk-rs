@@ -2,12 +2,12 @@
 //!
 //! It depends on system libraries which need to be preinstalled.
 
-mod poly_data_mapper;
 mod vtk_named_colors;
+mod vtk_poly_data_mapper;
 mod vtk_sphere;
 mod vtk_sphere_source;
 
-pub use poly_data_mapper::*;
 pub use vtk_named_colors::*;
+pub use vtk_poly_data_mapper::*;
 pub use vtk_sphere::*;
 pub use vtk_sphere_source::*;
