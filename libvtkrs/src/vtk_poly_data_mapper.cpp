@@ -1,6 +1,6 @@
 #include "cxx.h"
-#include "poly_data_mapper.h"
-#include "poly_data_mapper.rs.h"
+#include "vtk_poly_data_mapper.h"
+#include "vtk_poly_data_mapper.rs.h"
 
 #include <vtkPolyDataMapper.h>
 

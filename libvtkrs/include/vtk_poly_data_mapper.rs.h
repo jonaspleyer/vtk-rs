@@ -1,4 +1,4 @@
-#include "poly_data_mapper.h"
+#include "vtk_poly_data_mapper.h"
 
 using vtkPolyDataMapper = ::vtkPolyDataMapper;
 

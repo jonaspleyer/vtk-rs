@@ -3,7 +3,7 @@
 #include <ostream>
 #include <sstream>
 #include <vtkSphereSource.h>
-#include "sphere_source.h"
+#include "vtk_sphere_source.h"
 
 extern "C" void *sphere_source_new() { return vtkSphereSource::New(); }
 

@@ -1,7 +1,7 @@
 #[cxx::bridge]
 mod ffi {
     unsafe extern "C++" {
-        include!("poly_data_mapper.h");
+        include!("vtk_poly_data_mapper.h");
 
         type vtkPolyDataMapper;
 
