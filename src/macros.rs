@@ -11,6 +11,7 @@ macro_rules! implement_class(
         }
 
         impl $name {
+            #[doc(alias = "New")]
             pub fn new() -> Self {
                 Self {
                     ptr: ($new_func)()
@@ -25,6 +26,7 @@ macro_rules! implement_class(
         }
 
         impl core::ops::Drop for $name {
+            #[doc(alias = "Delete")]
             fn drop(&mut self) {
                 #[allow(unused_unsafe)]
                 unsafe { ($drop_func)(self.ptr) };
