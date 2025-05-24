@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <vtkNamedColors.h>
+#include "named_colors.h"
 
 extern "C" void *named_colors_new() {
     vtkNamedColors *colors = vtkNamedColors::New();

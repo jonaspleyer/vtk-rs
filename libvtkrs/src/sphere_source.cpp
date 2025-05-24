@@ -3,6 +3,7 @@
 #include <ostream>
 #include <sstream>
 #include <vtkSphereSource.h>
+#include "sphere_source.h"
 
 extern "C" void *sphere_source_new() { return vtkSphereSource::New(); }
 
@@ -44,3 +45,7 @@ extern "C" const char *sphere_source_print_self(void *sphere_source_ptr, unsigne
     strcpy(result, out.c_str());
     return result;
 }
+
+// extern "C" vtkAlgorithmOutput *sphere_source_get_output_port(void *sphere_source_ptr) {
+//     return static_cast<vtkSphereSource *>(sphere_source_ptr)->GetOutputPort();
+// }

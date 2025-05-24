@@ -3,6 +3,7 @@
 #include <ostream>
 #include <sstream>
 #include <vtkSphere.h>
+#include "sphere.h"
 
 extern "C" void *sphere_new() { return vtkSphere::New(); }
 extern "C" void sphere_delete(void *sphere_ptr) {
