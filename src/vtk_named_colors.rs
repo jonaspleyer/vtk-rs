@@ -1,5 +1,3 @@
-//! This module is still incomplete!
-
 use core::ffi::c_void;
 
 unsafe extern "C" {
