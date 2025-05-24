@@ -49,9 +49,10 @@ for os in oss:
     line = f"| `{os}` | "
     features, _ = os_to_features_packages(os)
     for toolchain in toolchains:
-        badge_md = f"![{toolchain}-{os_re}](https://img.shields.io/github/\
+        badge_md = f"[![{toolchain}-{os_re}](https://img.shields.io/github/\
 actions/workflow/status/jonaspleyer/vtk-rs/\
-test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)"
+test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)](\
+https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_{toolchain}_{os_re}.yml)"
         line += badge_md + " |"
     line += f"`cargo build {features}` |"
     print(line)
