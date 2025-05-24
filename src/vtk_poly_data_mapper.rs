@@ -11,31 +11,12 @@ mod ffi {
     }
 }
 
-/// Wraps the [`vtkPolyDataMapper`](https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html)
-/// class.
-pub struct PolyDataMapper {
-    ptr: *mut ffi::vtkPolyDataMapper,
-}
-
-impl PolyDataMapper {
-    pub fn new() -> Self {
-        Self {
-            ptr: ffi::poly_data_mapper_new(),
-        }
-    }
-}
-
-impl Default for PolyDataMapper {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Drop for PolyDataMapper {
-    fn drop(&mut self) {
-        unsafe { ffi::poly_data_mapper_delete(self.ptr) };
-    }
-}
+crate::implement_class!(
+    "https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html",
+    @name PolyDataMapper, *mut ffi::vtkPolyDataMapper,
+    @new ffi::poly_data_mapper_new,
+    @delete ffi::poly_data_mapper_delete
+);
 
 #[test]
 fn test_create_drop() {
