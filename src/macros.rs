@@ -3,6 +3,7 @@ macro_rules! define_object(
         $link:literal,
         @name $name:ident, $ptr_type:ty,
         @new $new_func:expr,
+        $(@clone $clone_func:expr,)?
         @delete $drop_func:expr
     ) => {
         #[doc = concat!("[`vtk", stringify!($name), "`](", $link, ")")]
@@ -40,6 +41,21 @@ macro_rules! define_object(
             core::mem::drop(obj1);
             core::mem::drop(obj2);
         }
+
+        $(impl core::clone::Clone for $name {
+            fn clone(&self) -> Self {
+                #[allow(unused_unsafe)]
+                Self {
+                    ptr: unsafe { ($clone_func)(&*self.ptr) }
+                }
+            }
+        }
+
+        #[test]
+        fn clone() {
+            let obj1 = $name::new();
+            let _obj2 = obj1.clone();
+        })?
     }
 );
 
