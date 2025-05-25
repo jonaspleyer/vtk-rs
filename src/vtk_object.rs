@@ -23,7 +23,6 @@ pub(crate) mod cxx_ffi {
 
         pub(crate) type vtkObject;
 
-        pub(crate) unsafe fn get_object_description(ptr: *mut vtkObject) -> String;
         pub(crate) unsafe fn print_self(ptr: *mut vtkObject, indent: usize) -> String;
     }
 }
@@ -55,7 +54,6 @@ pub trait Object: private::Sealed {
     // TODO
     // [`AddObserver`](https://vtk.org/doc/nightly/html/classvtkObject.html)
     // fn add_observer(&self, vtk_command: impl ..., priority: f64);
-    fn get_object_description(&self) -> String;
     // fn invoke_event(&self, event: c_ulong);
     // fn print_self(&self) -> String;
 }

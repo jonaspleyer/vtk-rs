@@ -133,13 +133,6 @@ macro_rules! inherit(
                     event,
                 )}
             }
-
-            #[doc(alias = "GetObjectDescription")]
-            fn get_object_description(&self) -> String {
-                unsafe {crate::vtk_object::cxx_ffi::get_object_description(
-                    self.ptr as *mut crate::vtk_object::cxx_ffi::vtkObject,
-                )}
-            }
         }
 
         #[cfg(test)]

@@ -14,4 +14,3 @@ extern "C" void remove_all_observers(vtkObject* ptr);
 extern "C" int has_observer(vtkObject* ptr, unsigned long event);
 
 rust::String print_self(vtkObject* ptr, size_t indent);
-rust::String get_object_description(vtkObject* ptr);

@@ -48,7 +48,3 @@ rust::String print_self(vtkObject* ptr, size_t indent) {
     std::string out = oss.str();
     return out;
 }
-
-rust::String get_object_description(vtkObject* ptr) {
-    return static_cast<vtkObject*>(ptr)->GetObjectDescription();
-}
