@@ -174,6 +174,8 @@ macro_rules! inherit(
         crate::inherit!($name vtkAlgorithm);
     };
     ($name:ident vtkDataObject) => {
+        impl crate::vtk_data_object::private::Sealed for $name {}
+        impl crate::vtk_data_object::vtkDataObject for $name {}
         crate::inherit!($name vtkObject);
     };
     ($name:ident vtkDataSet) => {

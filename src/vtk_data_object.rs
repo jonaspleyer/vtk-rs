@@ -19,3 +19,9 @@ crate::define_object!(
 );
 
 crate::inherit!(DataObject vtkDataObject);
+
+pub(crate) mod private {
+    pub trait Sealed {}
+}
+
+pub trait vtkDataObject: private::Sealed {}
