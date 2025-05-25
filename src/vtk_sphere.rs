@@ -1,70 +1,53 @@
-use core::ffi::{c_char, c_void};
-use std::ffi::CString;
+#[cxx::bridge]
+pub(crate) mod ffi {
+    unsafe extern "C++" {
+        include!("vtk_sphere.h");
 
-unsafe extern "C" {
-    fn sphere_new() -> *mut c_void;
-    fn sphere_delete(sphere_ptr: *mut c_void);
-    fn sphere_set_radius(sphere_ptr: *mut c_void, radius: f64);
-    fn sphere_get_radius(sphere_ptr: *mut c_void) -> f64;
-    fn sphere_set_center(spherr_ptr: *mut c_void, center: *const f64);
-    fn sphere_get_center(sphere_ptr: *mut c_void, center: *mut f64);
-    fn sphere_print_self(sphere_ptr: *mut c_void, indent: usize) -> *const c_char;
-}
+        type vtkSphere;
 
-pub struct Sphere {
-    sphere_ptr: *mut c_void,
-}
-
-impl Default for Sphere {
-    fn default() -> Self {
-        Self::new()
+        fn sphere_new() -> *mut vtkSphere;
+        unsafe fn sphere_delete(sphere: *mut vtkSphere);
+        fn sphere_delete_pin(sphere: Pin<&mut vtkSphere>);
+        fn sphere_set_radius(sphere: Pin<&mut vtkSphere>, radius: f64);
+        fn sphere_get_radius(sphere: Pin<&mut vtkSphere>) -> f64;
+        fn sphere_set_center(spherr: Pin<&mut vtkSphere>, center: [f64; 3]);
+        fn sphere_get_center(sphere: Pin<&mut vtkSphere>) -> [f64; 3];
     }
 }
+
+crate::define_object!(
+    "https://vtk.org/doc/nightly/html/classvtkSphere.html",
+    @name Sphere, *mut ffi::vtkSphere,
+    @new ffi::sphere_new,
+    // @clone ffi::poly_data_clone,
+    @delete ffi::sphere_delete
+);
+
+crate::inherit!(Sphere vtkImplicitFunction);
 
 impl Sphere {
-    pub fn new() -> Self {
-        Self {
-            sphere_ptr: unsafe { sphere_new() },
-        }
-    }
-
     #[doc(alias = "SetRadius")]
     pub fn set_radius(&mut self, radius: f64) {
-        unsafe { sphere_set_radius(self.sphere_ptr, radius) };
+        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
+        ffi::sphere_set_radius(pinned, radius);
     }
 
     #[doc(alias = "GetRadius")]
     pub fn radius(&self) -> f64 {
-        unsafe { sphere_get_radius(self.sphere_ptr) }
+        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
+        ffi::sphere_get_radius(pinned)
     }
 
     #[doc(alias = "SetCenter")]
     pub fn set_center(&mut self, center: [f64; 3]) {
-        unsafe { sphere_set_center(self.sphere_ptr, center.as_ptr()) };
+        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
+        ffi::sphere_set_center(pinned, center);
     }
 
     #[doc(alias = "GetCenter")]
-    pub fn center(&self) -> [f64; 3] {
-        unsafe {
-            let mut center = [0.; 3];
-            sphere_get_center(self.sphere_ptr, center.as_mut_ptr());
-            center
-        }
-    }
-
-    #[doc(alias = "PrintSelf")]
-    pub fn print(&self, indent: usize) -> CString {
-        unsafe {
-            let char_ptr = sphere_print_self(self.sphere_ptr, indent);
-            CString::from_raw(char_ptr.cast_mut())
-        }
-    }
-}
-
-impl Drop for Sphere {
-    #[doc(alias = "Delete")]
-    fn drop(&mut self) {
-        unsafe { sphere_delete(self.sphere_ptr) };
+    pub fn get_center(&self) -> [f64; 3] {
+        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
+        ffi::sphere_get_center(pinned)
     }
 }
 
