@@ -2,8 +2,13 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
-#include <vtkSphereSource.h>
+
+#include "cxx.h"
 #include "vtk_sphere_source.h"
+#include "vtk_sphere_source.rs.h"
+
+#include <vtkNew.h>
+#include <vtkSphereSource.h>
 
 extern "C" void *sphere_source_new() { return vtkSphereSource::New(); }
 
@@ -49,3 +54,12 @@ extern "C" const char *sphere_source_print_self(void *sphere_source_ptr, unsigne
 // extern "C" vtkAlgorithmOutput *sphere_source_get_output_port(void *sphere_source_ptr) {
 //     return static_cast<vtkSphereSource *>(sphere_source_ptr)->GetOutputPort();
 // }
+
+vtkSphereSourcePointer* sphere_source_new2() {
+    vtkSphereSourcePointer *ptr = new vtkSphereSourcePointer();
+    return ptr;
+}
+
+void sphere_source_delete2(vtkSphereSourcePointer &ptr) {
+    ptr->Delete();
+}

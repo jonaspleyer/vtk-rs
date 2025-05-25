@@ -1,6 +1,26 @@
 use core::ffi::{c_char, c_void};
 use std::ffi::{c_int, CString};
 
+#[cxx::bridge]
+mod ffi {
+    unsafe extern "C++" {
+        include!("vtk_sphere_source.h");
+
+        type vtkSphereSourcePointer;
+
+        fn sphere_source_new2() -> *mut vtkSphereSourcePointer;
+        unsafe fn sphere_source_delete2(ptr: &vtkSphereSourcePointer);
+        // fn sphere_source_set_radius(ptr: &vtkSphereSourcePointer, radius: f64);
+        // fn sphere_source_get_radius(ptr: &vtkSphereSourcePointer) -> f64;
+        // fn sphere_source_set_center(spherr_ptr: &vtkSphereSourcePointer, center: [f64; 3]);
+        // fn sphere_source_get_center(ptr: &vtkSphereSourcePointer, center: [f64; 3]);
+        // fn sphere_source_set_phi_resolution(ptr: &vtkSphereSourcePointer, resolution: isize);
+        // fn sphere_source_set_theta_resolution(ptr: &vtkSphereSourcePointer, resolution: isize);
+        // fn sphere_source_print_self(ptr: &vtkSphereSourcePointer, indent: usize) -> String;
+        // fn sphere_source_get_output_port(ptr: &vtkSphereSourcePointer) -> isize;
+    }
+}
+
 unsafe extern "C" {
     fn sphere_source_new() -> *mut c_void;
     fn sphere_source_delete(sphere_source_ptr: *mut c_void);
@@ -11,6 +31,7 @@ unsafe extern "C" {
     fn sphere_source_set_phi_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
     fn sphere_source_set_theta_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
     fn sphere_source_print_self(sphere_source_ptr: *mut c_void, indent: usize) -> *const c_char;
+    fn sphere_source_get_output_port(sphere_source_ptr: *mut c_void) -> c_int;
 }
 
 pub struct SphereSource {
@@ -71,6 +92,11 @@ impl SphereSource {
             let char_ptr = sphere_source_print_self(self.sphere_source_ptr, indent);
             CString::from_raw(char_ptr.cast_mut())
         }
+    }
+
+    #[doc(alias = "GetOutputPort")]
+    pub fn get_output_port(&self) -> c_int {
+        unsafe { sphere_source_get_output_port(self.sphere_source_ptr) }
     }
 }
 
