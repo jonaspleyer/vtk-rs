@@ -18,7 +18,4 @@ crate::define_object!(
     @delete ffi::named_colors_delete
 );
 
-crate::inherit!(
-    NamedColors
-    vtkAlgorithm
-);
+crate::inherit!(NamedColors vtkAlgorithm);
