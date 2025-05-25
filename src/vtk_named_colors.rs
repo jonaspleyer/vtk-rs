@@ -11,7 +11,7 @@ mod ffi {
     }
 }
 
-crate::implement_class!(
+crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
     @name NamedColors, *mut ffi::vtkNamedColors,
     @new ffi::named_colors_new,

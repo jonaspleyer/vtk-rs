@@ -1,4 +1,4 @@
-macro_rules! implement_class(
+macro_rules! define_object(
     (
         $link:literal,
         @name $name:ident, $ptr_type:ty,

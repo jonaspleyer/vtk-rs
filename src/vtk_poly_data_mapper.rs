@@ -11,7 +11,7 @@ mod ffi {
     }
 }
 
-crate::implement_class!(
+crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html",
     @name PolyDataMapper, *mut ffi::vtkPolyDataMapper,
     @new ffi::poly_data_mapper_new,
