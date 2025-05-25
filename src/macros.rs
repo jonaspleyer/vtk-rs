@@ -59,4 +59,127 @@ macro_rules! define_object(
     }
 );
 
-pub(crate) use implement_class;
+macro_rules! inherit(
+    ($name:ident vtkObjectBase) => {};
+    ($name:ident vtkObject) => {
+        crate::inherit!($name vtkObjectBase);
+
+        impl crate::vtk_object::private::Sealed for $name {}
+
+        impl crate::vtk_object::Object for $name {
+            #[doc(alias = "SetDebug")]
+            fn set_debug(&mut self, status: bool) {
+                unsafe { crate::vtk_object::ffi::set_debug(
+                    self.ptr as *mut std::ffi::c_void,
+                    status
+                ) };
+            }
+
+            #[doc(alias = "GetDebug")]
+            fn get_debug(&self) -> bool {
+                unsafe {crate::vtk_object::ffi::get_debug(
+                    self.ptr as *const std::ffi::c_void,
+                )}
+            }
+
+            #[doc(alias = "DebugOn")]
+            fn debug_on(&mut self) {
+                unsafe {crate::vtk_object::ffi::debug_on(
+                    self.ptr as *mut std::ffi::c_void,
+                )}
+            }
+
+            #[doc(alias = "DebugOff")]
+            fn debug_off(&mut self) {
+                unsafe {crate::vtk_object::ffi::debug_off(
+                    self.ptr as *mut std::ffi::c_void,
+                )}
+            }
+
+            #[doc(alias = "Modified")]
+            fn modified(&mut self) {
+                unsafe {crate::vtk_object::ffi::modified(
+                    self.ptr as *mut std::ffi::c_void,
+                )}
+            }
+
+            #[doc(alias = "RemoveObserver")]
+            fn remove_observer(&mut self, tag: u64) {
+                unsafe {crate::vtk_object::ffi::remove_observer(
+                    self.ptr as *mut std::ffi::c_void,
+                    tag,
+                )}
+            }
+
+            #[doc(alias = "RemoveObservers")]
+            fn remove_observers(&mut self, event: u64) {
+                unsafe {crate::vtk_object::ffi::remove_observers(
+                    self.ptr as *mut std::ffi::c_void,
+                    event,
+                )}
+            }
+
+            #[doc(alias = "RemoveAllObservers")]
+            fn remove_all_observers(&mut self) {
+                unsafe {crate::vtk_object::ffi::remove_all_observers(
+                    self.ptr as *mut std::ffi::c_void,
+                )}
+            }
+
+            #[doc(alias = "HasObserver")]
+            fn has_observer(&self, event: core::ffi::c_ulong) -> core::ffi::c_int {
+                unsafe {crate::vtk_object::ffi::has_observer(
+                    self.ptr as *const std::ffi::c_void,
+                    event,
+                )}
+            }
+
+            #[doc(alias = "GetObjectDescription")]
+            fn get_object_description(&self) -> String {
+                unsafe {crate::vtk_object::cxx_ffi::get_object_description(
+                    self.ptr as *mut crate::vtk_object::cxx_ffi::vtkObject,
+                )}
+            }
+        }
+
+        #[cfg(test)]
+        mod test_vtkobject {
+            use super::*;
+            use crate::Object;
+
+            #[test]
+            fn debug_on_off() {
+                let mut obj = $name::new();
+                obj.set_debug(true);
+                assert_eq!(true, obj.get_debug());
+                obj.debug_off();
+                assert_eq!(false, obj.get_debug());
+                obj.debug_on();
+                assert_eq!(true, obj.get_debug());
+                obj.set_debug(false);
+                assert_eq!(false, obj.get_debug());
+            }
+
+            #[test]
+            fn observers() {
+                let obj = $name::new();
+                assert_eq!(obj.has_observer(0), 0);
+                // TODO
+                // obj.add_observer();
+            }
+
+            #[test]
+            fn object_description() {
+                let obj = $name::new();
+                let descr = obj.get_object_description();
+                assert!(descr.len() > 0);
+            }
+        }
+    };
+    ($name:ident vtkAlgorithm) => {
+        crate::inherit!($name vtkObject);
+    };
+);
+
+pub(crate) use define_object;
+pub(crate) use inherit;
