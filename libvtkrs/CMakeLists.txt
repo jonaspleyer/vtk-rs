@@ -24,22 +24,28 @@ set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response
 
 add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/cxx.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_algorithm.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_data_object.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_named_colors.h
    ${PROJECT_SOURCE_DIR}/include/vtk_object.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_poly_data.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_poly_data_mapper.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere_source.h
-   ${PROJECT_SOURCE_DIR}/include/vtk_named_colors.h
-   ${PROJECT_SOURCE_DIR}/include/vtk_poly_data_mapper.h
 )
 
 include_directories(${PROJECT_SOURCE_DIR}/include/)
 
 target_sources(vtkrs
     PRIVATE
+        ${PROJECT_SOURCE_DIR}/src/vtk_algorithm.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_data_object.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_named_colors.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_object.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_poly_data.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_poly_data_mapper.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere_source.cpp
-        ${PROJECT_SOURCE_DIR}/src/vtk_named_colors.cpp
-        ${PROJECT_SOURCE_DIR}/src/vtk_poly_data_mapper.cpp
 )
 set_target_properties(vtkrs PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(vtkrs PRIVATE ${VTK_LIBRARIES})
