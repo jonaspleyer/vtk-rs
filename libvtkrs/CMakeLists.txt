@@ -24,6 +24,7 @@ set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response
 
 add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/cxx.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_object.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere_source.h
    ${PROJECT_SOURCE_DIR}/include/vtk_named_colors.h
@@ -34,6 +35,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include/)
 
 target_sources(vtkrs
     PRIVATE
+        ${PROJECT_SOURCE_DIR}/src/vtk_object.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere_source.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_named_colors.cpp
