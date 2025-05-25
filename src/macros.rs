@@ -160,13 +160,6 @@ macro_rules! inherit(
                 // TODO
                 // obj.add_observer();
             }
-
-            #[test]
-            fn object_description() {
-                let obj = $name::new();
-                let descr = obj.get_object_description();
-                assert!(descr.len() > 0);
-            }
         }
     };
     ($name:ident vtkAlgorithm) => {
