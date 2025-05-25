@@ -168,9 +168,13 @@ macro_rules! inherit(
         crate::inherit!($name vtkObject);
     };
     ($name:ident vtkPolyData) => {
+        impl crate::vtk_poly_data::private::Sealed for $name {}
+        impl crate::vtk_poly_data::vtkPolyData for $name {}
         crate::inherit!($name vtkPointSet);
     };
     ($name:ident vtkPolyDataAlgorithm) => {
+        impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
+        impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {}
         crate::inherit!($name vtkAlgorithm);
     };
     ($name:ident vtkDataObject) => {

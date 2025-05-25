@@ -15,11 +15,24 @@ crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html",
     @name PolyDataMapper, *mut ffi::vtkPolyDataMapper,
     @new ffi::poly_data_mapper_new,
+    // @clone ffi::poly_data_mapper_clone,
     @delete ffi::poly_data_mapper_delete
 );
+
+/* impl PolyData {
+    pub fn set_input(&mut self, data: &ffi::vtkPolyData) {
+        unsafe { ffi::poly_data_mapper_set_input(self.ptr, data) };
+    }
+}*/
 
 #[test]
 fn test_create_drop() {
     let pdm = PolyDataMapper::new();
     core::mem::drop(pdm);
+}
+
+#[test]
+fn test_input() {
+    let mut pdm = PolyDataMapper::new();
+    // pdm.set_input(2);
 }
