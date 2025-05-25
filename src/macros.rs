@@ -138,7 +138,7 @@ macro_rules! inherit(
         #[cfg(test)]
         mod test_vtkobject {
             use super::*;
-            use crate::Object;
+            use crate::vtkObject;
 
             #[test]
             fn debug_on_off() {
