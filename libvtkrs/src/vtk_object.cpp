@@ -3,6 +3,8 @@
 
 #include <vtkObject.h>
 
+using vtkObject = vtkObject;
+
 extern "C" void debug_on(vtkObject* ptr) {
     static_cast<vtkObject*>(ptr)->DebugOn();
 }
@@ -37,14 +39,4 @@ extern "C" void remove_all_observer(vtkObject* ptr) {
 
 extern "C" int has_observer(vtkObject* ptr, unsigned long event) {
     return static_cast<vtkObject*>(ptr)->HasObserver(event);
-}
-
-rust::String print_self(vtkObject* ptr, size_t indent) {
-    // This is a cast from the unsigned to signed int.
-    // This should be fine
-    vtkIndent ind = vtkIndent(indent);
-    std::ostringstream oss;
-    static_cast<vtkObject *>(ptr)->PrintSelf(oss, ind);
-    std::string out = oss.str();
-    return out;
 }

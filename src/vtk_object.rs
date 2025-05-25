@@ -1,5 +1,3 @@
-use core::ffi::*;
-
 pub(crate) mod ffi {
     use core::ffi::*;
 
@@ -12,7 +10,7 @@ pub(crate) mod ffi {
         pub(crate) unsafe fn remove_observer(ptr: *mut c_void, tag: u64);
         pub(crate) unsafe fn remove_observers(ptr: *mut c_void, event: u64);
         pub(crate) unsafe fn remove_all_observers(ptr: *mut c_void);
-        pub(crate) unsafe fn has_observer(ptr: *const c_void, event: c_ulong) -> c_int;
+        pub(crate) unsafe fn has_observer(ptr: *const c_void, event: u64) -> i32;
     }
 }
 
@@ -23,7 +21,6 @@ pub(crate) mod cxx_ffi {
 
         pub(crate) type vtkObject;
 
-        pub(crate) unsafe fn print_self(ptr: *mut vtkObject, indent: usize) -> String;
     }
 }
 
@@ -44,16 +41,11 @@ pub trait Object: private::Sealed {
     /// [`Modified`](https://vtk.org/doc/nightly/html/classvtkObject.html)
     fn modified(&mut self);
     /// [`RemoveObserver`](https://vtk.org/doc/nightly/html/classvtkObject.html)
-    fn remove_observer(&mut self, tag: c_ulong);
+    fn remove_observer(&mut self, tag: u64);
     /// [`RemoveObservers`](https://vtk.org/doc/nightly/html/classvtkObject.html)
-    fn remove_observers(&mut self, event: c_ulong);
+    fn remove_observers(&mut self, event: u64);
     /// [`RemoveAllObservers`](https://vtk.org/doc/nightly/html/classvtkObject.html)
     fn remove_all_observers(&mut self);
     /// [`HasObserver`](https://vtk.org/doc/nightly/html/classvtkObject.html)
-    fn has_observer(&self, event: c_ulong) -> c_int;
-    // TODO
-    // [`AddObserver`](https://vtk.org/doc/nightly/html/classvtkObject.html)
-    // fn add_observer(&self, vtk_command: impl ..., priority: f64);
-    // fn invoke_event(&self, event: c_ulong);
-    // fn print_self(&self) -> String;
+    fn has_observer(&self, event: u64) -> i32;
 }
