@@ -165,6 +165,33 @@ macro_rules! inherit(
     ($name:ident vtkAlgorithm) => {
         crate::inherit!($name vtkObject);
     };
+    ($name:ident vtkPolyData) => {
+        crate::inherit!($name vtkPointSet);
+    };
+    ($name:ident vtkPolyDataAlgorithm) => {
+        crate::inherit!($name vtkAlgorithm);
+    };
+    ($name:ident vtkDataObject) => {
+        crate::inherit!($name vtkObject);
+    };
+    ($name:ident vtkDataSet) => {
+        crate::inherit!($name vtkDataObject);
+    };
+    ($name:ident vtkCommand) => {
+        crate::inherit!($name vtkObjectBase);
+    };
+    ($name:ident vtkImageData) => {
+        crate::inherit!($name vtkDataSet);
+    };
+    ($name:ident vtkPointSet) => {
+        crate::inherit!($name vtkDataSet);
+    };
+    ($name:ident vtkUnstructuredGridBase) => {
+        crate::inherit!($name vtkPointSet);
+    };
+    ($name:ident vtkGraph) => {
+        crate::inherit!($name vtkDataObject);
+    }
 );
 
 pub(crate) use define_object;
