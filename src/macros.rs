@@ -163,6 +163,8 @@ macro_rules! inherit(
         }
     };
     ($name:ident vtkAlgorithm) => {
+        impl crate::vtk_algorithm::private::Sealed for $name {}
+        impl crate::vtk_algorithm::vtkAlgorithm for $name {}
         crate::inherit!($name vtkObject);
     };
     ($name:ident vtkPolyData) => {
