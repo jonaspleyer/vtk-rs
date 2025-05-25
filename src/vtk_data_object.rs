@@ -24,4 +24,5 @@ pub(crate) mod private {
     pub trait Sealed {}
 }
 
+#[allow(non_camel_case_types)]
 pub trait vtkDataObject: private::Sealed {}
