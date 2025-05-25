@@ -89,11 +89,6 @@ private:
 using vtkObject = ::vtkObject;
 
 extern "C" {
-void cxxbridge1$get_object_description(::vtkObject *ptr, ::rust::String *return$) noexcept {
-  ::rust::String (*get_object_description$)(::vtkObject *) = ::get_object_description;
-  new (return$) ::rust::String(get_object_description$(ptr));
-}
-
 void cxxbridge1$print_self(::vtkObject *ptr, ::std::size_t indent, ::rust::String *return$) noexcept {
   ::rust::String (*print_self$)(::vtkObject *, ::std::size_t) = ::print_self;
   new (return$) ::rust::String(print_self$(ptr, indent));
