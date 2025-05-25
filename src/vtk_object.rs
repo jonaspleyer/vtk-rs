@@ -29,7 +29,8 @@ pub(crate) mod private {
 }
 
 /// [`vtkObject`](https://vtk.org/doc/nightly/html/classvtkObject.html)
-pub trait Object: private::Sealed {
+#[allow(non_camel_case_types)]
+pub trait vtkObject: private::Sealed {
     /// [`SetDebug`](https://vtk.org/doc/nightly/html/classvtkObject.html)
     fn set_debug(&mut self, status: bool);
     /// [`GetDebug`](https://vtk.org/doc/nightly/html/classvtkObject.html)

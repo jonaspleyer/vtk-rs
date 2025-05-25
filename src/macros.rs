@@ -66,7 +66,7 @@ macro_rules! inherit(
 
         impl crate::vtk_object::private::Sealed for $name {}
 
-        impl crate::vtk_object::Object for $name {
+        impl crate::vtk_object::vtkObject for $name {
             #[doc(alias = "SetDebug")]
             fn set_debug(&mut self, status: bool) {
                 unsafe { crate::vtk_object::ffi::set_debug(
