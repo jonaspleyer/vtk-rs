@@ -199,7 +199,10 @@ macro_rules! inherit(
     };
     ($name:ident vtkGraph) => {
         crate::inherit!($name vtkDataObject);
-    }
+    };
+    ($name:ident vtkImplicitFunction) => {
+        crate::inherit!($name vtkObject);
+    };
 );
 
 pub(crate) use define_object;
