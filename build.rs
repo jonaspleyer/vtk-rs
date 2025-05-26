@@ -49,18 +49,23 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     }
 
     if cfg!(unix) {
-        println!("cargo:rustc-link-search=/usr/lib/");
-        println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu/");
-        link_paths.extend(["/usr/lib".into(), "/usr/lib/x86_64-linux-gnu/".into()]);
+        let paths: [std::path::PathBuf; 3] = [
+            "/usr/lib".into(),
+            "/usr/lib/x86_64-linux-gnu/".into(),
+            "/usr/local/lib/".into(),
+        ];
+        for p in paths.iter() {
+            println!("cargo:rustc-link-search={}", p.display());
+        }
+        link_paths.extend(paths);
     }
 
+    // Link with c++ standard library
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
     if cfg!(target_os = "macos") {
-        println!("cargo:rustc-link-search=/usr/lib/");
         println!("cargo:rustc-link-lib=dylib=c++");
-        link_paths.push("/usr/lib/".into());
     }
 
     Ok(link_paths)
