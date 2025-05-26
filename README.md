@@ -24,7 +24,8 @@ Otherwise, compilation of the `cmake` part might fail linker errors.
 | Distro | Packages |
 | --- | --- |
 | Archlinux | `pacman -S clang cmake vtk openmpi fast_float nlohmann-json gl2ps utf8cpp` |
-| Ubuntu 22 & 24 | `sudo apt install libvtk9.1 libvtk9-dev` |
+| Ubuntu 22 & 24 | `apt install libvtk9.1 libvtk9-dev` |
+| Macos 13 & 14 | `brew install vtk` |
 
 ## Building
 `vtk-rs` will try to determine the path for `vtk` automatically.
