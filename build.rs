@@ -1,76 +1,86 @@
 use cmake::Config;
 
-fn check_vtk_version() {
-    let any = evaluate_feature(|_| ()).is_some();
-}
-
-fn evaluate_feature<F, G>(func: F) -> Option<G>
-where
-    F: Fn(&str) -> G,
-{
-    if cfg!(feature = "vtk9-4") {
-        Some(func("vtk9-4"))
-    } else if cfg!(feature = "vtk9-3") {
-        Some(func("vtk9-3"))
-    } else if cfg!(feature = "vtk9-2") {
-        Some(func("vtk9-2"))
-    } else if cfg!(feature = "vtk9-1") {
-        Some(func("vtk9-1"))
-    } else if cfg!(feature = "vtk9-0") {
-        Some(func("vtk9-0"))
-    } else if cfg!(feature = "vtk8-2") {
-        Some(func("vtk8-2"))
-    } else if cfg!(feature = "vtk8-1") {
-        Some(func("vtk8-1"))
-    } else if cfg!(feature = "vtk8-0") {
-        Some(func("vtk8-0"))
-    } else {
-        None
+fn determine_version_number(
+    link_paths: &[std::path::PathBuf],
+) -> Result<Option<String>, Box<dyn std::error::Error>> {
+    if let Ok(v) = std::env::var("VTK_VERSION") {
+        return Ok(Some(v));
     }
-}
 
-fn main() {
-    let version = evaluate_feature(|version| {
-        let chunks: Vec<_> = version[3..].split("-").collect();
-        if chunks[1] == "0" {
-            chunks[0].to_string()
-        } else {
-            format!("{}.{}", chunks[0], chunks[1])
+    if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
+        let re = regex::Regex::new("([.]*)libvtkCommonCore([0-9-]*).so")?;
+        // Search in every provided link path
+        for path in link_paths.iter() {
+            // Gather candidates
+            let search_path = path.join("libvtkCommonCore*.so").display().to_string();
+            let candidates = glob::glob(&search_path)?;
+
+            // Match against a regex
+            for candidate in candidates.into_iter().filter_map(|x| x.ok()) {
+                if let Some((_, [_, version])) = re
+                    .captures_iter(&candidate.display().to_string())
+                    .map(|x| x.extract())
+                    .next()
+                {
+                    return Ok(Some(version.to_string()));
+                }
+            }
         }
-    })
-    .unwrap_or("".to_string());
-
-    // Exit early without doing anything if we are building for docsrs
-    if std::env::var("DOCS_RS").is_ok() {
-        return;
     }
 
-    println!("cargo:rerun-if-changed=libvtkrs");
+    Ok(None)
+}
 
+// Handle building of cmake project
+fn build_cmake() {
+    println!("cargo:rerun-if-changed=libvtkrs");
     let dst = Config::new("libvtkrs").build();
+    println!("cargo:rustc-link-search=native={}", dst.display());
+    println!("cargo:rustc-link-lib=static=vtkrs");
+}
+
+// Collect all paths where to search for libraries
+// Also emits flags to link to said paths
+fn gather_link_paths() -> Vec<std::path::PathBuf> {
+    let mut link_paths = Vec::<std::path::PathBuf>::new();
+    if let Ok(v) = std::env::var("VTK_DIR") {
+        println!("cargo:rustc-link-search={v}");
+        link_paths.push(v.into());
+    }
 
     if cfg!(unix) {
         println!("cargo:rustc-link-search=/usr/lib/");
         println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu/");
+        link_paths.extend(["/usr/lib".into(), "/usr/lib/x86_64-linux-gnu/".into()]);
     }
-
-    println!("cargo:rustc-link-search=native={}", dst.display());
-    println!("cargo:rustc-link-lib=static=vtkrs");
 
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
     if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-search=/usr/lib/");
         println!("cargo:rustc-link-lib=dylib=c++");
+        link_paths.push("/usr/lib/".into());
     }
+
+    link_paths
+}
+
+fn main() {
+    // Exit early without doing anything if we are building for docsrs
+    if std::env::var("DOCS_RS").is_ok() {
+        return;
+    }
+
+    build_cmake();
+
+    let link_paths = gather_link_paths();
+
+    let version = determine_version_number(&link_paths);
 
     let linker_args_raw = include_str!("linker-args.txt");
 
-    let suffix = if version.is_empty() {
-        version
-    } else {
-        format!("-{version}")
-    };
+    let suffix = version.unwrap_or_default().unwrap_or_default();
 
     if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
         println!("cargo:rustc-link-search={vtk_dir}");
