@@ -9,4 +9,4 @@ jobs:
       toolchain: beta
       os: macos-14
       packages: vtk
-      environment_vars: VTK_VERSION=-9-4
+      environment_vars: VTK_VERSION=-9.4
