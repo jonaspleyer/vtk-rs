@@ -68,6 +68,29 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
         println!("cargo:rustc-link-lib=dylib=c++");
     }
 
+    // Search in paths where homebrew might install packages
+    if cfg!(target_os = "macos") || cfg!(unix) {
+        let brew_paths = [
+            std::path::PathBuf::from("/usr/local/Cellar/vtk/"),
+            std::path::PathBuf::from("/opt/homebrew/Cellar/vtk"),
+            std::path::PathBuf::from("/opt/homebrew/lib"),
+        ];
+        let re = regex::Regex::new("([-0-9.]*)")?;
+
+        for path in brew_paths {
+            let candidates = glob::glob(&path.join("*").display().to_string())?;
+
+            for c in candidates.into_iter().filter_map(|x| x.ok()) {
+                for (_, [version]) in re
+                    .captures_iter(&c.display().to_string())
+                    .map(|x| x.extract())
+                {
+                    println!("cargo:rustc-link-search={}", path.join(version).display());
+                }
+            }
+        }
+    }
+
     Ok(link_paths)
 }
 
