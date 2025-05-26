@@ -54,5 +54,8 @@ actions/workflow/status/jonaspleyer/vtk-rs/\
 test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)](\
 https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_{toolchain}_{os_re}.yml)"
         line += badge_md + " |"
-    line += f"`{envs} cargo build` |"
+    if len(envs) == 0:
+        line += "`cargo build` |"
+    else:
+        line += f"`{envs} cargo build` |"
     print(line)
