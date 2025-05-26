@@ -4,16 +4,16 @@ toolchains = ["stable", "beta", "nightly"]
 
 def os_to_envs_packages(os):
     if os == "ubuntu-24.04":
-        environment_vars = "VTK_VERSION=vtk9-1"
+        environment_vars = "VTK_VERSION=9-1"
         packages = "libvtk9.1 libvtk9-dev"
     elif os == "ubuntu-22.04":
-        environment_vars = "VTK_VERSION=vtk9-1"
+        environment_vars = "VTK_VERSION=9-1"
         packages = "libvtk9.1 libvtk9-dev"
     elif os == "macos-13":
-        environment_vars = "VTK_VERSION=vtk9-4"
+        environment_vars = "VTK_VERSION=9-4"
         packages = "vtk"
     elif os == "macos-14":
-        environment_vars = "VTK_VERSION=vtk9-4"
+        environment_vars = "VTK_VERSION=9-4"
         packages = "vtk"
     else:
         raise ValueError("Unknown Operating System")
