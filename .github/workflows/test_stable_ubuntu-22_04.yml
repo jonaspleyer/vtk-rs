@@ -9,4 +9,4 @@ jobs:
       toolchain: stable
       os: ubuntu-22.04
       packages: libvtk9.1 libvtk9-dev
-      environment_vars: VTK_VERSION=-9.1
+      environment_vars: 
