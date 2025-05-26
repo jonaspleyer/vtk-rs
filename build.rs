@@ -1,8 +1,8 @@
 use cmake::Config;
 
-fn determine_version_suffix(
-    link_paths: &[std::path::PathBuf],
-) -> Result<Option<String>, Box<dyn std::error::Error>> {
+type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
+
+fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<String>> {
     if let Ok(v) = std::env::var("VTK_VERSION") {
         return Ok(Some(v));
     }
@@ -41,7 +41,7 @@ fn build_cmake() {
 
 // Collect all paths where to search for libraries
 // Also emits flags to link to said paths
-fn gather_link_paths() -> Vec<std::path::PathBuf> {
+fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     let mut link_paths = Vec::<std::path::PathBuf>::new();
     if let Ok(v) = std::env::var("VTK_DIR") {
         println!("cargo:rustc-link-search={v}");
@@ -63,18 +63,18 @@ fn gather_link_paths() -> Vec<std::path::PathBuf> {
         link_paths.push("/usr/lib/".into());
     }
 
-    link_paths
+    Ok(link_paths)
 }
 
-fn main() {
+fn main() -> Result<()> {
     // Exit early without doing anything if we are building for docsrs
     if std::env::var("DOCS_RS").is_ok() {
-        return;
+        return Ok(());
     }
 
     build_cmake();
 
-    let link_paths = gather_link_paths();
+    let link_paths = gather_link_paths()?;
 
     let version_suffix = determine_version_suffix(&link_paths)
         .unwrap_or_default()
@@ -88,4 +88,6 @@ fn main() {
     for line in linker_args_raw.lines() {
         println!("cargo:rustc-link-lib=dylib={}{}", line, version_suffix);
     }
+
+    Ok(())
 }
