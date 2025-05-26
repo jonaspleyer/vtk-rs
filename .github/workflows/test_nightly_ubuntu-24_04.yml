@@ -9,4 +9,4 @@ jobs:
       toolchain: nightly
       os: ubuntu-24.04
       packages: libvtk9.1 libvtk9-dev
-      features: --features vtk9-1
+      environment_vars: VTK_VERSION=vtk9-1

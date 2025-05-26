@@ -9,7 +9,7 @@ on:
       os:
         required: true
         type: string
-      features:
+      environment_vars:
         required: false
         type: string
         default: ""
@@ -43,12 +43,12 @@ jobs:
         with:
           toolchain: ${{ inputs.toolchain }}
 
-      - name: cargo check
+      - name: ${{ inputs.environment_vars }}  cargo check -vv
 
-        run: cargo check ${{ inputs.features }}
+        run: ${{ inputs.environment_vars }} cargo check -vv
 
       - name: cargo test
-        run: cargo test ${{ inputs.features }}
+        run: ${{ inputs.environment_vars }} cargo test -vv
 
       - name: cargo test --doc
-        run: cargo test --doc ${{ inputs.features }}
+        run: ${{ inputs.environment_vars }} cargo test --doc -vv
