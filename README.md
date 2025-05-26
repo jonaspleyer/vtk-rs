@@ -33,7 +33,7 @@ It is possible to control the compilation process via environment flags.
 | Flag | Effect |
 | --- | --- |
 | `VTK_DIR` | `cargo:rustc-link-search=$VTK_DIR` |
-| `VTK_VERSION` | Add suffix to vtk libraries (i.e. `libvtkCommonCore9-4`). |
+| `VTK_VERSION` | Add suffix to vtk libraries (i.e. `libvtkCommonCore-9.4`). |
 
 ## Internals
 This crate builds on [`cmake`](https://docs.rs/cmake/latest/cmake/) and [`cxx`](https://cxx.rs/)
