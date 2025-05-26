@@ -1,6 +1,6 @@
 use cmake::Config;
 
-fn determine_version_number(
+fn determine_version_suffix(
     link_paths: &[std::path::PathBuf],
 ) -> Result<Option<String>, Box<dyn std::error::Error>> {
     if let Ok(v) = std::env::var("VTK_VERSION") {
@@ -8,7 +8,7 @@ fn determine_version_number(
     }
 
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
-        let re = regex::Regex::new("([.]*)libvtkCommonCore([0-9-]*).so")?;
+        let re = regex::Regex::new("libvtkCommonCore([-0-9.]*).so")?;
         // Search in every provided link path
         for path in link_paths.iter() {
             // Gather candidates
@@ -17,7 +17,7 @@ fn determine_version_number(
 
             // Match against a regex
             for candidate in candidates.into_iter().filter_map(|x| x.ok()) {
-                if let Some((_, [_, version])) = re
+                if let Some((_, [version])) = re
                     .captures_iter(&candidate.display().to_string())
                     .map(|x| x.extract())
                     .next()
@@ -76,17 +76,16 @@ fn main() {
 
     let link_paths = gather_link_paths();
 
-    let version = determine_version_number(&link_paths);
-
-    let linker_args_raw = include_str!("linker-args.txt");
-
-    let suffix = version.unwrap_or_default().unwrap_or_default();
+    let version_suffix = determine_version_suffix(&link_paths)
+        .unwrap_or_default()
+        .unwrap_or_default();
 
     if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
         println!("cargo:rustc-link-search={vtk_dir}");
     }
 
+    let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
-        println!("cargo:rustc-link-lib=dylib={}{}", line, suffix);
+        println!("cargo:rustc-link-lib=dylib={}{}", line, version_suffix);
     }
 }
