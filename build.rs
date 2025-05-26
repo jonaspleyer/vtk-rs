@@ -85,7 +85,10 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
                     .captures_iter(&c.display().to_string())
                     .map(|x| x.extract())
                 {
-                    println!("cargo:rustc-link-search={}", path.join(version).display());
+                    if !version.is_empty() {
+                        link_paths.push(path.join(version));
+                        println!("cargo:rustc-link-search={}", path.join(version).display());
+                    }
                 }
             }
         }
