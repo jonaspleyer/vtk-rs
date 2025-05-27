@@ -1,4 +1,4 @@
 #include <vtkAlgorithm.h>
 
 vtkAlgorithm* algorithm_new();
-void algorithm_delete(vtkAlgorithm* algorithm);
+void algorithm_delete(vtkAlgorithm &algorithm);

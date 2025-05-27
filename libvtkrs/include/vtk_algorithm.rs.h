@@ -10,8 +10,8 @@ extern "C" {
   return algorithm_new$();
 }
 
-void cxxbridge1$algorithm_delete(::vtkAlgorithm *algorithm) noexcept {
-  void (*algorithm_delete$)(::vtkAlgorithm *) = ::algorithm_delete;
+void cxxbridge1$algorithm_delete(::vtkAlgorithm &algorithm) noexcept {
+  void (*algorithm_delete$)(::vtkAlgorithm &) = ::algorithm_delete;
   algorithm_delete$(algorithm);
 }
 } // extern "C"

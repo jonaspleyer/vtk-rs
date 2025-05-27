@@ -6,14 +6,14 @@ mod ffi {
         type vtkPolyDataMapper;
 
         fn poly_data_mapper_new() -> *mut vtkPolyDataMapper;
-        unsafe fn poly_data_mapper_delete(pdm: *mut vtkPolyDataMapper);
+        fn poly_data_mapper_delete(pdm: Pin<&mut vtkPolyDataMapper>);
         // fn poly_data_mapper_set_input_connection(pdm: &vtkPolyDataMapper, port: usize);
     }
 }
 
 crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html",
-    @name PolyDataMapper, *mut ffi::vtkPolyDataMapper,
+    @name PolyDataMapper, ffi::vtkPolyDataMapper,
     @new ffi::poly_data_mapper_new,
     // @clone ffi::poly_data_mapper_clone,
     @delete ffi::poly_data_mapper_delete

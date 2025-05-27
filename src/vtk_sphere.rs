@@ -6,48 +6,44 @@ pub(crate) mod ffi {
         type vtkSphere;
 
         fn sphere_new() -> *mut vtkSphere;
-        unsafe fn sphere_delete(sphere: *mut vtkSphere);
+        fn sphere_delete(sphere: Pin<&mut vtkSphere>);
         fn sphere_delete_pin(sphere: Pin<&mut vtkSphere>);
         fn sphere_set_radius(sphere: Pin<&mut vtkSphere>, radius: f64);
-        fn sphere_get_radius(sphere: Pin<&mut vtkSphere>) -> f64;
+        fn sphere_get_radius(sphere: &vtkSphere) -> f64;
         fn sphere_set_center(spherr: Pin<&mut vtkSphere>, center: [f64; 3]);
-        fn sphere_get_center(sphere: Pin<&mut vtkSphere>) -> [f64; 3];
+        fn sphere_get_center(sphere: &vtkSphere) -> [f64; 3];
     }
 }
 
 crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkSphere.html",
-    @name Sphere, *mut ffi::vtkSphere,
+    @name Sphere, ffi::vtkSphere,
     @new ffi::sphere_new,
     // @clone ffi::poly_data_clone,
     @delete ffi::sphere_delete
 );
 
-crate::inherit!(Sphere vtkImplicitFunction);
+crate::inherit!(Sphere vtkImplicitFunction ffi::vtkSphere);
 
 impl Sphere {
     #[doc(alias = "SetRadius")]
     pub fn set_radius(&mut self, radius: f64) {
-        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
-        ffi::sphere_set_radius(pinned, radius);
+        ffi::sphere_set_radius(self.ptr.as_mut(), radius);
     }
 
     #[doc(alias = "GetRadius")]
-    pub fn radius(&self) -> f64 {
-        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
-        ffi::sphere_get_radius(pinned)
+    pub fn get_radius(&self) -> f64 {
+        ffi::sphere_get_radius(&self.ptr.as_ref())
     }
 
     #[doc(alias = "SetCenter")]
     pub fn set_center(&mut self, center: [f64; 3]) {
-        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
-        ffi::sphere_set_center(pinned, center);
+        ffi::sphere_set_center(self.ptr.as_mut(), center);
     }
 
     #[doc(alias = "GetCenter")]
     pub fn get_center(&self) -> [f64; 3] {
-        let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *self.ptr) };
-        ffi::sphere_get_center(pinned)
+        ffi::sphere_get_center(&self.ptr.as_ref())
     }
 }
 
@@ -59,10 +55,10 @@ mod test {
     #[test]
     fn get_set_radius() {
         let mut sphere = Sphere::new();
-        let r1 = sphere.radius();
+        let r1 = sphere.get_radius();
         assert_abs_diff_eq!(r1, 0.5);
         sphere.set_radius(1.0);
-        let r2 = sphere.radius();
+        let r2 = sphere.get_radius();
         assert_abs_diff_eq!(r2, 1.0);
     }
 

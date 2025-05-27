@@ -5,38 +5,41 @@
 
 using vtkObject = vtkObject;
 
-extern "C" void debug_on(vtkObject* ptr) {
-    static_cast<vtkObject*>(ptr)->DebugOn();
+void debug_on(vtkObject &obj) {
+    obj.DebugOn();
 }
 
-extern "C" void debug_off(vtkObject* ptr) {
-    static_cast<vtkObject*>(ptr)->DebugOff();
+void debug_off(vtkObject &obj) {
+    obj.DebugOff();
 }
 
-extern "C" void set_debug(vtkObject* ptr, bool status) {
-    static_cast<vtkObject*>(ptr)->SetDebug(status);
+void set_debug(vtkObject &obj, bool status) {
+    obj.SetDebug(status);
 }
 
-extern "C" bool get_debug(vtkObject* ptr) {
-    return static_cast<vtkObject*>(ptr)->GetDebug();
+bool get_debug(const vtkObject &obj) {
+    vtkObject &obj2 = const_cast<vtkObject&>(obj);
+    return obj2.GetDebug();
 }
 
-extern "C" void modified(vtkObject* ptr) {
-    static_cast<vtkObject*>(ptr)->Modified();
+void modified(const vtkObject &obj) {
+    vtkObject &obj2 = const_cast<vtkObject&>(obj);
+    obj2.Modified();
 }
 
-extern "C" void remove_observer(vtkObject* ptr, unsigned long tag) {
-    static_cast<vtkObject*>(ptr)->RemoveObserver(tag);
+void remove_observer(vtkObject &obj, unsigned long tag) {
+    obj.RemoveObserver(tag);
 }
 
-extern "C" void remove_observers(vtkObject* ptr, unsigned long tag) {
-    static_cast<vtkObject*>(ptr)->RemoveObservers(tag);
+void remove_observers(vtkObject &obj, unsigned long tag) {
+    obj.RemoveObservers(tag);
 }
 
-extern "C" void remove_all_observer(vtkObject* ptr) {
-    static_cast<vtkObject*>(ptr)->RemoveAllObservers();
+void remove_all_observer(vtkObject &obj) {
+    obj.RemoveAllObservers();
 }
 
-extern "C" int has_observer(vtkObject* ptr, unsigned long event) {
-    return static_cast<vtkObject*>(ptr)->HasObserver(event);
+int64_t has_observer(const vtkObject &obj, unsigned long event) {
+    vtkObject &obj2 = const_cast<vtkObject&>(obj);
+    return obj2.HasObserver(event);
 }

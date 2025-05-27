@@ -10,8 +10,8 @@ extern "C" {
   return data_object_new$();
 }
 
-void cxxbridge1$data_object_delete(::vtkDataObject *data_object) noexcept {
-  void (*data_object_delete$)(::vtkDataObject *) = ::data_object_delete;
+void cxxbridge1$data_object_delete(::vtkDataObject &data_object) noexcept {
+  void (*data_object_delete$)(::vtkDataObject &) = ::data_object_delete;
   data_object_delete$(data_object);
 }
 } // extern "C"

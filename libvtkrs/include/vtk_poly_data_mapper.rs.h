@@ -10,8 +10,8 @@ extern "C" {
   return poly_data_mapper_new$();
 }
 
-void cxxbridge1$poly_data_mapper_delete(::vtkPolyDataMapper *pdm) noexcept {
-  void (*poly_data_mapper_delete$)(::vtkPolyDataMapper *) = ::poly_data_mapper_delete;
+void cxxbridge1$poly_data_mapper_delete(::vtkPolyDataMapper &pdm) noexcept {
+  void (*poly_data_mapper_delete$)(::vtkPolyDataMapper &) = ::poly_data_mapper_delete;
   poly_data_mapper_delete$(pdm);
 }
 } // extern "C"

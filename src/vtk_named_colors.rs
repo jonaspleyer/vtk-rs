@@ -6,16 +6,15 @@ mod ffi {
         type vtkNamedColors;
 
         fn named_colors_new() -> *mut vtkNamedColors;
-        unsafe fn named_colors_delete(named_colors: *mut vtkNamedColors);
-        // unsafe fn named_colors_set_input(pdm: *mut vtkNamedColors, data: vtkPolyData);
+        fn named_colors_delete(named_colors: Pin<&mut vtkNamedColors>);
     }
 }
 
 crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
-    @name NamedColors, *mut ffi::vtkNamedColors,
+    @name NamedColors, ffi::vtkNamedColors,
     @new ffi::named_colors_new,
     @delete ffi::named_colors_delete
 );
 
-crate::inherit!(NamedColors vtkAlgorithm);
+crate::inherit!(NamedColors vtkObject ffi::vtkNamedColors);

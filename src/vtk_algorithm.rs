@@ -6,18 +6,18 @@ pub(crate) mod ffi {
         pub type vtkAlgorithm;
 
         fn algorithm_new() -> *mut vtkAlgorithm;
-        unsafe fn algorithm_delete(algorithm: *mut vtkAlgorithm);
+        fn algorithm_delete(algorithm: Pin<&mut vtkAlgorithm>);
     }
 }
 
 crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkAlgorithm.html",
-    @name Algorithm, *mut ffi::vtkAlgorithm,
+    @name Algorithm, ffi::vtkAlgorithm,
     @new ffi::algorithm_new,
     @delete ffi::algorithm_delete
 );
 
-crate::inherit!(Algorithm vtkAlgorithm);
+crate::inherit!(Algorithm vtkAlgorithm ffi::vtkAlgorithm);
 
 pub(crate) mod private {
     pub trait Sealed {}

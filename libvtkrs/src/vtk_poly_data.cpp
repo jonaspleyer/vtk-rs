@@ -8,6 +8,6 @@ vtkPolyData* poly_data_new() {
     return vtkPolyData::New();
 }
 
-void poly_data_delete(vtkPolyData* poly_data) {
-    poly_data->Delete();
+void poly_data_delete(vtkPolyData &poly_data) {
+    poly_data.Delete();
 }

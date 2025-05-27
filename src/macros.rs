@@ -8,14 +8,15 @@ macro_rules! define_object(
     ) => {
         #[doc = concat!("[`vtk", stringify!($name), "`](", $link, ")")]
         pub struct $name {
-            ptr: $ptr_type,
+            ptr: core::pin::Pin<&'static mut $ptr_type>,
         }
 
         impl $name {
             #[doc(alias = "New")]
             pub fn new() -> Self {
+                let pinned = unsafe { core::pin::Pin::new_unchecked(&mut *($new_func)()) };
                 Self {
-                    ptr: ($new_func)()
+                    ptr: pinned,
                 }
             }
         }
@@ -29,8 +30,7 @@ macro_rules! define_object(
         impl core::ops::Drop for $name {
             #[doc(alias = "Delete")]
             fn drop(&mut self) {
-                #[allow(unused_unsafe)]
-                unsafe { ($drop_func)(self.ptr) };
+                ($drop_func)(self.ptr.as_mut());
             }
         }
 
@@ -60,78 +60,39 @@ macro_rules! define_object(
 );
 
 macro_rules! inherit(
-    ($name:ident vtkObjectBase) => {};
-    ($name:ident vtkObject) => {
-        crate::inherit!($name vtkObjectBase);
+    ($name:ident vtkObjectBase $ptr_type:ty) => {};
+    ($name:ident vtkObject $ptr_type:ty) => {
+        crate::inherit!($name vtkObjectBase $ptr_type);
+        impl $name {
+
+        }
+        impl core::convert::AsRef<crate::vtk_object::ffi::vtkObject> for $ptr_type {
+            fn as_ref(&self) -> &crate::vtk_object::ffi::vtkObject {
+                let x = self as *const $ptr_type;
+                let x = x as *const crate::vtk_object::ffi::vtkObject;
+                unsafe { &*x }
+            }
+        }
+
+        impl core::convert::AsMut<crate::vtk_object::ffi::vtkObject> for $ptr_type {
+            fn as_mut(&mut self) -> &mut crate::vtk_object::ffi::vtkObject {
+                let x = self as *mut $ptr_type;
+                let x = x as *mut crate::vtk_object::ffi::vtkObject;
+                unsafe { &mut *x }
+            }
+        }
 
         impl crate::vtk_object::private::Sealed for $name {}
 
         impl crate::vtk_object::vtkObject for $name {
-            #[doc(alias = "SetDebug")]
-            fn set_debug(&mut self, status: bool) {
-                unsafe { crate::vtk_object::ffi::set_debug(
-                    self.ptr as *mut std::ffi::c_void,
-                    status
-                ) };
+            fn as_vtk_object(&self) -> core::pin::Pin<&crate::vtk_object::ffi::vtkObject> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
             }
 
-            #[doc(alias = "GetDebug")]
-            fn get_debug(&self) -> bool {
-                unsafe {crate::vtk_object::ffi::get_debug(
-                    self.ptr as *const std::ffi::c_void,
-                )}
-            }
-
-            #[doc(alias = "DebugOn")]
-            fn debug_on(&mut self) {
-                unsafe {crate::vtk_object::ffi::debug_on(
-                    self.ptr as *mut std::ffi::c_void,
-                )}
-            }
-
-            #[doc(alias = "DebugOff")]
-            fn debug_off(&mut self) {
-                unsafe {crate::vtk_object::ffi::debug_off(
-                    self.ptr as *mut std::ffi::c_void,
-                )}
-            }
-
-            #[doc(alias = "Modified")]
-            fn modified(&mut self) {
-                unsafe {crate::vtk_object::ffi::modified(
-                    self.ptr as *mut std::ffi::c_void,
-                )}
-            }
-
-            #[doc(alias = "RemoveObserver")]
-            fn remove_observer(&mut self, tag: u64) {
-                unsafe {crate::vtk_object::ffi::remove_observer(
-                    self.ptr as *mut std::ffi::c_void,
-                    tag,
-                )}
-            }
-
-            #[doc(alias = "RemoveObservers")]
-            fn remove_observers(&mut self, event: u64) {
-                unsafe {crate::vtk_object::ffi::remove_observers(
-                    self.ptr as *mut std::ffi::c_void,
-                    event,
-                )}
-            }
-
-            #[doc(alias = "RemoveAllObservers")]
-            fn remove_all_observers(&mut self) {
-                unsafe {crate::vtk_object::ffi::remove_all_observers(
-                    self.ptr as *mut std::ffi::c_void,
-                )}
-            }
-
-            #[doc(alias = "HasObserver")]
-            fn has_observer(&self, event: core::ffi::c_ulong) -> core::ffi::c_int {
-                unsafe {crate::vtk_object::ffi::has_observer(
-                    self.ptr as *const std::ffi::c_void,
-                    event,
-                )}
+            fn as_vtk_object_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_object::ffi::vtkObject>
+            {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
             }
         }
 
@@ -162,46 +123,46 @@ macro_rules! inherit(
             }
         }
     };
-    ($name:ident vtkAlgorithm) => {
+    ($name:ident vtkAlgorithm $ptr_type:ty) => {
         impl crate::vtk_algorithm::private::Sealed for $name {}
         impl crate::vtk_algorithm::vtkAlgorithm for $name {}
-        crate::inherit!($name vtkObject);
+        crate::inherit!($name vtkObject $ptr_type);
     };
-    ($name:ident vtkPolyData) => {
+    ($name:ident vtkPolyData $ptr_type:ty) => {
         impl crate::vtk_poly_data::private::Sealed for $name {}
         impl crate::vtk_poly_data::vtkPolyData for $name {}
-        crate::inherit!($name vtkPointSet);
+        crate::inherit!($name vtkPointSet $ptr_type);
     };
-    ($name:ident vtkPolyDataAlgorithm) => {
+    ($name:ident vtkPolyDataAlgorithm $ptr_type:ty) => {
         impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
         impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {}
-        crate::inherit!($name vtkAlgorithm);
+        crate::inherit!($name vtkAlgorithm $ptr_type);
     };
-    ($name:ident vtkDataObject) => {
+    ($name:ident vtkDataObject $ptr_type:ty) => {
         impl crate::vtk_data_object::private::Sealed for $name {}
         impl crate::vtk_data_object::vtkDataObject for $name {}
-        crate::inherit!($name vtkObject);
+        crate::inherit!($name vtkObject $ptr_type);
     };
-    ($name:ident vtkDataSet) => {
-        crate::inherit!($name vtkDataObject);
+    ($name:ident vtkDataSet $ptr_type:ty) => {
+        crate::inherit!($name vtkDataObject $ptr_type);
     };
-    ($name:ident vtkCommand) => {
-        crate::inherit!($name vtkObjectBase);
+    ($name:ident vtkCommand $ptr_type:ty) => {
+        crate::inherit!($name vtkObjectBase $ptr_type);
     };
-    ($name:ident vtkImageData) => {
-        crate::inherit!($name vtkDataSet);
+    ($name:ident vtkImageData $ptr_type:ty) => {
+        crate::inherit!($name vtkDataSet $ptr_type);
     };
-    ($name:ident vtkPointSet) => {
-        crate::inherit!($name vtkDataSet);
+    ($name:ident vtkPointSet $ptr_type:ty) => {
+        crate::inherit!($name vtkDataSet $ptr_type);
     };
-    ($name:ident vtkUnstructuredGridBase) => {
-        crate::inherit!($name vtkPointSet);
+    ($name:ident vtkUnstructuredGridBase $ptr_type:ty) => {
+        crate::inherit!($name vtkPointSet $ptr_type);
     };
-    ($name:ident vtkGraph) => {
-        crate::inherit!($name vtkDataObject);
+    ($name:ident vtkGraph $ptr_type:ty) => {
+        crate::inherit!($name vtkDataObject $ptr_type);
     };
-    ($name:ident vtkImplicitFunction) => {
-        crate::inherit!($name vtkObject);
+    ($name:ident vtkImplicitFunction $ptr_type:ty) => {
+        crate::inherit!($name vtkObject $ptr_type);
     };
 );
 
