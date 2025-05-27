@@ -39,7 +39,7 @@ void remove_all_observer(vtkObject &obj) {
     obj.RemoveAllObservers();
 }
 
-int64_t has_observer(const vtkObject &obj, unsigned long event) {
+int has_observer(const vtkObject &obj, unsigned long event) {
     vtkObject &obj2 = const_cast<vtkObject&>(obj);
     return obj2.HasObserver(event);
 }

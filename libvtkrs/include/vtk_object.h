@@ -11,6 +11,6 @@ void modified(const vtkObject &ptr);
 void remove_observer(vtkObject &ptr, unsigned long tag);
 void remove_observers(vtkObject &ptr, unsigned long event);
 void remove_all_observers(vtkObject &ptr);
-int64_t has_observer(const vtkObject &ptr, unsigned long event);
+int has_observer(const vtkObject &ptr, unsigned long event);
 
 void add_observer(vtkObject &obj);
