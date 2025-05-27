@@ -15,7 +15,7 @@ pub(crate) mod private {
     pub trait Sealed {}
 }
 
-/// [`vtkAlgorithm`](https://vtk.org/doc/nightly/html/classvtkAlgorithm.html)
+/// [`vtkPolyDataAlgorithm`](https://vtk.org/doc/nightly/html/classvtkPolyDataAlgorithm.html)
 #[allow(non_camel_case_types)]
 pub trait vtkPolyDataAlgorithm: private::Sealed {
     fn is_a(&self, ttype: &str) -> i32;
