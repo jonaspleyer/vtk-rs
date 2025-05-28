@@ -1,12 +1,20 @@
 Language: Cpp
 IndentWidth: 4
-PointerAlignment: Right
+PointerAlignment: Left
 ColumnLimit: 100
 
 AlignConsecutiveAssignments:
     Enabled: true
     AcrossEmptyLines: false
     AcrossComments: true
+
+AlignAfterOpenBracket: BlockIndent
+QualifierAlignment: Left
+# BreakAfterReturnType: All
+BreakBeforeBraces: Attach
+
+BraceWrapping:
+    AfterFunction: false
 
 SpaceBeforeCtorInitializerColon: false
 SpaceBeforeAssignmentOperators: true
