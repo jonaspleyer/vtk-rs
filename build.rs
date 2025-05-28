@@ -3,6 +3,16 @@ use cmake::Config;
 type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
 const VERSION_REGEX: &str = "([-0-9._]*)";
+static WARN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+macro_rules! log(
+    ($($ti:tt)*) => {
+        if WARN.load(std::sync::atomic::Ordering::Relaxed) {
+            print!("cargo::warning=");
+        }
+        println!($($ti)*);
+    };
+);
 
 fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<String>> {
     if let Ok(v) = std::env::var("VTK_VERSION") {
@@ -23,11 +33,7 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
                 .enumerate()
                 .filter_map(|(n, x)| x.ok().map(|y| (n, y)))
             {
-                println!(
-                    "cargo::warning=[{:2}] cargo::warning=Candidate: {}",
-                    n + 1,
-                    candidate.display()
-                );
+                log!("[{:2}] Candidate: {}", n + 1, candidate.display());
                 if let Some((_, [version])) = re
                     .captures_iter(&candidate.display().to_string())
                     .map(|x| x.extract())
@@ -90,17 +96,17 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
 
         for path in brew_paths {
             let search_path = path.join("*").display().to_string();
-            println!("cargo::warning=Search Path: {}", search_path);
+            log!("Search Path: {}", search_path);
             let candidates = glob::glob(&search_path)?;
 
             for c in candidates.into_iter().filter_map(|x| x.ok()) {
-                println!("cargo::warning=Candidate: {}", c.display());
+                log!("Candidate: {}", c.display());
                 for (_, [version]) in re
                     .captures_iter(&c.display().to_string())
                     .map(|x| x.extract())
                 {
                     if !version.is_empty() {
-                        println!("cargo::warning=Found version: {}", version);
+                        log!("Found version: {}", version);
                         link_paths.push(path.join(version));
                         println!("cargo:rustc-link-search={}", path.join(version).display());
                     }
@@ -113,6 +119,13 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
 }
 
 fn main() -> Result<()> {
+    if let Ok(val) = std::env::var("VERBOSE") {
+        if val == "1" {
+            WARN.store(true, std::sync::atomic::Ordering::Relaxed);
+            log!("Verbose Logging Enabled");
+        }
+    }
+
     // Exit early without doing anything if we are building for docsrs
     if std::env::var("DOCS_RS").is_ok() {
         return Ok(());
@@ -124,15 +137,14 @@ fn main() -> Result<()> {
         println!("cargo:rustc-link-search={vtk_dir}");
         vec![std::path::PathBuf::from(vtk_dir)]
     } else {
-        println!("cargo::warning=-- Automatically Determine VTK Lib Path");
+        log!("-- Automatically Determine VTK Lib Path");
         gather_link_paths()?
     };
 
-    println!("cargo::warning=-- Determine Version Suffix");
+    log!("-- Determine Version Suffix");
     let version_suffix = determine_version_suffix(&link_paths)
         .unwrap_or_default()
         .unwrap_or_default();
-    println!("cargo::warning=Found version suffix: \"{version_suffix}\"");
 
     let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
