@@ -123,9 +123,20 @@ fn main() -> Result<()> {
     };
 
     log!("-- Determine Version Suffix");
-    let version_suffix = determine_version_suffix(&link_paths)
-        .unwrap_or_default()
-        .unwrap_or_default();
+    let mut suffixes: Vec<(std::path::PathBuf, String)> = link_paths
+        .into_iter()
+        .flat_map(|x| {
+            determine_version_suffix(&x)
+                .ok()
+                .and_then(|y| y.map(|y| (x, y)))
+        })
+        .collect();
+    log!("{suffixes:?}");
+    suffixes.sort_by_key(|x| x.1.len());
+    log!("{suffixes:?}");
+
+    let (link_path, version_suffix) = suffixes.into_iter().next().unwrap_or_default();
+    println!("cargo:rustc-link-search={}", link_path.display());
 
     let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
