@@ -18,14 +18,21 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
             let candidates = glob::glob(&search_path)?;
 
             // Match against a regex
-            for candidate in candidates.into_iter().filter_map(|x| x.ok()) {
-                println!("Candidate: {}", candidate.display());
+            for (n, candidate) in candidates
+                .into_iter()
+                .enumerate()
+                .filter_map(|(n, x)| x.ok().map(|y| (n, y)))
+            {
+                println!(
+                    "cargo::warning=[{:2}] cargo::warning=Candidate: {}",
+                    n + 1,
+                    candidate.display()
+                );
                 if let Some((_, [version])) = re
                     .captures_iter(&candidate.display().to_string())
                     .map(|x| x.extract())
                     .next()
                 {
-                    println!("Determined version suffix: {}", version);
                     return Ok(Some(version.to_string()));
                 }
             }
@@ -83,17 +90,17 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
 
         for path in brew_paths {
             let search_path = path.join("*").display().to_string();
-            println!("Search Path: {}", search_path);
+            println!("cargo::warning=Search Path: {}", search_path);
             let candidates = glob::glob(&search_path)?;
 
             for c in candidates.into_iter().filter_map(|x| x.ok()) {
-                println!("Candidate: {}", c.display());
+                println!("cargo::warning=Candidate: {}", c.display());
                 for (_, [version]) in re
                     .captures_iter(&c.display().to_string())
                     .map(|x| x.extract())
                 {
                     if !version.is_empty() {
-                        println!("Found version: {}", version);
+                        println!("cargo::warning=Found version: {}", version);
                         link_paths.push(path.join(version));
                         println!("cargo:rustc-link-search={}", path.join(version).display());
                     }
@@ -115,6 +122,7 @@ fn main() -> Result<()> {
 
     let link_paths = gather_link_paths()?;
 
+    println!("cargo::warning=-- Determine Version Suffix");
     let version_suffix = determine_version_suffix(&link_paths)
         .unwrap_or_default()
         .unwrap_or_default();
@@ -122,6 +130,7 @@ fn main() -> Result<()> {
     if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
         println!("cargo:rustc-link-search={vtk_dir}");
     }
+    println!("cargo::warning=Found version suffix: \"{version_suffix}\"");
 
     let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
