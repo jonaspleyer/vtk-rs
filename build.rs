@@ -120,16 +120,18 @@ fn main() -> Result<()> {
 
     build_cmake();
 
-    let link_paths = gather_link_paths()?;
+    let link_paths = if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
+        println!("cargo:rustc-link-search={vtk_dir}");
+        vec![std::path::PathBuf::from(vtk_dir)]
+    } else {
+        println!("cargo::warning=-- Automatically Determine VTK Lib Path");
+        gather_link_paths()?
+    };
 
     println!("cargo::warning=-- Determine Version Suffix");
     let version_suffix = determine_version_suffix(&link_paths)
         .unwrap_or_default()
         .unwrap_or_default();
-
-    if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
-        println!("cargo:rustc-link-search={vtk_dir}");
-    }
     println!("cargo::warning=Found version suffix: \"{version_suffix}\"");
 
     let linker_args_raw = include_str!("linker-args.txt");
