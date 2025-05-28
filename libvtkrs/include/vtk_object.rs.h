@@ -46,8 +46,8 @@ void cxxbridge1$remove_all_observers(::vtkObject &object) noexcept {
   remove_all_observers$(object);
 }
 
-::std::int32_t cxxbridge1$has_observer(::vtkObject const &object, ::std::uint64_t event) noexcept {
-  ::std::int32_t (*has_observer$)(::vtkObject const &, ::std::uint64_t) = ::has_observer;
+::std::uint64_t cxxbridge1$has_observer(::vtkObject const &object, ::std::uint64_t event) noexcept {
+  ::std::uint64_t (*has_observer$)(::vtkObject const &, ::std::uint64_t) = ::has_observer;
   return has_observer$(object, event);
 }
 } // extern "C"
