@@ -17,13 +17,13 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
 
             // Match against a regex
             for candidate in candidates.into_iter().filter_map(|x| x.ok()) {
-                eprintln!("Candidate: {}", candidate.display());
+                println!("Candidate: {}", candidate.display());
                 if let Some((_, [version])) = re
                     .captures_iter(&candidate.display().to_string())
                     .map(|x| x.extract())
                     .next()
                 {
-                    eprintln!("Determined version suffix: {}", version);
+                    println!("Determined version suffix: {}", version);
                     return Ok(Some(version.to_string()));
                 }
             }
@@ -75,19 +75,23 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
         let brew_paths = [
             std::path::PathBuf::from("/usr/local/Cellar/vtk/"),
             std::path::PathBuf::from("/opt/homebrew/Cellar/vtk"),
-            std::path::PathBuf::from("/opt/homebrew/lib"),
+            // std::path::PathBuf::from("/opt/homebrew/lib"),
         ];
         let re = regex::Regex::new("([-0-9.]*)")?;
 
         for path in brew_paths {
-            let candidates = glob::glob(&path.join("*").display().to_string())?;
+            let search_path = path.join("*").display().to_string();
+            println!("Search Path: {}", search_path);
+            let candidates = glob::glob(&search_path)?;
 
             for c in candidates.into_iter().filter_map(|x| x.ok()) {
+                println!("Candidate: {}", c.display());
                 for (_, [version]) in re
                     .captures_iter(&c.display().to_string())
                     .map(|x| x.extract())
                 {
                     if !version.is_empty() {
+                        println!("Found version: {}", version);
                         link_paths.push(path.join(version));
                         println!("cargo:rustc-link-search={}", path.join(version).display());
                     }
