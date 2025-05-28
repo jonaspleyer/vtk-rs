@@ -20,11 +20,13 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
     }
 
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
-        let re = regex::Regex::new(&format!("libvtkCommonCore{VERSION_REGEX}.so"))?;
+        let re = regex::Regex::new(&format!(
+            "(lib)vtkCommonCore{VERSION_REGEX}.(so|dylib|so|dll|a|lib)"
+        ))?;
         // Search in every provided link path
         for path in link_paths.iter() {
             // Gather candidates
-            let search_path = path.join("libvtkCommonCore*.so").display().to_string();
+            let search_path = path.join("*vtkCommonCore*").display().to_string();
             let candidates = glob::glob(&search_path)?;
 
             // Match against a regex
@@ -34,11 +36,12 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
                 .filter_map(|(n, x)| x.ok().map(|y| (n, y)))
             {
                 log!("[{:2}] Candidate: {}", n + 1, candidate.display());
-                if let Some((_, [version])) = re
-                    .captures_iter(&candidate.display().to_string())
-                    .map(|x| x.extract())
-                    .next()
+                if let Some((_, [_lib, version, _suffix])) = candidate
+                    .file_name()
+                    .and_then(|x| x.to_str())
+                    .and_then(|x| re.captures_iter(x).map(|x| x.extract()).next())
                 {
+                    log!("Determined version suffix: \"{}\"", version);
                     return Ok(Some(version.to_string()));
                 }
             }
@@ -88,14 +91,14 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     // Search in paths where homebrew might install packages
     if cfg!(target_os = "macos") || cfg!(unix) {
         let brew_paths = [
-            std::path::PathBuf::from("/usr/local/Cellar/vtk/"),
-            std::path::PathBuf::from("/opt/homebrew/Cellar/vtk"),
-            // std::path::PathBuf::from("/opt/homebrew/lib"),
+            std::path::PathBuf::from("/usr/local/Cellar/vtk/").join("*"),
+            std::path::PathBuf::from("/opt/homebrew/Cellar/vtk").join("*"),
+            std::path::PathBuf::from("/opt/homebrew/lib").join("*vtk*"),
         ];
         let re = regex::Regex::new(VERSION_REGEX)?;
 
         for path in brew_paths {
-            let search_path = path.join("*").display().to_string();
+            let search_path = path.display().to_string();
             log!("Search Path: {}", search_path);
             let candidates = glob::glob(&search_path)?;
 
