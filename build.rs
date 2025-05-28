@@ -136,7 +136,9 @@ fn main() -> Result<()> {
     log!("{suffixes:?}");
 
     let (link_path, version_suffix) = suffixes.into_iter().next().unwrap_or_default();
-    println!("cargo:rustc-link-search={}", link_path.display());
+    if link_path.exists() {
+        println!("cargo:rustc-link-search={}", link_path.display());
+    }
 
     let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
