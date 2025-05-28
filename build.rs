@@ -59,10 +59,6 @@ fn build_cmake() {
 // Also emits flags to link to said paths
 fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     let mut link_paths = Vec::<std::path::PathBuf>::new();
-    if let Ok(v) = std::env::var("VTK_DIR") {
-        println!("cargo:rustc-link-search={v}");
-        link_paths.push(v.into());
-    }
 
     if cfg!(unix) {
         let paths: [std::path::PathBuf; 3] = [
@@ -82,6 +78,13 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     }
     if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-lib=dylib=c++");
+    }
+
+    // if VTK_DIR is specified, do not try to determine anything else and return
+    if let Ok(v) = std::env::var("VTK_DIR") {
+        println!("cargo:rustc-link-search={v}");
+        link_paths.push(v.into());
+        return Ok(link_paths);
     }
 
     // Search in paths where homebrew might install packages
