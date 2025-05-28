@@ -13,7 +13,7 @@ pub(crate) mod ffi {
         pub(crate) fn remove_observer(object: Pin<&mut vtkObject>, tag: u64);
         pub(crate) fn remove_observers(object: Pin<&mut vtkObject>, event: u64);
         pub(crate) fn remove_all_observers(object: Pin<&mut vtkObject>);
-        pub(crate) fn has_observer(object: &vtkObject, event: u64) -> i32;
+        pub(crate) fn has_observer(object: &vtkObject, event: u64) -> u64;
         // pub(crate) fn add_observer(object: Pin<&mut vtkObject>, event: u64, command: &vtkCommand, priority: f32);
 
         // pub(crate) unsafe fn print_self(ptr: &vtkObject, indent: usize) -> String;
@@ -82,7 +82,7 @@ pub trait vtkObject: private::Sealed {
 
     /// [`HasObserver`](https://vtk.org/doc/nightly/html/classvtkObject.html)
     #[doc(alias = "HasObserver")]
-    fn has_observer(&self, event: u64) -> i32 {
+    fn has_observer(&self, event: u64) -> u64 {
         crate::vtk_object::ffi::has_observer(&self.as_vtk_object(), event)
     }
 
