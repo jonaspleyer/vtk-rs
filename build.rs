@@ -17,11 +17,13 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
 
             // Match against a regex
             for candidate in candidates.into_iter().filter_map(|x| x.ok()) {
+                eprintln!("Candidate: {}", candidate.display());
                 if let Some((_, [version])) = re
                     .captures_iter(&candidate.display().to_string())
                     .map(|x| x.extract())
                     .next()
                 {
+                    eprintln!("Determined version suffix: {}", version);
                     return Ok(Some(version.to_string()));
                 }
             }
