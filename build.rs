@@ -2,13 +2,15 @@ use cmake::Config;
 
 type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
+const VERSION_REGEX: &str = "([-0-9._]*)";
+
 fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<String>> {
     if let Ok(v) = std::env::var("VTK_VERSION") {
         return Ok(Some(v));
     }
 
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
-        let re = regex::Regex::new("libvtkCommonCore([-0-9.]*).so")?;
+        let re = regex::Regex::new(&format!("libvtkCommonCore{VERSION_REGEX}.so"))?;
         // Search in every provided link path
         for path in link_paths.iter() {
             // Gather candidates
@@ -77,7 +79,7 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
             std::path::PathBuf::from("/opt/homebrew/Cellar/vtk"),
             // std::path::PathBuf::from("/opt/homebrew/lib"),
         ];
-        let re = regex::Regex::new("([-0-9.]*)")?;
+        let re = regex::Regex::new(VERSION_REGEX)?;
 
         for path in brew_paths {
             let search_path = path.join("*").display().to_string();
