@@ -14,7 +14,7 @@ macro_rules! log(
     };
 );
 
-fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<String>> {
+fn determine_version_suffix(link_path: &std::path::Path) -> Result<Option<String>> {
     if let Ok(v) = std::env::var("VTK_VERSION") {
         return Ok(Some(v));
     }
@@ -22,26 +22,24 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
         let re = regex::Regex::new(VERSION_REGEX)?;
         // Search in every provided link path
-        for path in link_paths.iter() {
-            // Gather candidates
-            let search_path = path.join("*vtkCommonCore*").display().to_string();
-            let candidates = glob::glob(&search_path)?;
+        // Gather candidates
+        let search_path = link_path.join("*vtkCommonCore*").display().to_string();
+        let candidates = glob::glob(&search_path)?;
 
-            // Match against a regex
-            for (n, candidate) in candidates
-                .into_iter()
-                .enumerate()
-                .filter_map(|(n, x)| x.ok().map(|y| (n, y)))
+        // Match against a regex
+        for (n, candidate) in candidates
+            .into_iter()
+            .enumerate()
+            .filter_map(|(n, x)| x.ok().map(|y| (n, y)))
+        {
+            log!("[{:2}] Candidate: {}", n + 1, candidate.display());
+            if let Some((_, [_lib, version, _suffix])) = candidate
+                .file_name()
+                .and_then(|x| x.to_str())
+                .and_then(|x| re.captures_iter(x).map(|x| x.extract()).next())
             {
-                log!("[{:2}] Candidate: {}", n + 1, candidate.display());
-                if let Some((_, [_lib, version, _suffix])) = candidate
-                    .file_name()
-                    .and_then(|x| x.to_str())
-                    .and_then(|x| re.captures_iter(x).map(|x| x.extract()).next())
-                {
-                    log!("Determined version suffix: \"{}\"", version);
-                    return Ok(Some(version.to_string()));
-                }
+                log!("Determined version suffix: \"{}\"", version);
+                return Ok(Some(version.to_string()));
             }
         }
     }
