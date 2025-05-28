@@ -2,7 +2,7 @@ use cmake::Config;
 
 type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
-const VERSION_REGEX: &str = "([-0-9._]*)";
+const VERSION_REGEX: &str = "(lib)vtkCommonCore([-0-9._]*).(so|dylib|so|dll|a|lib)";
 static WARN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 macro_rules! log(
@@ -20,9 +20,7 @@ fn determine_version_suffix(link_paths: &[std::path::PathBuf]) -> Result<Option<
     }
 
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
-        let re = regex::Regex::new(&format!(
-            "(lib)vtkCommonCore{VERSION_REGEX}.(so|dylib|so|dll|a|lib)"
-        ))?;
+        let re = regex::Regex::new(VERSION_REGEX)?;
         // Search in every provided link path
         for path in link_paths.iter() {
             // Gather candidates
