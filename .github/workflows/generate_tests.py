@@ -10,10 +10,10 @@ def os_to_envs_packages(os):
         environment_vars = ""
         packages = "libvtk9.1 libvtk9-dev"
     elif os == "macos-13":
-        environment_vars = "VTK_VERSION=-9.4"
+        environment_vars = ""
         packages = "vtk"
     elif os == "macos-14":
-        environment_vars = "VTK_VERSION=-9.4"
+        environment_vars = ""
         packages = "vtk"
     else:
         raise ValueError("Unknown Operating System")
