@@ -88,33 +88,12 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
     }
 
     // Search in paths where homebrew might install packages
-    if cfg!(target_os = "macos") || cfg!(unix) {
-        let brew_paths = [
-            std::path::PathBuf::from("/usr/local/Cellar/vtk/").join("*"),
-            std::path::PathBuf::from("/opt/homebrew/Cellar/vtk").join("*"),
-            std::path::PathBuf::from("/opt/homebrew/lib").join("*vtk*"),
-        ];
-        let re = regex::Regex::new(VERSION_REGEX)?;
-
-        for path in brew_paths {
-            let search_path = path.display().to_string();
-            log!("Search Path: {}", search_path);
-            let candidates = glob::glob(&search_path)?;
-
-            for c in candidates.into_iter().filter_map(|x| x.ok()) {
-                log!("Candidate: {}", c.display());
-                for (_, [version]) in re
-                    .captures_iter(&c.display().to_string())
-                    .map(|x| x.extract())
-                {
-                    if !version.is_empty() {
-                        log!("Found version: {}", version);
-                        link_paths.push(path.join(version));
-                        println!("cargo:rustc-link-search={}", path.join(version).display());
-                    }
-                }
-            }
-        }
+    if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
+        link_paths.extend([
+            std::path::PathBuf::from("/usr/local/Cellar/vtk/"),
+            std::path::PathBuf::from("/opt/homebrew/Cellar/vtk"),
+        ]);
+        link_paths.extend(glob::glob("/opt/homebrew/lib/*vtk*")?.filter_map(|x| x.ok()));
     }
 
     Ok(link_paths)
