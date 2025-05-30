@@ -68,6 +68,7 @@ fn gather_link_paths() -> Result<impl IntoIterator<Item = std::path::PathBuf>> {
         link_paths.extend([
             "/usr/local/Cellar/vtk/".into(),
             "/opt/homebrew/Cellar/vtk".into(),
+            "/opt/homebrew/lib/".into(),
         ]);
         link_paths.extend(glob::glob("/opt/homebrew/lib/*vtk*")?.filter_map(|x| x.ok()));
     }
