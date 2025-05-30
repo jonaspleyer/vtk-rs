@@ -1,7 +1,7 @@
 #pragma once
 #include "cxx.h"
-#include "vtkObjectBase.h"
 #include <cstdint>
+#include <vtkObjectBase.h>
 
 rust::String vtk_object_base_get_class_name(const vtkObjectBase& obj);
 rust::String vtk_object_base_get_object_description(const vtkObjectBase& obj);
