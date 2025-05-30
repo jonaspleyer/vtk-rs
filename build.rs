@@ -152,14 +152,17 @@ fn main() -> Result<()> {
                 .filter_map(|link_path| {
                     find_version_suffix(&link_path).ok().map(|x| (link_path, x))
                 })
-                .map(|(p, s)| (p, s.unwrap_or_default()))
+                .filter_map(|(p, s)| s.map(|x| (p, x)))
                 .collect();
             versions.sort_by_key(|x| x.1.len());
+            for (p, v) in versions.iter() {
+                log!("path: {} version: {}", p.display(), v);
+            }
             if let Some((path, version)) = versions.into_iter().next() {
                 println!("cargo:rustc-link-search={}", path.display());
                 version
             } else {
-                "".to_string()
+                panic!("Could not find suitable installation directory.");
             }
         }
     };
