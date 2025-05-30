@@ -15,4 +15,4 @@ bool vtk_object_base_get_is_in_memkind(const vtkObjectBase& obj);
 rust::String vtk_object_base_print_self(const vtkObjectBase& obj, std::uint64_t indent);
 rust::String vtk_object_base_print_header(const vtkObjectBase& obj, std::uint64_t indent);
 rust::String vtk_object_base_print_trailer(const vtkObjectBase& obj, std::uint64_t indent);
-bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj);
+// bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj);

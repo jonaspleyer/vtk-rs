@@ -19,7 +19,8 @@ pub(crate) mod ffi {
         fn vtk_object_base_print_self(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_header(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_trailer(obj: &vtkObjectBase, indent: u64) -> String;
-        fn vtk_object_base_uses_garbage_collector(obj: &vtkObjectBase) -> bool;
+        // This is only available in 9.4
+        // fn vtk_object_base_uses_garbage_collector(obj: &vtkObjectBase) -> bool;
     }
 }
 
@@ -87,7 +88,7 @@ pub trait vtkObjectBase: private::Sealed {
         ffi::vtk_object_base_print_trailer(&self.as_vtk_object_base(), indent)
     }
 
-    fn uses_garbage_collector(&self) -> bool {
-        ffi::vtk_object_base_uses_garbage_collector(&self.as_vtk_object_base())
-    }
+    // fn uses_garbage_collector(&self) -> bool {
+    //     ffi::vtk_object_base_uses_garbage_collector(&self.as_vtk_object_base())
+    // }
 }

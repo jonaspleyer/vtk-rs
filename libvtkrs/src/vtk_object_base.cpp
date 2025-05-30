@@ -61,6 +61,6 @@ rust::String vtk_object_base_print_trailer(const vtkObjectBase& obj, std::uint64
     return output;
 }
 
-bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj) {
-    return const_cast<vtkObjectBase&>(obj).UsesGarbageCollector();
-}
+// bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj) {
+//     return const_cast<vtkObjectBase&>(obj).UsesGarbageCollector();
+// }
