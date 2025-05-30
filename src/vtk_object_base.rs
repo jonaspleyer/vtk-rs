@@ -6,7 +6,6 @@ pub(crate) mod ffi {
         type vtkObjectBase;
 
         fn vtk_object_base_get_class_name(obj: &vtkObjectBase) -> String;
-        #[cfg(feature = "v9.4")]
         fn vtk_object_base_get_object_description(obj: &vtkObjectBase) -> String;
         fn vtk_object_base_is_a(obj: &vtkObjectBase, class_name: &str) -> bool;
         fn vtk_object_base_get_number_of_generations_from_base(
@@ -20,7 +19,6 @@ pub(crate) mod ffi {
         fn vtk_object_base_print_self(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_header(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_trailer(obj: &vtkObjectBase, indent: u64) -> String;
-        #[allow(unused)]
         fn vtk_object_base_uses_garbage_collector(obj: &vtkObjectBase) -> bool;
     }
 }

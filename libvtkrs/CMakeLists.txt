@@ -29,6 +29,7 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/vtk_named_colors.h
    ${PROJECT_SOURCE_DIR}/include/vtk_object.h
    ${PROJECT_SOURCE_DIR}/include/vtk_object_base.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_object_base.rs.h
    ${PROJECT_SOURCE_DIR}/include/vtk_poly_data.h
    ${PROJECT_SOURCE_DIR}/include/vtk_poly_data_mapper.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere.h

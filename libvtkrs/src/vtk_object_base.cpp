@@ -11,10 +11,6 @@ rust::String vtk_object_base_get_class_name(const vtkObjectBase& obj) {
     return obj.GetClassName();
 }
 
-rust::String vtk_object_base_get_object_description(const vtkObjectBase& obj) {
-    return obj.GetObjectDescription();
-}
-
 bool vtk_object_base_is_a(const vtkObjectBase& obj, rust::Str class_name) {
     return const_cast<vtkObjectBase&>(obj).IsA(class_name.begin());
 }
@@ -42,24 +38,26 @@ bool vtk_object_base_get_is_in_memkind(const vtkObjectBase& obj) {
 }
 
 rust::String vtk_object_base_print_self(const vtkObjectBase& obj, std::uint64_t indent) {
-    rust::String output = rust::String();
     std::ostringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintSelf(oss, vtkIndent(indent));
-    return output;
+    return oss.str();
 }
 
 rust::String vtk_object_base_print_header(const vtkObjectBase& obj, std::uint64_t indent) {
-    rust::String output = rust::String();
     std::ostringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintHeader(oss, vtkIndent(indent));
-    return output;
+    return oss.str();
 }
 
 rust::String vtk_object_base_print_trailer(const vtkObjectBase& obj, std::uint64_t indent) {
-    rust::String output = rust::String();
+    // rust::String output = rust::String();
     std::ostringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintTrailer(oss, vtkIndent(indent));
-    return output;
+    return oss.str();
+}
+
+rust::String vtk_object_base_get_object_description(const vtkObjectBase& obj) {
+    return obj.GetObjectDescription();
 }
 
 bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj) {
