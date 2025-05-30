@@ -6,41 +6,41 @@
 
 using vtkObject = vtkObject;
 
-void debug_on(vtkObject& obj) {
+void vtk_object_debug_on(vtkObject& obj) {
     obj.DebugOn();
 }
 
-void debug_off(vtkObject& obj) {
+void vtk_object_debug_off(vtkObject& obj) {
     obj.DebugOff();
 }
 
-void set_debug(vtkObject& obj, bool status) {
+void vtk_object_set_debug(vtkObject& obj, bool status) {
     obj.SetDebug(status);
 }
 
-bool get_debug(const vtkObject& obj) {
+bool vtk_object_get_debug(const vtkObject& obj) {
     vtkObject& obj2 = const_cast<vtkObject&>(obj);
     return obj2.GetDebug();
 }
 
-void modified(const vtkObject& obj) {
+void vtk_object_modified(const vtkObject& obj) {
     vtkObject& obj2 = const_cast<vtkObject&>(obj);
     obj2.Modified();
 }
 
-void remove_observer(vtkObject& obj, uint64_t tag) {
+void vtk_object_remove_observer(vtkObject& obj, uint64_t tag) {
     obj.RemoveObserver(tag);
 }
 
-void remove_observers(vtkObject& obj, uint64_t tag) {
+void vtk_object_remove_observers(vtkObject& obj, uint64_t tag) {
     obj.RemoveObservers(tag);
 }
 
-void remove_all_observer(vtkObject& obj) {
+void vtk_object_remove_all_observer(vtkObject& obj) {
     obj.RemoveAllObservers();
 }
 
-uint64_t has_observer(const vtkObject& obj, uint64_t event) {
+uint64_t vtk_object_has_observer(const vtkObject& obj, uint64_t event) {
     vtkObject& obj2 = const_cast<vtkObject&>(obj);
     return obj2.HasObserver(event);
 }
