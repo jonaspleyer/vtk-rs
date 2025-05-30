@@ -15,10 +15,6 @@ macro_rules! log(
 );
 
 fn find_version_suffix(link_path: &std::path::Path) -> Result<Option<String>> {
-    if let Ok(v) = std::env::var("VTK_VERSION") {
-        return Ok(Some(v));
-    }
-
     if cfg!(unix) || cfg!(target_os = "linux") || cfg!(target_os = "macos") {
         let re = regex::Regex::new(VERSION_REGEX)?;
         // Search in every provided link path
