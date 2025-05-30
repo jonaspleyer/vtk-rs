@@ -16,6 +16,7 @@ BreakBeforeBraces: Attach
 BraceWrapping:
     AfterFunction: false
 AllowShortFunctionsOnASingleLine: None
+IndentPPDirectives: BeforeHash
 
 SpaceBeforeCtorInitializerColon: false
 SpaceBeforeAssignmentOperators: true
