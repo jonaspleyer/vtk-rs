@@ -6,6 +6,7 @@ pub(crate) mod ffi {
         type vtkObjectBase;
 
         fn vtk_object_base_get_class_name(obj: &vtkObjectBase) -> String;
+        #[cfg(feature = "v9.4")]
         fn vtk_object_base_get_object_description(obj: &vtkObjectBase) -> String;
         fn vtk_object_base_is_a(obj: &vtkObjectBase, class_name: &str) -> bool;
         fn vtk_object_base_get_number_of_generations_from_base(
@@ -19,8 +20,8 @@ pub(crate) mod ffi {
         fn vtk_object_base_print_self(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_header(obj: &vtkObjectBase, indent: u64) -> String;
         fn vtk_object_base_print_trailer(obj: &vtkObjectBase, indent: u64) -> String;
-        // This is only available in 9.4
-        // fn vtk_object_base_uses_garbage_collector(obj: &vtkObjectBase) -> bool;
+        #[allow(unused)]
+        fn vtk_object_base_uses_garbage_collector(obj: &vtkObjectBase) -> bool;
     }
 }
 
@@ -38,6 +39,7 @@ pub trait vtkObjectBase: private::Sealed {
         ffi::vtk_object_base_get_class_name(&self.as_vtk_object_base())
     }
 
+    #[cfg(feature = "v9.4")]
     fn get_object_description(&self) -> String {
         ffi::vtk_object_base_get_object_description(&self.as_vtk_object_base())
     }
@@ -88,7 +90,8 @@ pub trait vtkObjectBase: private::Sealed {
         ffi::vtk_object_base_print_trailer(&self.as_vtk_object_base(), indent)
     }
 
-    // fn uses_garbage_collector(&self) -> bool {
-    //     ffi::vtk_object_base_uses_garbage_collector(&self.as_vtk_object_base())
-    // }
+    #[cfg(feature = "v9.4")]
+    fn uses_garbage_collector(&self) -> bool {
+        ffi::vtk_object_base_uses_garbage_collector(&self.as_vtk_object_base())
+    }
 }
