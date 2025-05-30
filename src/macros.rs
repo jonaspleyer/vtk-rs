@@ -158,9 +158,9 @@ macro_rules! inherit(
                 let pself = obj.print_self(1);
                 let pheader = obj.print_header(2);
                 let ptrailer = obj.print_trailer(3);
-                assert!(pself.is_empty() || pself.len() > 0);
-                assert!(pheader.is_empty() || pheader.len() > 0);
-                assert!(ptrailer.is_empty() || ptrailer.len() > 0);
+                assert!(!pself.is_empty());
+                assert!(!pheader.is_empty());
+                assert!(!ptrailer.is_empty());
             }
 
             #[cfg(feature = "v9.4")]
