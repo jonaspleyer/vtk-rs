@@ -33,20 +33,24 @@ pub trait vtkObjectBase: private::Sealed {
     fn as_vtk_object_base(&self) -> core::pin::Pin<&ffi::vtkObjectBase>;
     fn as_vtk_object_base_mut(&mut self) -> core::pin::Pin<&mut ffi::vtkObjectBase>;
 
+    #[doc(alias = "GetClassName")]
     fn get_class_name(&self) -> String {
         ffi::vtk_object_base_get_class_name(&self.as_vtk_object_base())
     }
 
     #[cfg(feature = "v9.4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v9.4")))]
+    #[doc(alias = "GetObjectDescription")]
     fn get_object_description(&self) -> String {
         ffi::vtk_object_base_get_object_description(&self.as_vtk_object_base())
     }
 
+    #[doc(alias = "IsA")]
     fn is_a(&self, class_name: &str) -> bool {
         ffi::vtk_object_base_is_a(&self.as_vtk_object_base(), class_name)
     }
 
+    #[doc(alias = "GetNumberOfGenerationsFromBaseType")]
     fn get_number_of_generations_from_base(&self, base_class: &str) -> i64 {
         ffi::vtk_object_base_get_number_of_generations_from_base(
             &self.as_vtk_object_base(),
@@ -65,26 +69,32 @@ pub trait vtkObjectBase: private::Sealed {
         core::mem::drop(sself);
     }*/
 
+    #[doc(alias = "GetReferenceCount")]
     fn get_reference_count(&self) -> i64 {
         ffi::vtk_object_base_get_reference_count(&self.as_vtk_object_base())
     }
 
+    #[doc(alias = "SetReferenceCount")]
     fn set_reference_count(&mut self, count: i64) {
         ffi::vtk_object_base_set_reference_count(self.as_vtk_object_base_mut(), count)
     }
 
+    #[doc(alias = "GetIsInMemkind")]
     fn get_is_in_memkind(&self) -> bool {
         ffi::vtk_object_base_get_is_in_memkind(&self.as_vtk_object_base())
     }
 
+    #[doc(alias = "PrintSelf")]
     fn print_self(&self, indent: u64) -> String {
         ffi::vtk_object_base_print_self(&self.as_vtk_object_base(), indent)
     }
 
+    #[doc(alias = "PrintHeader")]
     fn print_header(&self, indent: u64) -> String {
         ffi::vtk_object_base_print_header(&self.as_vtk_object_base(), indent)
     }
 
+    #[doc(alias = "PrintTrailer")]
     fn print_trailer(&self, indent: u64) -> String {
         ffi::vtk_object_base_print_trailer(&self.as_vtk_object_base(), indent)
     }
