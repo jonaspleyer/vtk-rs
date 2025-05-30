@@ -44,7 +44,13 @@ fn find_version_suffix(link_path: &std::path::Path) -> Result<Option<String>> {
 // Handle building of cmake project
 fn build_cmake() {
     println!("cargo:rerun-if-changed=libvtkrs");
-    let dst = Config::new("libvtkrs").build();
+    let mut config = Config::new("libvtkrs");
+    
+    if std::env::var("CARGO_FEATURE_V9.4").is_ok_and(|x| x == "1") {
+        config.define("VTK094", "1");
+    }
+    
+    let dst = config.build();
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=vtkrs");
 }
