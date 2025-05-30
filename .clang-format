@@ -15,6 +15,7 @@ BreakBeforeBraces: Attach
 
 BraceWrapping:
     AfterFunction: false
+AllowShortFunctionsOnASingleLine: None
 
 SpaceBeforeCtorInitializerColon: false
 SpaceBeforeAssignmentOperators: true

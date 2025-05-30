@@ -10,7 +10,9 @@
 #include <vtkNew.h>
 #include <vtkSphereSource.h>
 
-extern "C" void* sphere_source_new() { return vtkSphereSource::New(); }
+extern "C" void* sphere_source_new() {
+    return vtkSphereSource::New();
+}
 
 extern "C" void sphere_source_delete(void* sphere_source_ptr) {
     static_cast<vtkSphereSource*>(sphere_source_ptr)->Delete();
@@ -60,4 +62,6 @@ vtkSphereSourcePointer* sphere_source_new2() {
     return ptr;
 }
 
-void sphere_source_delete2(vtkSphereSourcePointer& ptr) { ptr->Delete(); }
+void sphere_source_delete2(vtkSphereSourcePointer& ptr) {
+    ptr->Delete();
+}

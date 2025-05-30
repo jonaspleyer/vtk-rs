@@ -4,6 +4,10 @@
 
 #include <vtkDataObject.h>
 
-vtkDataObject* data_object_new() { return vtkDataObject::New(); }
+vtkDataObject* data_object_new() {
+    return vtkDataObject::New();
+}
 
-void data_object_delete(vtkDataObject& data_object) { data_object.Delete(); }
+void data_object_delete(vtkDataObject& data_object) {
+    data_object.Delete();
+}
