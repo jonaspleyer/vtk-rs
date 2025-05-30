@@ -134,14 +134,26 @@ fn main() -> Result<()> {
         (Some(v), None) => {
             // Search for matching VTK Verison in given path
             let link_paths = gather_link_paths()?;
-            for link_path in link_paths.into_iter() {
-                let suffix = find_version_suffix(&link_path)?;
-                log!("{:?}", suffix);
-                if suffix.unwrap_or_default().contains(&v) {
-                    log!("Matched");
-                    println!("cargo:rustc-link-search={}", link_path.display());
-                    break;
-                }
+            let candidates: Vec<_> = link_paths
+                .into_iter()
+                .filter_map(|link_path| {
+                    if let Ok(suffix) = find_version_suffix(&link_path) {
+                        log!("Candidate: {:?}", suffix);
+                        if suffix.unwrap_or_default().contains(&v) {
+                            log!("Matched in {}", link_path.display());
+                            Some(link_path)
+                        } else {
+                            None
+                        }
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            if let Some(p) = candidates.into_iter().next() {
+                println!("cargo:rustc-link-search={}", p.display());
+            } else {
+                panic!("Could not find suitable installation directory.");
             }
             v
         }
