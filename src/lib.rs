@@ -2,6 +2,8 @@
 //!
 //! It depends on system libraries which need to be preinstalled.
 
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 // Internal Tools
 mod macros;
 
