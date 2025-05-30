@@ -162,13 +162,13 @@ macro_rules! inherit(
                 assert!(ptrailer.is_empty() || ptrailer.len() > 0);
             }
 
-            #[test]
+            /* #[test]
             fn uses_garbage_collector() {
                 // Just for linking
                 let obj = $name::new();
                 let res = obj.uses_garbage_collector();
                 assert!(res || !res);
-            }
+            }*/
         }
     };
 

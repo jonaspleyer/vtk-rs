@@ -200,9 +200,4 @@ void cxxbridge1$vtk_object_base_print_trailer(::vtkObjectBase const &obj, ::std:
   ::rust::String (*vtk_object_base_print_trailer$)(::vtkObjectBase const &, ::std::uint64_t) = ::vtk_object_base_print_trailer;
   new (return$) ::rust::String(vtk_object_base_print_trailer$(obj, indent));
 }
-
-bool cxxbridge1$vtk_object_base_uses_garbage_collector(::vtkObjectBase const &obj) noexcept {
-  bool (*vtk_object_base_uses_garbage_collector$)(::vtkObjectBase const &) = ::vtk_object_base_uses_garbage_collector;
-  return vtk_object_base_uses_garbage_collector$(obj);
-}
 } // extern "C"
