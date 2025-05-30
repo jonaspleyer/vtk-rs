@@ -9,4 +9,4 @@ jobs:
       toolchain: stable
       os: macos-14
       packages: vtk
-      environment_vars: 
+      environment_vars: VTK_VERSION=-9.4
