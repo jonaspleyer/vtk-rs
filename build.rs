@@ -56,14 +56,14 @@ fn build_cmake() {
 }
 
 // Collect all paths of directories where to search for libraries
-fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
+fn gather_link_paths() -> Result<impl IntoIterator<Item = std::path::PathBuf>> {
     let mut link_paths = Vec::<std::path::PathBuf>::new();
 
     if cfg!(unix) {
         link_paths.extend([
-            "/usr/lib".into(),
             "/usr/lib/x86_64-linux-gnu/".into(),
             "/usr/local/lib/".into(),
+            "/usr/lib".into(),
         ]);
     }
 
@@ -73,13 +73,21 @@ fn gather_link_paths() -> Result<Vec<std::path::PathBuf>> {
             "/usr/local/Cellar/vtk/".into(),
             "/opt/homebrew/Cellar/vtk".into(),
         ]);
-        link_paths.extend(
-            glob::glob("/opt/homebrew/lib/*vtk*")?
-                .filter_map(|x| x.ok())
-                .filter(|x| x.is_dir()),
-        );
+        link_paths.extend(glob::glob("/opt/homebrew/lib/*vtk*")?.filter_map(|x| x.ok()));
     }
 
+    log!("Gather Link Paths");
+    log!("Before Filtering");
+    for p in link_paths.iter() {
+        log!("{}", p.display());
+    }
+
+    let link_paths: Vec<_> = link_paths.into_iter().filter(|x| x.is_dir()).collect();
+
+    log!("After Filtering");
+    for p in link_paths.iter() {
+        log!("{}", p.display());
+    }
     Ok(link_paths)
 }
 
@@ -113,7 +121,7 @@ fn main() -> Result<()> {
 
     let version_suffix = match (vtk_version, vtk_dir) {
         (Some(v), Some(d)) => {
-            if !std::path::PathBuf::from(&d).exists() {
+            if !std::path::PathBuf::from(&d).is_dir() {
                 return Err(format!("Given Path {d} does not exist in filesystem").into());
             }
             println!("cargo:rustc-link-search={d}");
