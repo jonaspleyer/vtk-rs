@@ -30,7 +30,9 @@ pub(crate) mod private {
 /// [`vtkObjectBase`](https://vtk.org/doc/nightly/html/classvtkObjectBase.html)
 #[allow(non_camel_case_types)]
 pub trait vtkObjectBase: private::Sealed {
+    #[doc(hidden)]
     fn as_vtk_object_base(&self) -> core::pin::Pin<&ffi::vtkObjectBase>;
+    #[doc(hidden)]
     fn as_vtk_object_base_mut(&mut self) -> core::pin::Pin<&mut ffi::vtkObjectBase>;
 
     #[doc(alias = "GetClassName")]

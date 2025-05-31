@@ -27,7 +27,9 @@ pub(crate) mod private {
 /// [`vtkObject`](https://vtk.org/doc/nightly/html/classvtkObject.html)
 #[allow(non_camel_case_types)]
 pub trait vtkObject: private::Sealed {
+    #[doc(hidden)]
     fn as_vtk_object(&self) -> core::pin::Pin<&ffi::vtkObject>;
+    #[doc(hidden)]
     fn as_vtk_object_mut(&mut self) -> core::pin::Pin<&mut ffi::vtkObject>;
 
     #[doc(alias = "SetDebug")]
