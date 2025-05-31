@@ -5,110 +5,73 @@ mod ffi {
 
         type vtkSphereSource;
 
-        fn sphere_source_new() -> *mut vtkSphereSource;
-        fn sphere_source_delete(ptr: Pin<&mut vtkSphereSource>);
-        /* fn sphere_source_set_radius(ptr: Pin<&mut vtkSphereSource>, radius: f64);
-        fn sphere_source_get_radius(ptr: &vtkSphereSource) -> f64;
-        fn sphere_source_set_center(spherr_ptr: Pin<&mut vtkSphereSource>, center: [f64; 3]);
-        fn sphere_source_get_center(ptr: &vtkSphereSource, center: [f64; 3]);
-        fn sphere_source_set_phi_resolution(ptr: Pin<&mut vtkSphereSource>, resolution: isize);
-        fn sphere_source_set_theta_resolution(ptr: Pin<&mut vtkSphereSource>, resolution: isize);
-        fn sphere_source_print_self(ptr: &vtkSphereSource, indent: usize) -> String;
-        fn sphere_source_get_output_port(ptr: &vtkSphereSource) -> isize;*/
+        fn vtk_sphere_source_new() -> *mut vtkSphereSource;
+        fn vtk_sphere_source_delete(ptr: Pin<&mut vtkSphereSource>);
+        fn vtk_sphere_source_set_radius(sphere_source: Pin<&mut vtkSphereSource>, radius: f64);
+        fn vtk_sphere_source_get_radius(sphere_source: &vtkSphereSource) -> f64;
+        fn vtk_sphere_source_set_center(sphere_source: Pin<&mut vtkSphereSource>, center: [f64; 3]);
+        fn vtk_sphere_source_get_center(sphere_source: &vtkSphereSource) -> [f64; 3];
+        fn vtk_sphere_source_set_phi_resolution(
+            sphere_source: Pin<&mut vtkSphereSource>,
+            resolution: i64,
+        );
+        fn vtk_sphere_source_get_phi_resolution(sphere_source: &vtkSphereSource) -> i64;
+        fn vtk_sphere_source_set_theta_resolution(
+            sphere_source: Pin<&mut vtkSphereSource>,
+            resolution: i64,
+        );
+        fn vtk_sphere_source_get_theta_resolution(sphere_source: &vtkSphereSource) -> i64;
     }
 }
-
-/* unsafe extern "C" {
-    fn sphere_source_new() -> *mut c_void;
-    fn sphere_source_delete(sphere_source_ptr: *mut c_void);
-    fn sphere_source_set_radius(sphere_source_ptr: *mut c_void, radius: f64);
-    fn sphere_source_get_radius(sphere_source_ptr: *mut c_void) -> f64;
-    fn sphere_source_set_center(spherr_ptr: *mut c_void, center: *const f64);
-    fn sphere_source_get_center(sphere_source_ptr: *mut c_void, center: *mut f64);
-    fn sphere_source_set_phi_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
-    fn sphere_source_set_theta_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
-    fn sphere_source_print_self(sphere_source_ptr: *mut c_void, indent: usize) -> *const c_char;
-    fn sphere_source_get_output_port(sphere_source_ptr: *mut c_void) -> c_int;
-}*/
 
 crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
     @name SphereSource, ffi::vtkSphereSource,
-    @new ffi::sphere_source_new,
-    @delete ffi::sphere_source_delete
+    @new ffi::vtk_sphere_source_new,
+    @delete ffi::vtk_sphere_source_delete
 );
 
 crate::inherit!(SphereSource vtkPolyDataAlgorithm ffi::vtkSphereSource);
 
-/* pub struct SphereSource {
-    sphere_source_ptr: *mut c_void,
-}
-
-impl Default for SphereSource {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl SphereSource {
-    #[doc(alias = "New")]
-    pub fn new() -> Self {
-        Self {
-            sphere_source_ptr: unsafe { sphere_source_new() },
-        }
-    }
-
     #[doc(alias = "SetRadius")]
     pub fn set_radius(&mut self, radius: f64) {
-        unsafe { sphere_source_set_radius(self.sphere_source_ptr, radius) };
+        ffi::vtk_sphere_source_set_radius(self.ptr.as_mut(), radius)
     }
 
     #[doc(alias = "GetRadius")]
     pub fn get_radius(&self) -> f64 {
-        unsafe { sphere_source_get_radius(self.sphere_source_ptr) }
+        ffi::vtk_sphere_source_get_radius(&self.ptr.as_ref())
     }
 
     #[doc(alias = "SetCenter")]
     pub fn set_center(&mut self, center: [f64; 3]) {
-        unsafe { sphere_source_set_center(self.sphere_source_ptr, center.as_ptr()) };
+        ffi::vtk_sphere_source_set_center(self.ptr.as_mut(), center)
     }
 
     #[doc(alias = "GetCenter")]
     pub fn get_center(&self) -> [f64; 3] {
-        unsafe {
-            let mut center = [0.; 3];
-            sphere_source_get_center(self.sphere_source_ptr, center.as_mut_ptr());
-            center
-        }
+        ffi::vtk_sphere_source_get_center(&self.ptr.as_ref())
+    }
+
+    #[doc(alias = "GetPhiResolution")]
+    pub fn get_phi_resolution(&self) -> i64 {
+        ffi::vtk_sphere_source_get_phi_resolution(&self.ptr.as_ref())
     }
 
     #[doc(alias = "SetPhiResolution")]
-    pub fn set_phi_resolution(&mut self, resolution: c_int) {
-        unsafe { sphere_source_set_phi_resolution(self.sphere_source_ptr, resolution) }
+    pub fn set_phi_resolution(&mut self, phi_resolution: i64) {
+        ffi::vtk_sphere_source_set_phi_resolution(self.ptr.as_mut(), phi_resolution)
+    }
+
+    #[doc(alias = "GetThetaResolution")]
+    pub fn get_theta_resolution(&self) -> i64 {
+        ffi::vtk_sphere_source_get_theta_resolution(&self.ptr.as_ref())
     }
 
     #[doc(alias = "SetThetaResolution")]
-    pub fn set_theta_resolution(&mut self, resolution: c_int) {
-        unsafe { sphere_source_set_theta_resolution(self.sphere_source_ptr, resolution) }
-    }
-
-    #[doc(alias = "PrintSelf")]
-    pub fn print_self(&self, indent: usize) -> CString {
-        unsafe {
-            let char_ptr = sphere_source_print_self(self.sphere_source_ptr, indent);
-            CString::from_raw(char_ptr.cast_mut())
-        }
-    }
-
-    #[doc(alias = "GetOutputPort")]
-    pub fn get_output_port(&self) -> c_int {
-        unsafe { sphere_source_get_output_port(self.sphere_source_ptr) }
-    }
-}
-
-impl Drop for SphereSource {
-    fn drop(&mut self) {
-        unsafe { sphere_source_delete(self.sphere_source_ptr) };
+    pub fn set_theta_resolution(&mut self, theta_resolution: i64) {
+        ffi::vtk_sphere_source_set_theta_resolution(self.ptr.as_mut(), theta_resolution)
     }
 }
 
@@ -139,10 +102,9 @@ mod test {
 
     #[test]
     fn print_self() {
+        use crate::vtk_object_base::*;
         let sphere = SphereSource::new();
-        let result = sphere.print_self(3);
-        let string = result.to_str().unwrap().to_string();
-        println!("{}", result.to_str().unwrap());
+        let string = sphere.print_self(3);
         assert!(string.contains("   Debug"));
         assert!(string.contains("   Reference Count: 2"));
         assert!(string.contains("   Registered Events"));
@@ -152,4 +114,4 @@ mod test {
         assert!(string.contains("   Phi Resolution"));
         assert!(string.contains("   Theta Resolution"));
     }
-}*/
+}
