@@ -249,7 +249,64 @@ macro_rules! inherit(
     };
     ($name:ident vtkPolyDataAlgorithm $ptr_type:ty) => {
         impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
-        impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {}
+
+        impl core::convert::AsRef<crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm>
+            for $ptr_type {
+            fn as_ref(&self) -> &crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm {
+                let x = self as *const $ptr_type;
+                let x = x as *const crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm;
+                unsafe { &*x }
+            }
+        }
+
+        impl core::convert::AsMut<crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm>
+            for $ptr_type {
+            fn as_mut(&mut self) -> &mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm {
+                let x = self as *mut $ptr_type;
+                let x = x as *mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm;
+                unsafe { &mut *x }
+            }
+        }
+
+        impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {
+            fn as_vtk_poly_data_algorithm(&self) ->
+                core::pin::Pin<&crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_poly_data_algorithm_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+
+        }
+
+        #[cfg(test)]
+        mod vtk_poly_data_algorithm {
+            use super::*;
+            #[allow(unused)]
+            use crate::vtk_poly_data_algorithm::*;
+
+            #[test]
+            fn create_delete() {
+                let obj = $name::new();
+                core::mem::drop(obj);
+            }
+
+            /* #[test]
+            fn input_data() {
+                use crate::vtk_data_object::*;
+                use crate::vtk_algorithm::*;
+                let mut pda = $name::new();
+                // pda.set_number_of_input_ports(1);
+                // assert!(pda.get_input(0).is_none());
+                // let obj = DataObject::new();
+                // pda.add_input_data(0, &obj);
+                // let obj2 = DataObject::new();
+                // pda.set_input_data(0, &obj2);
+            }*/
+        }
+
         crate::inherit!($name vtkAlgorithm $ptr_type);
     };
     ($name:ident vtkDataObject $ptr_type:ty) => {
