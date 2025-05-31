@@ -2,28 +2,9 @@
 
 #include "vtk_sphere_source.h"
 #include <array>
+#include <cstdint>
 #include <new>
 #include <utility>
-#if defined(_WIN32)
-#include <basetsd.h>
-#else
-#include <sys/types.h>
-#endif
-
-namespace rust {
-inline namespace cxxbridge1 {
-// #include "rust/cxx.h"
-
-#ifndef CXXBRIDGE1_RUST_ISIZE
-#define CXXBRIDGE1_RUST_ISIZE
-#if defined(_WIN32)
-using isize = SSIZE_T;
-#else
-using isize = ssize_t;
-#endif
-#endif // CXXBRIDGE1_RUST_ISIZE
-} // namespace cxxbridge1
-} // namespace rust
 
 using vtkSphereSource = ::vtkSphereSource;
 
@@ -58,13 +39,23 @@ void cxxbridge1$vtk_sphere_source_get_center(::vtkSphereSource const &sphere_sou
   new (return$) ::std::array<double, 3>(vtk_sphere_source_get_center$(sphere_source));
 }
 
-void cxxbridge1$vtk_sphere_source_set_phi_resolution(::vtkSphereSource &sphere_source, ::rust::isize resolution) noexcept {
-  void (*vtk_sphere_source_set_phi_resolution$)(::vtkSphereSource &, ::rust::isize) = ::vtk_sphere_source_set_phi_resolution;
+void cxxbridge1$vtk_sphere_source_set_phi_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
+  void (*vtk_sphere_source_set_phi_resolution$)(::vtkSphereSource &, ::std::int64_t) = ::vtk_sphere_source_set_phi_resolution;
   vtk_sphere_source_set_phi_resolution$(sphere_source, resolution);
 }
 
-void cxxbridge1$vtk_sphere_source_set_theta_resolution(::vtkSphereSource &sphere_source, ::rust::isize resolution) noexcept {
-  void (*vtk_sphere_source_set_theta_resolution$)(::vtkSphereSource &, ::rust::isize) = ::vtk_sphere_source_set_theta_resolution;
+::std::int64_t cxxbridge1$vtk_sphere_source_get_phi_resolution(::vtkSphereSource const &sphere_source) noexcept {
+  ::std::int64_t (*vtk_sphere_source_get_phi_resolution$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_phi_resolution;
+  return vtk_sphere_source_get_phi_resolution$(sphere_source);
+}
+
+void cxxbridge1$vtk_sphere_source_set_theta_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
+  void (*vtk_sphere_source_set_theta_resolution$)(::vtkSphereSource &, ::std::int64_t) = ::vtk_sphere_source_set_theta_resolution;
   vtk_sphere_source_set_theta_resolution$(sphere_source, resolution);
+}
+
+::std::int64_t cxxbridge1$vtk_sphere_source_get_theta_resolution(::vtkSphereSource const &sphere_source) noexcept {
+  ::std::int64_t (*vtk_sphere_source_get_theta_resolution$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_theta_resolution;
+  return vtk_sphere_source_get_theta_resolution$(sphere_source);
 }
 } // extern "C"
