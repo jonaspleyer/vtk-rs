@@ -28,6 +28,16 @@ void cxxbridge1$vtk_poly_data_algorithm_delete(::vtkPolyDataAlgorithm &poly_data
   return &vtk_poly_data_algorithm_get_poly_data_input$(vtk_poly_data_algorithm, port);
 }
 
+::vtkPolyData const *cxxbridge1$vtk_poly_data_algorithm_get_output(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port) noexcept {
+  ::vtkPolyData const &(*vtk_poly_data_algorithm_get_output$)(::vtkPolyDataAlgorithm const &, ::std::int64_t) = ::vtk_poly_data_algorithm_get_output;
+  return &vtk_poly_data_algorithm_get_output$(vtk_poly_data_algorithm, port);
+}
+
+void cxxbridge1$vtk_poly_data_algorithm_set_output(::vtkPolyDataAlgorithm &vtk_poly_data_algorithm, ::vtkDataObject const &data_object) noexcept {
+  void (*vtk_poly_data_algorithm_set_output$)(::vtkPolyDataAlgorithm &, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_set_output;
+  vtk_poly_data_algorithm_set_output$(vtk_poly_data_algorithm, data_object);
+}
+
 void cxxbridge1$vtk_poly_data_algorithm_set_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
   void (*vtk_poly_data_algorithm_set_input_data$)(::vtkPolyDataAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_set_input_data;
   vtk_poly_data_algorithm_set_input_data$(poly_data_algorithm, port, data_object);
@@ -36,10 +46,5 @@ void cxxbridge1$vtk_poly_data_algorithm_set_input_data(::vtkPolyDataAlgorithm &p
 void cxxbridge1$vtk_poly_data_algorithm_add_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
   void (*vtk_poly_data_algorithm_add_input_data$)(::vtkPolyDataAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_add_input_data;
   vtk_poly_data_algorithm_add_input_data$(poly_data_algorithm, port, data_object);
-}
-
-::vtkPolyData const *cxxbridge1$vtk_poly_data_algorithm_get_output(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port) noexcept {
-  ::vtkPolyData const &(*vtk_poly_data_algorithm_get_output$)(::vtkPolyDataAlgorithm const &, ::std::int64_t) = ::vtk_poly_data_algorithm_get_output;
-  return &vtk_poly_data_algorithm_get_output$(vtk_poly_data_algorithm, port);
 }
 } // extern "C"

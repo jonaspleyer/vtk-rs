@@ -17,3 +17,6 @@ const vtkPolyData& vtk_poly_data_algorithm_get_poly_data_input(
 );
 const vtkPolyData&
 vtk_poly_data_algorithm_get_output(const vtkPolyDataAlgorithm& poly_data_algorithm, int64_t port);
+void vtk_poly_data_algorithm_set_output(
+    vtkPolyDataAlgorithm& poly_data_algorithm, const vtkDataObject& data_object
+);
