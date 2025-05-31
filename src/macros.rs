@@ -311,7 +311,67 @@ macro_rules! inherit(
     };
     ($name:ident vtkDataObject $ptr_type:ty) => {
         impl crate::vtk_data_object::private::Sealed for $name {}
-        impl crate::vtk_data_object::vtkDataObject for $name {}
+
+        impl core::convert::AsRef<crate::vtk_data_object::ffi::vtkDataObject>
+            for $ptr_type {
+            fn as_ref(&self) -> &crate::vtk_data_object::ffi::vtkDataObject {
+                let x = self as *const $ptr_type;
+                let x = x as *const crate::vtk_data_object::ffi::vtkDataObject;
+                unsafe { &*x }
+            }
+        }
+
+        impl core::convert::AsMut<crate::vtk_data_object::ffi::vtkDataObject>
+            for $ptr_type {
+            fn as_mut(&mut self) -> &mut crate::vtk_data_object::ffi::vtkDataObject {
+                let x = self as *mut $ptr_type;
+                let x = x as *mut crate::vtk_data_object::ffi::vtkDataObject;
+                unsafe { &mut *x }
+            }
+        }
+
+        impl crate::vtk_data_object::vtkDataObject for $name {
+            fn as_vtk_data_object(&self) ->
+                core::pin::Pin<&crate::vtk_data_object::ffi::vtkDataObject> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_data_object_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_data_object::ffi::vtkDataObject> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+
+            unsafe fn cast_to_pointer<T>(&self) -> core::pin::Pin<&T> {
+                self.ptr.as_ref().map_unchecked(|x| {
+                    let x = x as *const $ptr_type;
+                    let x = x as *const T;
+                    unsafe { &*x }
+                })
+            }
+
+            unsafe fn cast_to_pointer_mut<T>(&mut self) -> core::pin::Pin<&mut T> {
+                self.ptr.as_mut().map_unchecked_mut(|x| {
+                    let x = x as *mut $ptr_type;
+                    let x = x as *mut T;
+                    unsafe { &mut *x }
+                })
+            }
+        }
+
+        #[cfg(test)]
+        mod vtk_data_object {
+            use super::*;
+            #[allow(unused)]
+            use crate::vtk_data_object::*;
+
+            #[test]
+            fn initialize_release() {
+                let mut obj = $name::new();
+                obj.initialize();
+                obj.release_data();
+            }
+        }
+
         crate::inherit!($name vtkObject $ptr_type);
     };
     ($name:ident vtkDataSet $ptr_type:ty) => {
