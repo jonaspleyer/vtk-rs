@@ -38,20 +38,19 @@ bool vtk_object_base_get_is_in_memkind(const vtkObjectBase& obj) {
 }
 
 rust::String vtk_object_base_print_self(const vtkObjectBase& obj, std::uint64_t indent) {
-    std::ostringstream oss;
+    std::stringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintSelf(oss, vtkIndent(indent));
     return oss.str();
 }
 
 rust::String vtk_object_base_print_header(const vtkObjectBase& obj, std::uint64_t indent) {
-    std::ostringstream oss;
+    std::stringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintHeader(oss, vtkIndent(indent));
     return oss.str();
 }
 
 rust::String vtk_object_base_print_trailer(const vtkObjectBase& obj, std::uint64_t indent) {
-    // rust::String output = rust::String();
-    std::ostringstream oss;
+    std::stringstream oss;
     const_cast<vtkObjectBase&>(obj).PrintTrailer(oss, vtkIndent(indent));
     return oss.str();
 }
