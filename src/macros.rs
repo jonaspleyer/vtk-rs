@@ -7,6 +7,7 @@ macro_rules! define_object(
         @delete $drop_func:expr
     ) => {
         #[doc = concat!("[`vtk", stringify!($name), "`](", $link, ")")]
+        #[repr(transparent)]
         pub struct $name {
             ptr: core::pin::Pin<&'static mut $ptr_type>,
         }
