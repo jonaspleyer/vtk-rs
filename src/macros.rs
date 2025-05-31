@@ -103,7 +103,7 @@ macro_rules! inherit(
                 assert!(!class_name.is_empty());
             }
 
-            #[cfg(feature = "v9.4")]
+            #[cfg(feature = "v094")]
             #[test]
             fn get_object_description() {
                 let obj = $name::new();
@@ -163,7 +163,7 @@ macro_rules! inherit(
                 assert!(!ptrailer.is_empty());
             }
 
-            #[cfg(feature = "v9.4")]
+            #[cfg(feature = "v094")]
             #[test]
             fn uses_garbage_collector() {
                 // Just for linking

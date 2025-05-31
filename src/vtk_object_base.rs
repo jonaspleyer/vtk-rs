@@ -38,8 +38,8 @@ pub trait vtkObjectBase: private::Sealed {
         ffi::vtk_object_base_get_class_name(&self.as_vtk_object_base())
     }
 
-    #[cfg(feature = "v9.4")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "v9.4")))]
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     #[doc(alias = "GetObjectDescription")]
     fn get_object_description(&self) -> String {
         ffi::vtk_object_base_get_object_description(&self.as_vtk_object_base())
@@ -99,8 +99,8 @@ pub trait vtkObjectBase: private::Sealed {
         ffi::vtk_object_base_print_trailer(&self.as_vtk_object_base(), indent)
     }
 
-    #[cfg(feature = "v9.4")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "v9.4")))]
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn uses_garbage_collector(&self) -> bool {
         ffi::vtk_object_base_uses_garbage_collector(&self.as_vtk_object_base())
     }

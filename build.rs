@@ -46,7 +46,7 @@ fn build_cmake() {
     println!("cargo:rerun-if-changed=libvtkrs");
     let mut config = Config::new("libvtkrs");
 
-    if std::env::var("CARGO_FEATURE_V9.4").is_ok_and(|x| x == "1") {
+    if std::env::var("CARGO_FEATURE_V094").is_ok_and(|x| x == "1") {
         config.define("VTK094", "1");
     }
 

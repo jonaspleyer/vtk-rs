@@ -20,4 +20,4 @@ regex = "1.11.1"
 approx = { package = "approxim", version = "0.6.4", features = ["array_impl"]}
 
 [features]
-"v9.4" = []
+v094 = []
