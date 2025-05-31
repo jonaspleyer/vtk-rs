@@ -10,10 +10,6 @@ void sphere_delete(vtkSphere& sphere) {
     sphere.Delete();
 }
 
-void sphere_delete_pin(vtkSphere& sphere) {
-    sphere.Delete();
-}
-
 double sphere_get_radius(const vtkSphere& sphere) {
     vtkSphere& sphere2 = const_cast<vtkSphere&>(sphere);
     return sphere2.GetRadius();
