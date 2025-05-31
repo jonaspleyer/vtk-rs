@@ -10,12 +10,12 @@
 #include <vtkNew.h>
 #include <vtkSphereSource.h>
 
-extern "C" void* sphere_source_new() {
+vtkSphereSource* sphere_source_new() {
     return vtkSphereSource::New();
 }
 
-extern "C" void sphere_source_delete(void* sphere_source_ptr) {
-    static_cast<vtkSphereSource*>(sphere_source_ptr)->Delete();
+void sphere_source_delete(vtkSphereSource& sphere_source) {
+    sphere_source.Delete();
 }
 
 extern "C" void sphere_source_set_radius(void* sphere_source_ptr, double radius) {
@@ -51,17 +51,4 @@ extern "C" const char* sphere_source_print_self(void* sphere_source_ptr, unsigne
     char* result    = new char[out.length() + 1];
     strcpy(result, out.c_str());
     return result;
-}
-
-// extern "C" vtkAlgorithmOutput *sphere_source_get_output_port(void *sphere_source_ptr) {
-//     return static_cast<vtkSphereSource *>(sphere_source_ptr)->GetOutputPort();
-// }
-
-vtkSphereSourcePointer* sphere_source_new2() {
-    vtkSphereSourcePointer* ptr = new vtkSphereSourcePointer();
-    return ptr;
-}
-
-void sphere_source_delete2(vtkSphereSourcePointer& ptr) {
-    ptr->Delete();
 }

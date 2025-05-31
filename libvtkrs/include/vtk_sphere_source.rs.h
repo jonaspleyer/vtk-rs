@@ -2,16 +2,16 @@
 
 #include "vtk_sphere_source.h"
 
-using vtkSphereSourcePointer = ::vtkSphereSourcePointer;
+using vtkSphereSource = ::vtkSphereSource;
 
 extern "C" {
-::vtkSphereSourcePointer *cxxbridge1$sphere_source_new2() noexcept {
-  ::vtkSphereSourcePointer *(*sphere_source_new2$)() = ::sphere_source_new2;
-  return sphere_source_new2$();
+::vtkSphereSource *cxxbridge1$sphere_source_new() noexcept {
+  ::vtkSphereSource *(*sphere_source_new$)() = ::sphere_source_new;
+  return sphere_source_new$();
 }
 
-void cxxbridge1$sphere_source_delete2(::vtkSphereSourcePointer const &ptr) noexcept {
-  void (*sphere_source_delete2$)(::vtkSphereSourcePointer const &) = ::sphere_source_delete2;
-  sphere_source_delete2$(ptr);
+void cxxbridge1$sphere_source_delete(::vtkSphereSource &ptr) noexcept {
+  void (*sphere_source_delete$)(::vtkSphereSource &) = ::sphere_source_delete;
+  sphere_source_delete$(ptr);
 }
 } // extern "C"

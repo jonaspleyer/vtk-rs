@@ -1,27 +1,24 @@
-use core::ffi::{c_char, c_void};
-use std::ffi::{c_int, CString};
-
 #[cxx::bridge]
 mod ffi {
     unsafe extern "C++" {
         include!("vtk_sphere_source.h");
 
-        type vtkSphereSourcePointer;
+        type vtkSphereSource;
 
-        fn sphere_source_new2() -> *mut vtkSphereSourcePointer;
-        unsafe fn sphere_source_delete2(ptr: &vtkSphereSourcePointer);
-        // fn sphere_source_set_radius(ptr: &vtkSphereSourcePointer, radius: f64);
-        // fn sphere_source_get_radius(ptr: &vtkSphereSourcePointer) -> f64;
-        // fn sphere_source_set_center(spherr_ptr: &vtkSphereSourcePointer, center: [f64; 3]);
-        // fn sphere_source_get_center(ptr: &vtkSphereSourcePointer, center: [f64; 3]);
-        // fn sphere_source_set_phi_resolution(ptr: &vtkSphereSourcePointer, resolution: isize);
-        // fn sphere_source_set_theta_resolution(ptr: &vtkSphereSourcePointer, resolution: isize);
-        // fn sphere_source_print_self(ptr: &vtkSphereSourcePointer, indent: usize) -> String;
-        // fn sphere_source_get_output_port(ptr: &vtkSphereSourcePointer) -> isize;
+        fn sphere_source_new() -> *mut vtkSphereSource;
+        fn sphere_source_delete(ptr: Pin<&mut vtkSphereSource>);
+        /* fn sphere_source_set_radius(ptr: Pin<&mut vtkSphereSource>, radius: f64);
+        fn sphere_source_get_radius(ptr: &vtkSphereSource) -> f64;
+        fn sphere_source_set_center(spherr_ptr: Pin<&mut vtkSphereSource>, center: [f64; 3]);
+        fn sphere_source_get_center(ptr: &vtkSphereSource, center: [f64; 3]);
+        fn sphere_source_set_phi_resolution(ptr: Pin<&mut vtkSphereSource>, resolution: isize);
+        fn sphere_source_set_theta_resolution(ptr: Pin<&mut vtkSphereSource>, resolution: isize);
+        fn sphere_source_print_self(ptr: &vtkSphereSource, indent: usize) -> String;
+        fn sphere_source_get_output_port(ptr: &vtkSphereSource) -> isize;*/
     }
 }
 
-unsafe extern "C" {
+/* unsafe extern "C" {
     fn sphere_source_new() -> *mut c_void;
     fn sphere_source_delete(sphere_source_ptr: *mut c_void);
     fn sphere_source_set_radius(sphere_source_ptr: *mut c_void, radius: f64);
@@ -32,9 +29,18 @@ unsafe extern "C" {
     fn sphere_source_set_theta_resolution(sphere_source_ptr: *mut c_void, resolution: c_int);
     fn sphere_source_print_self(sphere_source_ptr: *mut c_void, indent: usize) -> *const c_char;
     fn sphere_source_get_output_port(sphere_source_ptr: *mut c_void) -> c_int;
-}
+}*/
 
-pub struct SphereSource {
+crate::define_object!(
+    "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
+    @name SphereSource, ffi::vtkSphereSource,
+    @new ffi::sphere_source_new,
+    @delete ffi::sphere_source_delete
+);
+
+crate::inherit!(SphereSource vtkPolyDataAlgorithm ffi::vtkSphereSource);
+
+/* pub struct SphereSource {
     sphere_source_ptr: *mut c_void,
 }
 
@@ -146,4 +152,4 @@ mod test {
         assert!(string.contains("   Phi Resolution"));
         assert!(string.contains("   Theta Resolution"));
     }
-}
+}*/
