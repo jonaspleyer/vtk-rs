@@ -4,10 +4,18 @@
 
 #include <vtkDataObject.h>
 
-vtkDataObject* data_object_new() {
+vtkDataObject* vtk_data_object_new() {
     return vtkDataObject::New();
 }
 
-void data_object_delete(vtkDataObject& data_object) {
+void vtk_data_object_delete(vtkDataObject& data_object) {
     data_object.Delete();
+}
+
+void vtk_data_object_initialize(vtkDataObject& data_object) {
+    data_object.Initialize();
+}
+
+void vtk_data_object_release_data(vtkDataObject& data_object) {
+    data_object.ReleaseData();
 }
