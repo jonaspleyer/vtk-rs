@@ -31,6 +31,7 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/vtk_object_base.h
    ${PROJECT_SOURCE_DIR}/include/vtk_object_base.rs.h
    ${PROJECT_SOURCE_DIR}/include/vtk_poly_data.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_poly_data_algorithm.h
    ${PROJECT_SOURCE_DIR}/include/vtk_poly_data_mapper.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere.h
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere_source.h
@@ -50,6 +51,7 @@ target_sources(vtkrs
         ${PROJECT_SOURCE_DIR}/src/vtk_object.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_object_base.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_poly_data.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_poly_data_algorithm.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_poly_data_mapper.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_sphere_source.cpp
