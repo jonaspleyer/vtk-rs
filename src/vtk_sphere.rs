@@ -7,7 +7,6 @@ pub(crate) mod ffi {
 
         fn sphere_new() -> *mut vtkSphere;
         fn sphere_delete(sphere: Pin<&mut vtkSphere>);
-        fn sphere_delete_pin(sphere: Pin<&mut vtkSphere>);
         fn sphere_set_radius(sphere: Pin<&mut vtkSphere>, radius: f64);
         fn sphere_get_radius(sphere: &vtkSphere) -> f64;
         fn sphere_set_center(spherr: Pin<&mut vtkSphere>, center: [f64; 3]);

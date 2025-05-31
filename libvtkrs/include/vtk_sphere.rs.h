@@ -18,11 +18,6 @@ void cxxbridge1$sphere_delete(::vtkSphere &sphere) noexcept {
   sphere_delete$(sphere);
 }
 
-void cxxbridge1$sphere_delete_pin(::vtkSphere &sphere) noexcept {
-  void (*sphere_delete_pin$)(::vtkSphere &) = ::sphere_delete_pin;
-  sphere_delete_pin$(sphere);
-}
-
 void cxxbridge1$sphere_set_radius(::vtkSphere &sphere, double radius) noexcept {
   void (*sphere_set_radius$)(::vtkSphere &, double) = ::sphere_set_radius;
   sphere_set_radius$(sphere, radius);
