@@ -46,9 +46,9 @@ To implement the desired class methods, we use Rust
 [macros](https://doc.rust-lang.org/reference/macros-by-example.html).
 
 ## Roadmap
-1. Stabilize Build system
-2. Automate system library detection and generate linker flags
-3. Gradually implement functionality for examples. Start with 3D geometry.
+1. [x] Stabilize Build system
+2. [x] Automate system library detection and generate linker flags
+3. [ ] Gradually implement functionality for examples. Start with 3D geometry.
 - *SphereSource*
   https://examples.vtk.org/site/Cxx/GeometricObjects/SphereSource/
 - *CylinderExample*
