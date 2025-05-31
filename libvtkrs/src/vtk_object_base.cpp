@@ -57,9 +57,17 @@ rust::String vtk_object_base_print_trailer(const vtkObjectBase& obj, std::uint64
 }
 
 rust::String vtk_object_base_get_object_description(const vtkObjectBase& obj) {
+#ifdef VTK094
     return obj.GetObjectDescription();
+#else
+    return "";
+#endif
 }
 
 bool vtk_object_base_uses_garbage_collector(const vtkObjectBase& obj) {
+#ifdef VTK094
     return const_cast<vtkObjectBase&>(obj).UsesGarbageCollector();
+#else
+    return "";
+#endif
 }

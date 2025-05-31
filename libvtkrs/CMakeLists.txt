@@ -36,6 +36,10 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/vtk_sphere_source.h
 )
 
+add_definitions(
+    -DVTK094
+)
+
 include_directories(${PROJECT_SOURCE_DIR}/include/)
 
 target_sources(vtkrs
