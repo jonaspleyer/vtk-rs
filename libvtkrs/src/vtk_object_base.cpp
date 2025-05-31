@@ -2,7 +2,7 @@
 #include "cxx.h"
 #include "vtkIndent.h"
 #include "vtk_object_base.rs.h"
-#include <iostream>
+#include <sstream>
 
 #include <cstdint>
 #include <vtkObjectBase.h>
