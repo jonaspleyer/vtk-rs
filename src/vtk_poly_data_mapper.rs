@@ -19,11 +19,21 @@ crate::define_object!(
     @delete ffi::poly_data_mapper_delete
 );
 
+crate::inherit!(PolyDataMapper vtkPolyDataMapper ffi::vtkPolyDataMapper);
+
 /* impl PolyData {
     pub fn set_input(&mut self, data: &ffi::vtkPolyData) {
         unsafe { ffi::poly_data_mapper_set_input(self.ptr, data) };
     }
 }*/
+
+pub(crate) mod private {
+    pub trait Sealed {}
+}
+
+/// [`vtkPolyDataMapper`](https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html)
+#[allow(non_camel_case_types)]
+pub trait vtkPolyDataMapper: private::Sealed {}
 
 #[test]
 fn test_create_drop() {
