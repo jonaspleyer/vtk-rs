@@ -374,6 +374,24 @@ macro_rules! inherit(
 
         crate::inherit!($name vtkObject $ptr_type);
     };
+    ($name:ident vtkAbstractMapper $ptr_type:ty) => {
+        impl crate::vtk_abstract_mapper::private::Sealed for $name {}
+        impl crate::vtk_abstract_mapper::vtkAbstractMapper for $name {}
+
+        crate::inherit!($name vtkAlgorithm $ptr_type);
+    };
+    ($name:ident vtkAbstractMapper3D $ptr_type:ty) => {
+        crate::inherit!($name vtkAbstractMapper $ptr_type);
+    };
+    ($name:ident vtkMapper $ptr_type:ty) => {
+        crate::inherit!($name vtkAbstractMapper3D $ptr_type);
+    };
+    ($name:ident vtkPolyDataMapper $ptr_type:ty) => {
+        impl crate::vtk_poly_data_mapper::private::Sealed for $name {}
+        impl crate::vtk_poly_data_mapper::vtkPolyDataMapper for $name {}
+
+        crate::inherit!($name vtkMapper $ptr_type);
+    };
     ($name:ident vtkDataSet $ptr_type:ty) => {
         crate::inherit!($name vtkDataObject $ptr_type);
     };
