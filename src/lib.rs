@@ -10,8 +10,11 @@ mod macros;
 use macros::*;
 
 // Exposed API
+mod vtk_abstract_mapper;
+mod vtk_abstract_mapper_3d;
 mod vtk_algorithm;
 mod vtk_data_object;
+mod vtk_mapper;
 mod vtk_named_colors;
 mod vtk_object;
 mod vtk_object_base;
@@ -21,8 +24,11 @@ mod vtk_poly_data_mapper;
 mod vtk_sphere;
 mod vtk_sphere_source;
 
+pub use vtk_abstract_mapper::*;
+pub use vtk_abstract_mapper_3d::*;
 pub use vtk_algorithm::*;
 pub use vtk_data_object::*;
+pub use vtk_mapper::*;
 pub use vtk_named_colors::*;
 pub use vtk_object::*;
 pub use vtk_object_base::*;
