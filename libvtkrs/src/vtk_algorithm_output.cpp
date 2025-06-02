@@ -13,7 +13,7 @@ void vtk_algorithm_output_delete(vtkAlgorithmOutput& algorithm) {
 }
 
 int64_t vtk_algorithm_output_get_index(const vtkAlgorithmOutput& algorithm) {
-    return algorithm.GetIndex();
+    return const_cast<vtkAlgorithmOutput&>(algorithm).GetIndex();
 }
 
 void vtk_algorithm_output_set_index(vtkAlgorithmOutput& algorithm, int64_t index) {
@@ -21,7 +21,7 @@ void vtk_algorithm_output_set_index(vtkAlgorithmOutput& algorithm, int64_t index
 }
 
 const vtkAlgorithm& vtk_algorithm_output_get_producer(const vtkAlgorithmOutput& algorithm) {
-    vtkAlgorithm* algo = algorithm.GetProducer();
+    vtkAlgorithm* algo = const_cast<vtkAlgorithmOutput&>(algorithm).GetProducer();
     return *algo;
 }
 
