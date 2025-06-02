@@ -45,7 +45,7 @@ jobs:
         with open(filename, "w") as f:
             f.write(contents)
 
-print("| | " + " | ".join(toolchains) + " | Build |")
+print("| | " + " | ".join(toolchains) + " | Env Flags + Command |")
 print("|---" * (len(toolchains) + 1) + "|---|")
 for os in oss:
     os_re = os.replace(".", "_")
@@ -58,7 +58,7 @@ test_{toolchain}_{os_re}.yml?style=flat-square&label=CI)](\
 https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_{toolchain}_{os_re}.yml)"
         line += badge_md + " |"
     if len(envs) == 0:
-        line += "`cargo build` |"
+        line += "`cargo test` |"
     else:
-        line += f"`{envs} cargo build` |"
+        line += f"`{envs} cargo test` |"
     print(line)
