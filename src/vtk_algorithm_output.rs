@@ -37,7 +37,7 @@ pub(crate) mod private {
     pub trait Sealed {}
 }
 
-/// [`vtkAlgorithm`](https://vtk.org/doc/nightly/html/classvtkAlgorithm.html)
+/// [`vtkAlgorithmOutput`](https://vtk.org/doc/nightly/html/classvtkAlgorithmOutput.html)
 #[allow(non_camel_case_types)]
 pub trait vtkAlgorithmOutput: private::Sealed {
     #[doc(hidden)]
