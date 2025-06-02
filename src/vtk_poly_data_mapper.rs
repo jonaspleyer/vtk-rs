@@ -20,12 +20,6 @@ crate::define_object!(
     @inherit vtkPolyDataMapper
 );
 
-/* impl PolyData {
-    pub fn set_input(&mut self, data: &ffi::vtkPolyData) {
-        unsafe { ffi::poly_data_mapper_set_input(self.ptr, data) };
-    }
-}*/
-
 pub(crate) mod private {
     pub trait Sealed {}
 }
