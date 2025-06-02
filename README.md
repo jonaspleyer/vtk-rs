@@ -6,6 +6,14 @@
 
 Rust bindings for the [Visualization Toolkit (VTK)](https://vtk.org/).
 
+## Scope
+The goal of this project is to provide safe and thin bindings.
+This means we are planning to support as much of the original functionality as possible, provided
+that their use is reasonable from a rusty point of view.
+This crate does in particular not aim at formulating higher-level interfaces such as
+[pyvista](https://docs.pyvista.org/) although such functionality could be added in the future within
+the scope of additional crates.
+
 ## Testing
 
 | | stable | Build |
