@@ -87,31 +87,11 @@ macro_rules! impl_as_ref_mut(
                 unsafe { &mut *x }
             }
         }
-
-
     };
-
 );
 
-macro_rules! inherit(
-    ($name:ident vtkObjectBase $ptr_type:ty) => {
-        crate::impl_as_ref_mut!(crate::vtk_object_base::ffi::vtkObjectBase, $ptr_type);
-
-        impl crate::vtk_object_base::private::Sealed for $name {}
-        impl crate::vtk_object_base::vtkObjectBase for $name {
-            fn as_vtk_object_base(
-                &self
-            ) -> core::pin::Pin<&crate::vtk_object_base::ffi::vtkObjectBase> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_object_base_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_object_base::ffi::vtkObjectBase>
-            {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-        }
-
+macro_rules! perform_tests (
+    ($name:ident vtkObjectBase) => {
         #[cfg(test)]
         mod vtk_object_base {
             use super::*;
@@ -194,28 +174,7 @@ macro_rules! inherit(
             }
         }
     };
-
-    ($name:ident vtkObject $ptr_type:ty) => {
-        crate::inherit!($name vtkObjectBase $ptr_type);
-        impl $name {
-
-        }
-        crate::impl_as_ref_mut!(crate::vtk_object::ffi::vtkObject, $ptr_type);
-
-        impl crate::vtk_object::private::Sealed for $name {}
-
-        impl crate::vtk_object::vtkObject for $name {
-            fn as_vtk_object(&self) -> core::pin::Pin<&crate::vtk_object::ffi::vtkObject> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_object_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_object::ffi::vtkObject>
-            {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-        }
-
+    ($name:ident vtkObject) => {
         #[cfg(test)]
         mod test_vtkobject {
             use super::*;
@@ -242,42 +201,9 @@ macro_rules! inherit(
                 // obj.add_observer();
             }
         }
+        crate::perform_tests!($name vtkObjectBase);
     };
-    ($name:ident vtkAlgorithm $ptr_type:ty) => {
-        impl crate::vtk_algorithm::private::Sealed for $name {}
-
-        crate::impl_as_ref_mut!(crate::vtk_algorithm::ffi::vtkAlgorithm, $ptr_type);
-
-        impl crate::vtk_algorithm::vtkAlgorithm for $name {
-            fn as_vtk_algorithm(&self) ->
-                core::pin::Pin<&crate::vtk_algorithm::ffi::vtkAlgorithm> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_algorithm_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_algorithm::ffi::vtkAlgorithm> {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-        }
-        crate::inherit!($name vtkObject $ptr_type);
-    };
-    ($name:ident vtkAlgorithmOutput $ptr_type:ty) => {
-        impl crate::vtk_algorithm_output::private::Sealed for $name {}
-
-        crate::impl_as_ref_mut!(crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput, $ptr_type);
-
-        impl crate::vtk_algorithm_output::vtkAlgorithmOutput for $name {
-            fn as_vtk_algorithm_output(&self) ->
-                core::pin::Pin<&crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_algorithm_output_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput> {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-        }
-
+    ($name:ident vtkAlgorithmOutput) => {
         #[cfg(test)]
         mod vtk_algorithm_output {
             use super::*;
@@ -290,31 +216,9 @@ macro_rules! inherit(
             }
         }
 
-        crate::inherit!($name vtkObject $ptr_type);
+        crate::perform_tests!($name vtkObject);
     };
-    ($name:ident vtkPolyData $ptr_type:ty) => {
-        impl crate::vtk_poly_data::private::Sealed for $name {}
-        impl crate::vtk_poly_data::vtkPolyData for $name {}
-        crate::inherit!($name vtkPointSet $ptr_type);
-    };
-    ($name:ident vtkPolyDataAlgorithm $ptr_type:ty) => {
-        impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
-
-        crate::impl_as_ref_mut!(crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm, $ptr_type);
-
-        impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {
-            fn as_vtk_poly_data_algorithm(&self) ->
-                core::pin::Pin<&crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_poly_data_algorithm_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-
-        }
-
+    ($name:ident vtkPolyDataAlgorithm) => {
         #[cfg(test)]
         mod vtk_poly_data_algorithm {
             use super::*;
@@ -341,25 +245,9 @@ macro_rules! inherit(
             }*/
         }
 
-        crate::inherit!($name vtkAlgorithm $ptr_type);
+        crate::perform_tests!($name vtkAlgorithm);
     };
-    ($name:ident vtkDataObject $ptr_type:ty) => {
-        impl crate::vtk_data_object::private::Sealed for $name {}
-
-        crate::impl_as_ref_mut!(crate::vtk_data_object::ffi::vtkDataObject, $ptr_type);
-
-        impl crate::vtk_data_object::vtkDataObject for $name {
-            fn as_vtk_data_object(&self) ->
-                core::pin::Pin<&crate::vtk_data_object::ffi::vtkDataObject> {
-                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
-            }
-
-            fn as_vtk_data_object_mut(&mut self) ->
-                core::pin::Pin<&mut crate::vtk_data_object::ffi::vtkDataObject> {
-                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
-            }
-        }
-
+    ($name:ident vtkDataObject) => {
         #[cfg(test)]
         mod vtk_data_object {
             use super::*;
@@ -374,49 +262,223 @@ macro_rules! inherit(
             }
         }
 
-        crate::inherit!($name vtkObject $ptr_type);
+        crate::perform_tests!($name vtkObject);
+    };
+    ($name:ident vtkAlgorithm) => {
+        crate::perform_tests!($name vtkObject);
+    };
+    ($name:ident vtkPolyData) => {
+        crate::perform_tests!($name vtkPointSet);
+    };
+    ($name:ident vtkMapper) => {
+        crate::perform_tests!($name vtkAbstractMapper3D);
+    };
+    ($name:ident vtkAbstractMapper3D) => {
+        crate::perform_tests!($name vtkAbstractMapper);
+    };
+    ($name:ident vtkAbstractMapper) => {
+        crate::perform_tests!($name vtkAlgorithm);
+    };
+    ($name:ident vtkPolyDataMapper) => {
+        crate::perform_tests!($name vtkMapper);
+    };
+    ($name:ident vtkImplicitFunction) => {
+        crate::perform_tests!($name vtkObject);
+    };
+    ($name:ident vtkPointSet) => {
+        crate::perform_tests!($name vtkDataSet);
+    };
+    ($name:ident vtkDataSet) => {
+        crate::perform_tests!($name vtkDataObject);
+    };
+);
+
+macro_rules! inherit(
+    ($name:ident $trait:ident $ptr_type:ty) => {
+        crate::inherit_only!($name $trait $ptr_type);
+        crate::perform_tests!($name $trait);
+    };
+    (@notest $name:ident $trait:ident $ptr_type:ty) => {
+        crate::inherit_only!($name $trait $ptr_type);
+    };
+);
+
+macro_rules! inherit_only(
+    ($name:ident vtkObjectBase $ptr_type:ty) => {
+        impl crate::vtk_object_base::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_object_base::ffi::vtkObjectBase, $ptr_type);
+
+        impl crate::vtk_object_base::vtkObjectBase for $name {
+            fn as_vtk_object_base(
+                &self
+            ) -> core::pin::Pin<&crate::vtk_object_base::ffi::vtkObjectBase> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_object_base_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_object_base::ffi::vtkObjectBase>
+            {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+    };
+    ($name:ident vtkObject $ptr_type:ty) => {
+        impl crate::vtk_object::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_object::ffi::vtkObject, $ptr_type);
+
+        impl crate::vtk_object::vtkObject for $name {
+            fn as_vtk_object(&self) -> core::pin::Pin<&crate::vtk_object::ffi::vtkObject> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_object_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_object::ffi::vtkObject>
+            {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+
+        crate::inherit_only!($name vtkObjectBase $ptr_type);
+    };
+    ($name:ident vtkAlgorithm $ptr_type:ty) => {
+        impl crate::vtk_algorithm::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_algorithm::ffi::vtkAlgorithm, $ptr_type);
+
+        impl crate::vtk_algorithm::vtkAlgorithm for $name {
+            fn as_vtk_algorithm(&self) ->
+                core::pin::Pin<&crate::vtk_algorithm::ffi::vtkAlgorithm> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_algorithm_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_algorithm::ffi::vtkAlgorithm> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+
+        crate::inherit_only!($name vtkObject $ptr_type);
+    };
+    ($name:ident vtkAlgorithmOutput $ptr_type:ty) => {
+        impl crate::vtk_algorithm_output::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput, $ptr_type);
+
+        impl crate::vtk_algorithm_output::vtkAlgorithmOutput for $name {
+            fn as_vtk_algorithm_output(&self) ->
+                core::pin::Pin<&crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_algorithm_output_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_algorithm_output::ffi::vtkAlgorithmOutput> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+
+        crate::inherit_only!($name vtkObject $ptr_type);
+    };
+    ($name:ident vtkPolyData $ptr_type:ty) => {
+        impl crate::vtk_poly_data::private::Sealed for $name {}
+        impl crate::vtk_poly_data::vtkPolyData for $name {}
+        crate::inherit_only!($name vtkPointSet $ptr_type);
+    };
+    ($name:ident vtkPolyDataAlgorithm $ptr_type:ty) => {
+        impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm, $ptr_type);
+
+        impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {
+            fn as_vtk_poly_data_algorithm(&self) ->
+                core::pin::Pin<&crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_poly_data_algorithm_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+
+        }
+
+        crate::inherit_only!($name vtkAlgorithm $ptr_type);
+    };
+    ($name:ident vtkDataObject $ptr_type:ty) => {
+        impl crate::vtk_data_object::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_data_object::ffi::vtkDataObject, $ptr_type);
+
+        impl crate::vtk_data_object::vtkDataObject for $name {
+            fn as_vtk_data_object(&self) ->
+                core::pin::Pin<&crate::vtk_data_object::ffi::vtkDataObject> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_data_object_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_data_object::ffi::vtkDataObject> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+
+        crate::inherit_only!($name vtkObject $ptr_type);
     };
     ($name:ident vtkAbstractMapper $ptr_type:ty) => {
         impl crate::vtk_abstract_mapper::private::Sealed for $name {}
         impl crate::vtk_abstract_mapper::vtkAbstractMapper for $name {}
 
-        crate::inherit!($name vtkAlgorithm $ptr_type);
+        crate::inherit_only!($name vtkAlgorithm $ptr_type);
     };
     ($name:ident vtkAbstractMapper3D $ptr_type:ty) => {
-        crate::inherit!($name vtkAbstractMapper $ptr_type);
+        crate::inherit_only!($name vtkAbstractMapper $ptr_type);
     };
     ($name:ident vtkMapper $ptr_type:ty) => {
-        crate::inherit!($name vtkAbstractMapper3D $ptr_type);
+        crate::inherit_only!($name vtkAbstractMapper3D $ptr_type);
     };
     ($name:ident vtkPolyDataMapper $ptr_type:ty) => {
         impl crate::vtk_poly_data_mapper::private::Sealed for $name {}
         impl crate::vtk_poly_data_mapper::vtkPolyDataMapper for $name {}
 
-        crate::inherit!($name vtkMapper $ptr_type);
+        crate::inherit_only!($name vtkMapper $ptr_type);
     };
     ($name:ident vtkDataSet $ptr_type:ty) => {
-        crate::inherit!($name vtkDataObject $ptr_type);
+        crate::inherit_only!($name vtkDataObject $ptr_type);
     };
     ($name:ident vtkCommand $ptr_type:ty) => {
-        crate::inherit!($name vtkObjectBase $ptr_type);
+        crate::inherit_only!($name vtkObjectBase $ptr_type);
     };
     ($name:ident vtkImageData $ptr_type:ty) => {
-        crate::inherit!($name vtkDataSet $ptr_type);
+        crate::inherit_only!($name vtkDataSet $ptr_type);
     };
     ($name:ident vtkPointSet $ptr_type:ty) => {
-        crate::inherit!($name vtkDataSet $ptr_type);
+        crate::inherit_only!($name vtkDataSet $ptr_type);
     };
     ($name:ident vtkUnstructuredGridBase $ptr_type:ty) => {
-        crate::inherit!($name vtkPointSet $ptr_type);
+        crate::inherit_only!($name vtkPointSet $ptr_type);
     };
     ($name:ident vtkGraph $ptr_type:ty) => {
-        crate::inherit!($name vtkDataObject $ptr_type);
+        crate::inherit_only!($name vtkDataObject $ptr_type);
     };
     ($name:ident vtkImplicitFunction $ptr_type:ty) => {
-        crate::inherit!($name vtkObject $ptr_type);
+        crate::inherit_only!($name vtkObject $ptr_type);
+    };
+    ($name:ident vtkExecutive $ptr_type:ty) => {
+        impl crate::vtk_executive::private::Sealed for $name {}
+        crate::impl_as_ref_mut!(crate::vtk_executive::ffi::vtkExecutive, $ptr_type);
+
+        impl crate::vtk_executive::vtkExecutive for $name {
+            fn as_vtk_executive(&self)
+                -> core::pin::Pin<&crate::vtk_executive::ffi::vtkExecutive> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_executive_mut(&mut self)
+                -> core::pin::Pin<&mut crate::vtk_executive::ffi::vtkExecutive> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+
+        crate::inherit_only!($name vtkObject $ptr_type);
     };
 );
 
 pub(crate) use define_object;
 pub(crate) use impl_as_ref_mut;
 pub(crate) use inherit;
+pub(crate) use inherit_only;
+pub(crate) use perform_tests;
