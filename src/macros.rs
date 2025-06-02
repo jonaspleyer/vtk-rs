@@ -5,6 +5,7 @@ macro_rules! define_object(
         @new $new_func:expr,
         $(@clone $clone_func:expr,)?
         @delete $drop_func:expr
+        $(,@inherit $trait:ident)?
     ) => {
         #[doc = concat!("[`vtk", stringify!($name), "`](", $link, ")")]
         #[repr(transparent)]
@@ -42,6 +43,10 @@ macro_rules! define_object(
             core::mem::drop(obj1);
             core::mem::drop(obj2);
         }
+
+        $(
+            crate::inherit!($name $trait $ptr_type);
+        )?
 
         $(impl core::clone::Clone for $name {
             fn clone(&self) -> Self {
