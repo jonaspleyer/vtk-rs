@@ -1,0 +1,54 @@
+name: Reusable Testing Workflow
+
+on:
+  workflow_call:
+    inputs:
+      toolchain:
+        required: true
+        type: string
+      os:
+        required: true
+        type: string
+      environment_vars:
+        required: false
+        type: string
+        default: ""
+      packages:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
+          lfs: 'false'
+
+      - uses: jwlawson/actions-setup-cmake@v2
+
+      - name: Install VTK Macos
+        if: contains(inputs.os, 'macos')
+        run: brew install ${{ inputs.packages }}
+
+      - name: Install VTK Ubuntu
+        if: contains(inputs.os, 'ubuntu')
+        run: sudo apt update && sudo apt install -y ${{ inputs.packages }}
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ inputs.toolchain }}
+
+      - name: ${{ inputs.environment_vars }}  cargo check -vv
+
+        run: ${{ inputs.environment_vars }} cargo check -vv
+
+      - name: cargo test
+        run: ${{ inputs.environment_vars }} cargo test -vv
+
+      - name: cargo test --doc
+        run: ${{ inputs.environment_vars }} cargo test --doc -vv
