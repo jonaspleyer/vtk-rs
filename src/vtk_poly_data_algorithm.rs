@@ -47,10 +47,9 @@ crate::define_object!(
     @name PolyDataAlgorithm, ffi::vtkPolyDataAlgorithm,
     @new ffi::vtk_poly_data_algorithm_new,
     // @clone ffi::data_object_clone,
-    @delete ffi::vtk_poly_data_algorithm_delete
+    @delete ffi::vtk_poly_data_algorithm_delete,
+    @inherit vtkPolyDataAlgorithm
 );
-
-crate::inherit!(PolyDataAlgorithm vtkPolyDataAlgorithm ffi::vtkPolyDataAlgorithm);
 
 /// [`vtkPolyDataAlgorithm`](https://vtk.org/doc/nightly/html/classvtkPolyDataAlgorithm.html)
 #[allow(non_camel_case_types)]

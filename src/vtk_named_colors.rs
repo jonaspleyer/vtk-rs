@@ -14,7 +14,6 @@ crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
     @name NamedColors, ffi::vtkNamedColors,
     @new ffi::named_colors_new,
-    @delete ffi::named_colors_delete
+    @delete ffi::named_colors_delete,
+    @inherit vtkObject
 );
-
-crate::inherit!(NamedColors vtkObject ffi::vtkNamedColors);

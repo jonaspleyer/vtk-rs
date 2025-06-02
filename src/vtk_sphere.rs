@@ -19,10 +19,9 @@ crate::define_object!(
     @name Sphere, ffi::vtkSphere,
     @new ffi::sphere_new,
     // @clone ffi::poly_data_clone,
-    @delete ffi::sphere_delete
+    @delete ffi::sphere_delete,
+    @inherit vtkImplicitFunction
 );
-
-crate::inherit!(Sphere vtkImplicitFunction ffi::vtkSphere);
 
 impl Sphere {
     #[doc(alias = "SetRadius")]

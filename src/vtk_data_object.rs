@@ -17,10 +17,9 @@ crate::define_object!(
     @name DataObject, ffi::vtkDataObject,
     @new ffi::vtk_data_object_new,
     // @clone ffi::data_object_clone,
-    @delete ffi::vtk_data_object_delete
+    @delete ffi::vtk_data_object_delete,
+    @inherit vtkDataObject
 );
-
-crate::inherit!(DataObject vtkDataObject ffi::vtkDataObject);
 
 pub(crate) mod private {
     pub trait Sealed {}

@@ -15,10 +15,9 @@ crate::define_object!(
     @name PolyData, ffi::vtkPolyData,
     @new ffi::poly_data_new,
     // @clone ffi::poly_data_clone,
-    @delete ffi::poly_data_delete
+    @delete ffi::poly_data_delete,
+    @inherit vtkPolyData
 );
-
-crate::inherit!(PolyData vtkPolyData ffi::vtkPolyData);
 
 pub(crate) mod private {
     pub trait Sealed {}

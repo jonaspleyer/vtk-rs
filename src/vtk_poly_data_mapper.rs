@@ -16,10 +16,9 @@ crate::define_object!(
     @name PolyDataMapper, ffi::vtkPolyDataMapper,
     @new ffi::poly_data_mapper_new,
     // @clone ffi::poly_data_mapper_clone,
-    @delete ffi::poly_data_mapper_delete
+    @delete ffi::poly_data_mapper_delete,
+    @inherit vtkPolyDataMapper
 );
-
-crate::inherit!(PolyDataMapper vtkPolyDataMapper ffi::vtkPolyDataMapper);
 
 /* impl PolyData {
     pub fn set_input(&mut self, data: &ffi::vtkPolyData) {

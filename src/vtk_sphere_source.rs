@@ -28,10 +28,9 @@ crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkNamedColors.html",
     @name SphereSource, ffi::vtkSphereSource,
     @new ffi::vtk_sphere_source_new,
-    @delete ffi::vtk_sphere_source_delete
+    @delete ffi::vtk_sphere_source_delete,
+    @inherit vtkPolyDataAlgorithm
 );
-
-crate::inherit!(SphereSource vtkPolyDataAlgorithm ffi::vtkSphereSource);
 
 impl SphereSource {
     #[doc(alias = "SetRadius")]

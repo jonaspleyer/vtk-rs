@@ -14,10 +14,9 @@ crate::define_object!(
     "https://vtk.org/doc/nightly/html/classvtkAlgorithm.html",
     @name Algorithm, ffi::vtkAlgorithm,
     @new ffi::vtk_algorithm_new,
-    @delete ffi::vtk_algorithm_delete
+    @delete ffi::vtk_algorithm_delete,
+    @inherit vtkAlgorithm
 );
-
-crate::inherit!(Algorithm vtkAlgorithm ffi::vtkAlgorithm);
 
 pub(crate) mod private {
     pub trait Sealed {}
