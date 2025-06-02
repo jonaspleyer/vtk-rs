@@ -3,10 +3,10 @@
 
 #include <vtkAlgorithm.h>
 
-vtkAlgorithm* algorithm_new() {
+vtkAlgorithm* vtk_algorithm_new() {
     return vtkAlgorithm::New();
 }
 
-void algorithm_delete(vtkAlgorithm& algorithm) {
+void vtk_algorithm_delete(vtkAlgorithm& algorithm) {
     algorithm.Delete();
 }

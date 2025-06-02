@@ -5,13 +5,13 @@
 using vtkAlgorithm = ::vtkAlgorithm;
 
 extern "C" {
-::vtkAlgorithm *cxxbridge1$algorithm_new() noexcept {
-  ::vtkAlgorithm *(*algorithm_new$)() = ::algorithm_new;
-  return algorithm_new$();
+::vtkAlgorithm *cxxbridge1$vtk_algorithm_new() noexcept {
+  ::vtkAlgorithm *(*vtk_algorithm_new$)() = ::vtk_algorithm_new;
+  return vtk_algorithm_new$();
 }
 
-void cxxbridge1$algorithm_delete(::vtkAlgorithm &algorithm) noexcept {
-  void (*algorithm_delete$)(::vtkAlgorithm &) = ::algorithm_delete;
-  algorithm_delete$(algorithm);
+void cxxbridge1$vtk_algorithm_delete(::vtkAlgorithm &algorithm) noexcept {
+  void (*vtk_algorithm_delete$)(::vtkAlgorithm &) = ::vtk_algorithm_delete;
+  vtk_algorithm_delete$(algorithm);
 }
 } // extern "C"

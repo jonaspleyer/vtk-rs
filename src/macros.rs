@@ -235,7 +235,21 @@ macro_rules! inherit(
     };
     ($name:ident vtkAlgorithm $ptr_type:ty) => {
         impl crate::vtk_algorithm::private::Sealed for $name {}
-        impl crate::vtk_algorithm::vtkAlgorithm for $name {}
+
+        crate::impl_as_ref_mut!(crate::vtk_algorithm::ffi::vtkAlgorithm, $ptr_type);
+
+        impl crate::vtk_algorithm::vtkAlgorithm for $name {
+            fn as_vtk_algorithm(&self) ->
+                core::pin::Pin<&crate::vtk_algorithm::ffi::vtkAlgorithm> {
+                unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+            }
+
+            fn as_vtk_algorithm_mut(&mut self) ->
+                core::pin::Pin<&mut crate::vtk_algorithm::ffi::vtkAlgorithm> {
+                unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+            }
+        }
+        crate::inherit!($name vtkObject $ptr_type);
     };
     ($name:ident vtkAlgorithmOutput $ptr_type:ty) => {
         impl crate::vtk_algorithm_output::private::Sealed for $name {}
