@@ -48,20 +48,22 @@ macro_rules! define_object(
             crate::inherit!($name $trait $ptr_type);
         )?
 
-        $(impl core::clone::Clone for $name {
-            fn clone(&self) -> Self {
-                #[allow(unused_unsafe)]
-                Self {
-                    ptr: unsafe { ($clone_func)(&*self.ptr) }
+        $(
+            impl core::clone::Clone for $name {
+                fn clone(&self) -> Self {
+                    #[allow(unused_unsafe)]
+                    Self {
+                        ptr: unsafe { ($clone_func)(&*self.ptr) }
+                    }
+            #[cfg(test)]
+            mod obj_clone {
+                #[test]
+                fn clone() {
+                    let obj1 = $name::new();
+                    let _obj2 = obj1.clone();
                 }
             }
-        }
-
-        #[test]
-        fn clone() {
-            let obj1 = $name::new();
-            let _obj2 = obj1.clone();
-        })?
+        )?
     }
 );
 
