@@ -56,11 +56,11 @@ pub trait vtkAlgorithmOutput: private::Sealed {
     }
 
     #[doc(alias = "GetProducer")]
-    fn get_producer(&self) -> &crate::Algorithm {
+    fn get_producer(&self) -> Option<&crate::Algorithm> {
         let sself = self.as_vtk_algorithm_output();
         let x = ffi::vtk_algorithm_output_get_producer(&sself);
         let y = x as *const _ as *const crate::vtk_algorithm::Algorithm;
-        unsafe { &*y }
+        unsafe { y.as_ref() }
     }
 
     #[doc(alias = "SetProducer")]
