@@ -60,23 +60,33 @@ macro_rules! define_object(
     }
 );
 
-macro_rules! inherit(
-    ($name:ident vtkObjectBase $ptr_type:ty) => {
-        impl core::convert::AsRef<crate::vtk_object_base::ffi::vtkObjectBase> for $ptr_type {
-            fn as_ref(&self) -> &crate::vtk_object_base::ffi::vtkObjectBase {
+macro_rules! impl_as_ref_mut(
+    ($pin_type:ty, $ptr_type:ty) => {
+        impl core::convert::AsRef<$pin_type> for $ptr_type {
+            fn as_ref(&self) -> &$pin_type {
                 let x = self as *const $ptr_type;
-                let x = x as *const crate::vtk_object_base::ffi::vtkObjectBase;
+                let x = x as *const $pin_type;
                 unsafe { &*x }
             }
         }
 
-        impl core::convert::AsMut<crate::vtk_object_base::ffi::vtkObjectBase> for $ptr_type {
-            fn as_mut(&mut self) -> &mut crate::vtk_object_base::ffi::vtkObjectBase {
+        impl core::convert::AsMut<$pin_type> for $ptr_type {
+            fn as_mut(&mut self) -> &mut $pin_type {
                 let x = self as *mut $ptr_type;
-                let x = x as *mut crate::vtk_object_base::ffi::vtkObjectBase;
+                let x = x as *mut $pin_type;
                 unsafe { &mut *x }
             }
         }
+
+
+    };
+
+);
+
+macro_rules! inherit(
+    ($name:ident vtkObjectBase $ptr_type:ty) => {
+        crate::impl_as_ref_mut!(crate::vtk_object_base::ffi::vtkObjectBase, $ptr_type);
+
         impl crate::vtk_object_base::private::Sealed for $name {}
         impl crate::vtk_object_base::vtkObjectBase for $name {
             fn as_vtk_object_base(
@@ -180,21 +190,7 @@ macro_rules! inherit(
         impl $name {
 
         }
-        impl core::convert::AsRef<crate::vtk_object::ffi::vtkObject> for $ptr_type {
-            fn as_ref(&self) -> &crate::vtk_object::ffi::vtkObject {
-                let x = self as *const $ptr_type;
-                let x = x as *const crate::vtk_object::ffi::vtkObject;
-                unsafe { &*x }
-            }
-        }
-
-        impl core::convert::AsMut<crate::vtk_object::ffi::vtkObject> for $ptr_type {
-            fn as_mut(&mut self) -> &mut crate::vtk_object::ffi::vtkObject {
-                let x = self as *mut $ptr_type;
-                let x = x as *mut crate::vtk_object::ffi::vtkObject;
-                unsafe { &mut *x }
-            }
-        }
+        crate::impl_as_ref_mut!(crate::vtk_object::ffi::vtkObject, $ptr_type);
 
         impl crate::vtk_object::private::Sealed for $name {}
 
@@ -250,23 +246,7 @@ macro_rules! inherit(
     ($name:ident vtkPolyDataAlgorithm $ptr_type:ty) => {
         impl crate::vtk_poly_data_algorithm::private::Sealed for $name {}
 
-        impl core::convert::AsRef<crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm>
-            for $ptr_type {
-            fn as_ref(&self) -> &crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm {
-                let x = self as *const $ptr_type;
-                let x = x as *const crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm;
-                unsafe { &*x }
-            }
-        }
-
-        impl core::convert::AsMut<crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm>
-            for $ptr_type {
-            fn as_mut(&mut self) -> &mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm {
-                let x = self as *mut $ptr_type;
-                let x = x as *mut crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm;
-                unsafe { &mut *x }
-            }
-        }
+        crate::impl_as_ref_mut!(crate::vtk_poly_data_algorithm::ffi::vtkPolyDataAlgorithm, $ptr_type);
 
         impl crate::vtk_poly_data_algorithm::vtkPolyDataAlgorithm for $name {
             fn as_vtk_poly_data_algorithm(&self) ->
@@ -312,23 +292,7 @@ macro_rules! inherit(
     ($name:ident vtkDataObject $ptr_type:ty) => {
         impl crate::vtk_data_object::private::Sealed for $name {}
 
-        impl core::convert::AsRef<crate::vtk_data_object::ffi::vtkDataObject>
-            for $ptr_type {
-            fn as_ref(&self) -> &crate::vtk_data_object::ffi::vtkDataObject {
-                let x = self as *const $ptr_type;
-                let x = x as *const crate::vtk_data_object::ffi::vtkDataObject;
-                unsafe { &*x }
-            }
-        }
-
-        impl core::convert::AsMut<crate::vtk_data_object::ffi::vtkDataObject>
-            for $ptr_type {
-            fn as_mut(&mut self) -> &mut crate::vtk_data_object::ffi::vtkDataObject {
-                let x = self as *mut $ptr_type;
-                let x = x as *mut crate::vtk_data_object::ffi::vtkDataObject;
-                unsafe { &mut *x }
-            }
-        }
+        crate::impl_as_ref_mut!(crate::vtk_data_object::ffi::vtkDataObject, $ptr_type);
 
         impl crate::vtk_data_object::vtkDataObject for $name {
             fn as_vtk_data_object(&self) ->
@@ -416,4 +380,5 @@ macro_rules! inherit(
 );
 
 pub(crate) use define_object;
+pub(crate) use impl_as_ref_mut;
 pub(crate) use inherit;
