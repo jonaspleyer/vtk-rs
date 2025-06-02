@@ -39,4 +39,4 @@ impl core::ops::Drop for Executive {
     }
 }
 
-crate::inherit!(Executive vtkObject ffi::vtkExecutive);
+crate::inherit!(@notest Executive vtkObject ffi::vtkExecutive);
