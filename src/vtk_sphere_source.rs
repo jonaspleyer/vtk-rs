@@ -101,6 +101,15 @@ mod test {
     }
 
     #[test]
+    fn get_set_resolution() {
+        let mut sphere = SphereSource::new();
+        sphere.set_theta_resolution(20);
+        assert_eq!(sphere.get_theta_resolution(), 20);
+        sphere.set_phi_resolution(245);
+        assert_eq!(sphere.get_phi_resolution(), 245);
+    }
+
+    #[test]
     fn print_self() {
         use crate::vtk_object_base::*;
         let sphere = SphereSource::new();
