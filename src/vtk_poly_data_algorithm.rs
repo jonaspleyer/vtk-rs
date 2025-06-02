@@ -89,24 +89,27 @@ pub trait vtkPolyDataAlgorithm: private::Sealed {
     }
 
     fn set_output(&mut self, data_object: &impl crate::vtkDataObject) {
+        let dobject = &data_object.as_vtk_data_object() as *const _ as *const ffi::vtkDataObject;
         ffi::vtk_poly_data_algorithm_set_output(self.as_vtk_poly_data_algorithm_mut(), unsafe {
-            &data_object.cast_to_pointer()
+            &*dobject
         });
     }
 
     fn set_input_data(&mut self, port: i64, data_object: &impl crate::vtkDataObject) {
+        let dobject = &data_object.as_vtk_data_object() as *const _ as *const ffi::vtkDataObject;
         ffi::vtk_poly_data_algorithm_set_input_data(
             self.as_vtk_poly_data_algorithm_mut(),
             port,
-            unsafe { &data_object.cast_to_pointer() },
+            unsafe { &*dobject },
         );
     }
 
     fn add_input_data(&mut self, port: i64, data_object: &impl crate::vtkDataObject) {
+        let dobject = &data_object.as_vtk_data_object() as *const _ as *const ffi::vtkDataObject;
         ffi::vtk_poly_data_algorithm_add_input_data(
             self.as_vtk_poly_data_algorithm_mut(),
             port,
-            unsafe { &data_object.cast_to_pointer() },
+            unsafe { &*dobject },
         );
     }
 

@@ -33,10 +33,6 @@ pub trait vtkDataObject: private::Sealed {
     fn as_vtk_data_object(&self) -> core::pin::Pin<&ffi::vtkDataObject>;
     #[doc(hidden)]
     fn as_vtk_data_object_mut(&mut self) -> core::pin::Pin<&mut ffi::vtkDataObject>;
-    #[doc(hidden)]
-    unsafe fn cast_to_pointer<T>(&self) -> core::pin::Pin<&T>;
-    #[doc(hidden)]
-    unsafe fn cast_to_pointer_mut<T>(&mut self) -> core::pin::Pin<&mut T>;
 
     fn initialize(&mut self) {
         ffi::vtk_data_object_initialize(self.as_vtk_data_object_mut())

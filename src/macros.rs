@@ -348,22 +348,6 @@ macro_rules! inherit(
                 core::pin::Pin<&mut crate::vtk_data_object::ffi::vtkDataObject> {
                 unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
             }
-
-            unsafe fn cast_to_pointer<T>(&self) -> core::pin::Pin<&T> {
-                self.ptr.as_ref().map_unchecked(|x| {
-                    let x = x as *const $ptr_type;
-                    let x = x as *const T;
-                    unsafe { &*x }
-                })
-            }
-
-            unsafe fn cast_to_pointer_mut<T>(&mut self) -> core::pin::Pin<&mut T> {
-                self.ptr.as_mut().map_unchecked_mut(|x| {
-                    let x = x as *mut $ptr_type;
-                    let x = x as *mut T;
-                    unsafe { &mut *x }
-                })
-            }
         }
 
         #[cfg(test)]
