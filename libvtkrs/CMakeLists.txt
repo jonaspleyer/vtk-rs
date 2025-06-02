@@ -29,6 +29,7 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/vtk_algorithm.h
    ${PROJECT_SOURCE_DIR}/include/vtk_algorithm_output.h
    ${PROJECT_SOURCE_DIR}/include/vtk_data_object.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_executive.h
    ${PROJECT_SOURCE_DIR}/include/vtk_information.h
    ${PROJECT_SOURCE_DIR}/include/vtk_information_vector.h
    ${PROJECT_SOURCE_DIR}/include/vtk_mapper.h
@@ -56,6 +57,7 @@ target_sources(vtkrs
         ${PROJECT_SOURCE_DIR}/src/vtk_algorithm.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_algorithm_output.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_data_object.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_executive.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_information.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_information_vector.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_mapper.cpp
