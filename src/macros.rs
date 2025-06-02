@@ -55,6 +55,9 @@ macro_rules! define_object(
                     Self {
                         ptr: unsafe { ($clone_func)(&*self.ptr) }
                     }
+                }
+            }
+
             #[cfg(test)]
             mod obj_clone {
                 #[test]
