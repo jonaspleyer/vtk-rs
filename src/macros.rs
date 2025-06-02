@@ -253,6 +253,19 @@ macro_rules! inherit(
                 unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
             }
         }
+
+        #[cfg(test)]
+        mod vtk_algorithm_output {
+            use super::*;
+
+            #[test]
+            fn set_get_index() {
+                let mut obj = $name::new();
+                obj.set_index(130);
+                assert_eq!(obj.get_index(), 130);
+            }
+        }
+
         crate::inherit!($name vtkObject $ptr_type);
     };
     ($name:ident vtkPolyData $ptr_type:ty) => {
