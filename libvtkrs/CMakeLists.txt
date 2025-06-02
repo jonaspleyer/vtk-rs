@@ -27,6 +27,7 @@ add_library(vtkrs STATIC
    ${PROJECT_SOURCE_DIR}/include/vtk_abstract_mapper.h
    ${PROJECT_SOURCE_DIR}/include/vtk_abstract_mapper_3d.h
    ${PROJECT_SOURCE_DIR}/include/vtk_algorithm.h
+   ${PROJECT_SOURCE_DIR}/include/vtk_algorithm_output.h
    ${PROJECT_SOURCE_DIR}/include/vtk_data_object.h
    ${PROJECT_SOURCE_DIR}/include/vtk_mapper.h
    ${PROJECT_SOURCE_DIR}/include/vtk_named_colors.h
@@ -51,6 +52,7 @@ target_sources(vtkrs
         ${PROJECT_SOURCE_DIR}/src/vtk_abstract_mapper.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_abstract_mapper_3d.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_algorithm.cpp
+        ${PROJECT_SOURCE_DIR}/src/vtk_algorithm_output.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_data_object.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_mapper.cpp
         ${PROJECT_SOURCE_DIR}/src/vtk_named_colors.cpp
