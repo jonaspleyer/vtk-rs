@@ -71,33 +71,21 @@ pub trait vtkPolyDataAlgorithm: private::Sealed {
         let sself = self.as_vtk_poly_data_algorithm();
         let raw_ref = ffi::vtk_poly_data_algorithm_get_input(&sself, port);
         let raw_ptr = raw_ref as *const _ as *const crate::vtk_data_object::DataObject;
-        if raw_ptr.is_null() {
-            None
-        } else {
-            Some(unsafe { &*raw_ptr })
-        }
+        unsafe { raw_ptr.as_ref() }
     }
 
     fn vtk_poly_data_algorithm_get_poly_data_input(&self, port: i64) -> Option<&crate::PolyData> {
         let sself = self.as_vtk_poly_data_algorithm();
         let raw_ref = ffi::vtk_poly_data_algorithm_get_poly_data_input(&sself, port);
         let raw_ptr = raw_ref as *const _ as *const crate::vtk_poly_data::PolyData;
-        if raw_ptr.is_null() {
-            None
-        } else {
-            Some(unsafe { &*raw_ptr })
-        }
+        unsafe { raw_ptr.as_ref() }
     }
 
     fn get_poly_data_input(&self, port: i64) -> Option<&crate::vtk_poly_data::PolyData> {
         let sself = self.as_vtk_poly_data_algorithm();
         let raw_ref = ffi::vtk_poly_data_algorithm_get_poly_data_input(&sself, port);
         let raw_ptr = raw_ref as *const _ as *const crate::PolyData;
-        if raw_ptr.is_null() {
-            None
-        } else {
-            Some(unsafe { &*raw_ptr })
-        }
+        unsafe { raw_ptr.as_ref() }
     }
 
     fn set_output(&mut self, data_object: &impl crate::vtkDataObject) {
@@ -126,10 +114,6 @@ pub trait vtkPolyDataAlgorithm: private::Sealed {
         let sself = self.as_vtk_poly_data_algorithm();
         let raw_ref = ffi::vtk_poly_data_algorithm_get_output(&sself, port);
         let raw_ptr = raw_ref as *const _ as *const crate::PolyData;
-        if raw_ptr.is_null() {
-            None
-        } else {
-            Some(unsafe { &*raw_ptr })
-        }
+        unsafe { raw_ptr.as_ref() }
     }
 }
