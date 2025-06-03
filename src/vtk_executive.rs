@@ -29,6 +29,7 @@ pub trait vtkExecutive: private::Sealed {
     @inherit vtkExecutive
 );*/
 
+/// [`vtkExecutive`](https://vtk.org/doc/nightly/html/classvtkExecutive.html)
 pub struct Executive {
     ptr: core::pin::Pin<&'static mut ffi::vtkExecutive>,
 }
