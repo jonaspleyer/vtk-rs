@@ -4,8 +4,6 @@
 #include <cstdint>
 #include <vtkObject.h>
 
-using vtkObject = vtkObject;
-
 void vtk_object_debug_on(vtkObject& obj) {
     obj.DebugOn();
 }
