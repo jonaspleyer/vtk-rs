@@ -215,6 +215,24 @@ pub trait vtkAlgorithm: private::Sealed {
         ffi::vtk_algorithm_set_executive(sself, executive);
     }
 
+    fn vtk_algorithm_process_request(
+        &self,
+        request: &crate::vtk_information::Information,
+        in_info: &mut [*mut crate::vtk_information_vector::InformationVector],
+        out_info: core::pin::Pin<&mut crate::vtk_information_vector::InformationVector>,
+    ) -> bool {
+        let sself = self.as_vtk_algorithm();
+        let request = unsafe { &*(request as *const _ as *const ffi::vtkInformation) };
+        let mut in_info = in_info
+            .iter_mut()
+            .map(|x| x as *mut _ as *mut ffi::vtkInformationVector)
+            .collect::<Vec<_>>();
+        let out_info = unsafe {
+            out_info.map_unchecked_mut(|x| &mut *(x as *mut _ as *mut ffi::vtkInformationVector))
+        };
+        unsafe { ffi::vtk_algorithm_process_request(&sself, request, &mut in_info, out_info) }
+    }
+
     fn modify_request(&self, request: &mut crate::vtk_information::Information, when: i64) -> i64 {
         let sself = self.as_vtk_algorithm();
         let request = unsafe {
