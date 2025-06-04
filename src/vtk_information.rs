@@ -17,3 +17,15 @@ crate::define_object!(
     @delete ffi::vtk_information_delete,
     @inherit vtkObject
 );
+
+crate::impl_as_ref_mut!(Information, ffi::vtkInformation);
+
+impl Information {
+    pub(crate) fn as_vtk_information(&self) -> core::pin::Pin<&Self> {
+        unsafe { self.ptr.as_ref().map_unchecked(|x| x.as_ref()) }
+    }
+
+    pub(crate) fn as_vtk_information_mut(&mut self) -> core::pin::Pin<&mut Self> {
+        unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
+    }
+}
