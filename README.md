@@ -14,6 +14,12 @@ This crate does in particular not aim at formulating higher-level interfaces suc
 [pyvista](https://docs.pyvista.org/) although such functionality could be added in the future within
 the scope of additional crates.
 
+## ❗ Note ❗
+This crate will be reworked using
+[vtkWrap](https://docs.vtk.org/en/latest/advanced/WrappingTools.html) in order to automate much of
+the process of generating the bindings.
+In its current state, the crate will probably remain unusable for the coming weeks.
+
 ## Testing
 
 | | stable | Env Flags + Command |
