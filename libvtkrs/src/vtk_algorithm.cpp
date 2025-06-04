@@ -71,7 +71,9 @@ int64_t vtk_algorithm_get_number_of_output_ports(const vtkAlgorithm& algorithm) 
 }
 
 void vtk_algorithm_set_abort_execute_and_update_time(vtkAlgorithm& algorithm) {
+#ifdef VTK094
     algorithm.SetAbortExecuteAndUpdateTime();
+#endif
 }
 
 void vtk_algorithm_update_progress(vtkAlgorithm& algorithm, double amount) {
@@ -79,7 +81,11 @@ void vtk_algorithm_update_progress(vtkAlgorithm& algorithm, double amount) {
 }
 
 bool vtk_algorithm_check_abort(const vtkAlgorithm& algorithm) {
+#ifdef VTK094
     return const_cast<vtkAlgorithm&>(algorithm).CheckAbort();
+#else
+    return true;
+#endif
 }
 
 const vtkInformation&
@@ -208,7 +214,9 @@ vtk_algorithm_convert_total_input_to_port_connection(const vtkAlgorithm& algorit
 }
 
 void vtk_algorithm_remove_no_prior_temporal_access_information_key(vtkAlgorithm& algorithm) {
+#ifdef VTK094
     algorithm.RemoveNoPriorTemporalAccessInformationKey();
+#endif
 }
 
 const vtkInformation& vtk_algorithm_get_information(const vtkAlgorithm& algorithm) {
@@ -238,19 +246,31 @@ double vtk_algorithm_get_progress(const vtkAlgorithm& algorithm) {
 void vtk_algorithm_set_container_algorithm(
     vtkAlgorithm& algorithm, const vtkAlgorithm& container_algorithm
 ) {
+#ifdef VTK094
     algorithm.SetContainerAlgorithm(&const_cast<vtkAlgorithm&>(container_algorithm));
+#endif
 }
 
 const vtkAlgorithm& vtk_algorithm_get_container_algorithm(const vtkAlgorithm& algorithm) {
+#ifdef VTK094
     return *const_cast<vtkAlgorithm&>(algorithm).GetContainerAlgorithm();
+#else
+    return algorithm;
+#endif
 }
 
 void vtk_algorithm_set_abort_output(vtkAlgorithm& algorithm, bool flag) {
+#ifdef VTK094
     algorithm.SetAbortOutput(flag);
+#endif
 }
 
 bool vtk_algorithm_get_abort_output(const vtkAlgorithm& algorithm) {
+#ifdef VTK094
     return const_cast<vtkAlgorithm&>(algorithm).GetAbortOutput();
+#else
+    return true;
+#endif
 }
 
 void vtk_algorithm_set_progress_shift_scale(vtkAlgorithm& algorithm, double shift, double scale) {

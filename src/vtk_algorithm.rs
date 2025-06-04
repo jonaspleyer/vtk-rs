@@ -263,6 +263,8 @@ pub trait vtkAlgorithm: private::Sealed {
         ffi::vtk_algorithm_set_input_connection(sself, port, unsafe { &*input });
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn set_abort_execute_and_update_time(&mut self) {
         ffi::vtk_algorithm_set_abort_execute_and_update_time(self.as_vtk_algorithm_mut())
     }
@@ -271,6 +273,8 @@ pub trait vtkAlgorithm: private::Sealed {
         ffi::vtk_algorithm_update_progress(self.as_vtk_algorithm_mut(), amount)
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn check_abort(&self) -> bool {
         ffi::vtk_algorithm_check_abort(&self.as_vtk_algorithm())
     }
@@ -434,6 +438,8 @@ pub trait vtkAlgorithm: private::Sealed {
         (port, connection)
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn remove_no_prior_temporal_access_information_key(&mut self) {
         ffi::vtk_algorithm_remove_no_prior_temporal_access_information_key(
             self.as_vtk_algorithm_mut(),
@@ -468,6 +474,8 @@ pub trait vtkAlgorithm: private::Sealed {
         ffi::vtk_algorithm_get_progress(&self.as_vtk_algorithm())
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn set_container_algorithm(&mut self, container_algorithm: &impl vtkAlgorithm) {
         let container_algorithm = container_algorithm.as_vtk_algorithm();
         ffi::vtk_algorithm_set_container_algorithm(
@@ -476,16 +484,22 @@ pub trait vtkAlgorithm: private::Sealed {
         )
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn get_container_algorithm(&self) -> Option<&crate::vtk_algorithm::Algorithm> {
         let sself = self.as_vtk_algorithm();
         let algo = ffi::vtk_algorithm_get_container_algorithm(&sself);
         unsafe { (algo as *const _ as *const crate::vtk_algorithm::Algorithm).as_ref() }
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn set_abort_output(&mut self, flag: bool) {
         ffi::vtk_algorithm_set_abort_output(self.as_vtk_algorithm_mut(), flag)
     }
 
+    #[cfg(feature = "v094")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v094")))]
     fn get_abort_output(&self) -> bool {
         ffi::vtk_algorithm_get_abort_output(&self.as_vtk_algorithm())
     }
