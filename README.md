@@ -33,8 +33,9 @@ In its current state, the crate will probably remain unusable for the coming wee
 ## Dependencies
 
 This package relies on a system install of `vtk`.
+We currently only test versions `>=9.1`.
 In some scenarios, it might be necessary to install additional dependencies.
-Otherwise, compilation of the `cmake` part might fail linker errors.
+Otherwise, compilation of the `cmake` part might fail with spurious linker errors.
 
 | Distro | Packages |
 | --- | --- |
