@@ -10,9 +10,10 @@ pub struct Module {
 unsafe impl Send for Module {}
 unsafe impl Sync for Module {}
 
-pub fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
+pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
     use rayon::prelude::*;
-    let modules = glob::glob(&format!("{}/*", path.display()))?.collect::<Result<Vec<_>, _>>()?;
+    let path: std::path::PathBuf = path.into();
+    let modules = glob::glob(&path.display().to_string())?.collect::<Result<Vec<_>, _>>()?;
 
     // Deserialize all modules
     let n_mods = modules.len();
