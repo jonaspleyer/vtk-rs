@@ -1,16 +1,16 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
-struct Module {
-    name: String,
-    path: std::path::PathBuf,
-    files: Vec<(std::path::PathBuf, File)>,
+pub struct Module {
+    pub name: String,
+    pub path: std::path::PathBuf,
+    pub files: Vec<(std::path::PathBuf, File)>,
 }
 
 unsafe impl Send for Module {}
 unsafe impl Sync for Module {}
 
-fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
+pub fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
     use rayon::prelude::*;
     let modules = glob::glob(&format!("{}/*", path.display()))?.collect::<Result<Vec<_>, _>>()?;
 
@@ -58,7 +58,7 @@ fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-enum Access {
+pub enum Access {
     #[serde(rename = "private")]
     Private,
     #[serde(rename = "public")]
@@ -68,43 +68,43 @@ enum Access {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct ReturnType {
+pub struct ReturnType {
     #[serde(rename = "@type")]
-    ret_type: String,
+    pub ret_type: String,
     #[serde(rename = "@pointer")]
-    pointer: Option<Pointer>,
+    pub pointer: Option<Pointer>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename = "base")]
-struct Base {
+pub struct Base {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@access")]
-    access: Access,
+    pub access: Access,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename = "method")]
-struct Method {
+pub struct Method {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@property")]
-    property: Option<String>,
+    pub property: Option<String>,
     #[serde(rename = "@access")]
-    access: Option<Access>,
+    pub access: Option<Access>,
     #[serde(rename = "@const")]
-    is_const: Option<u8>,
+    pub is_const: Option<u8>,
     #[serde(rename = "@virtual")]
-    is_virtual: Option<u8>,
-    signature: String,
-    comment: Option<String>,
+    pub is_virtual: Option<u8>,
+    pub signature: String,
+    pub comment: Option<String>,
     #[serde(rename = "return")]
-    return_type: Option<ReturnType>,
+    pub return_type: Option<ReturnType>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct TypeDef {
+pub struct TypeDef {
     #[serde(rename = "@name")]
     name: String,
     #[serde(rename = "@access")]
@@ -114,23 +114,23 @@ struct TypeDef {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct Property {
+pub struct Property {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@access")]
-    access: Access,
+    pub access: Access,
     #[serde(rename = "@type")]
-    r#type: String,
+    pub r#type: String,
     #[serde(rename = "@pointer")]
-    pointer: Option<Pointer>,
-    comment: Option<String>,
+    pub pointer: Option<Pointer>,
+    pub comment: Option<String>,
     #[serde(default = "Vec::new")]
-    methods: Vec<PropertyMethods>,
+    pub methods: Vec<PropertyMethods>,
 }
 
 #[allow(non_camel_case_types)]
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-enum Bitfield {
+pub enum Bitfield {
     #[serde(rename = "GET")]
     Get,
     #[serde(rename = "SET")]
@@ -157,28 +157,28 @@ enum Bitfield {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct PropertyMethods {
+pub struct PropertyMethods {
     #[serde(rename = "@bitfield")]
-    bitfield: String,
+    pub bitfield: String,
     #[serde(rename = "@access")]
-    access: Access,
+    pub access: Access,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct CContext {
+pub struct CContext {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@access")]
-    access: Access,
+    pub access: Access,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct Inheritance {
-    context: Vec<CContext>,
+pub struct Inheritance {
+    pub context: Vec<CContext>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-enum Pointer {
+pub enum Pointer {
     #[serde(rename = "&")]
     Ref,
     #[serde(rename = "*")]
@@ -188,52 +188,52 @@ enum Pointer {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct Member {
+pub struct Member {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@access")]
-    access: Access,
+    pub access: Access,
     #[serde(rename = "@type")]
-    r#type: String,
+    pub r#type: String,
     #[serde(rename = "@value")]
-    value: Option<String>,
+    pub value: Option<String>,
     #[serde(rename = "@pointer")]
-    pointer: Option<Pointer>,
+    pub pointer: Option<Pointer>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename = "class")]
-struct Class {
+pub struct Class {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@access")]
-    access: Option<Access>,
+    pub access: Option<Access>,
     #[serde(rename = "@abstract")]
-    is_abstract: Option<u8>,
-    comment: Option<String>,
+    pub is_abstract: Option<u8>,
+    pub comment: Option<String>,
     #[serde(default = "Vec::new")]
-    base: Vec<Base>,
-    inheritance: Option<Inheritance>,
+    pub base: Vec<Base>,
+    pub inheritance: Option<Inheritance>,
     #[serde(rename = "method")]
     #[serde(default = "Vec::new")]
-    methods: Vec<Method>,
+    pub methods: Vec<Method>,
     #[serde(rename = "typedef")]
     #[serde(default = "Vec::new")]
-    typedefs: Vec<TypeDef>,
+    pub typedefs: Vec<TypeDef>,
     #[serde(rename = "property")]
     #[serde(default = "Vec::new")]
-    properties: Vec<Property>,
+    pub properties: Vec<Property>,
     #[serde(default = "Vec::new")]
-    members: Vec<Member>,
+    pub members: Vec<Member>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct File {
+pub struct File {
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "class")]
     #[serde(default = "Vec::new")]
-    classes: Vec<Class>,
+    pub classes: Vec<Class>,
 }
 
 #[cfg(test)]
@@ -494,6 +494,7 @@ mod test_parsing {
                 }]
             }]
         );
+        assert_eq!(members, vec![]);
 
         Ok(())
     }
