@@ -1,5 +1,9 @@
+use anyhow::{Context, Result};
+
 mod code_gen;
 mod parsing;
+
+use parsing::*;
 
 fn main() -> Result<()> {
     // Obtain all modules
