@@ -4,18 +4,22 @@ use serde::{Deserialize, Serialize};
 struct Module {
     name: String,
     path: std::path::PathBuf,
-    files: Vec<std::path::PathBuf>,
+    files: Vec<(std::path::PathBuf, File)>,
 }
 
 unsafe impl Send for Module {}
 unsafe impl Sync for Module {}
 
 fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
-    let modules = glob::glob(&format!("{}/*", path.display()))?;
+    use rayon::prelude::*;
+    let modules = glob::glob(&format!("{}/*", path.display()))?.collect::<Result<Vec<_>, _>>()?;
+
+    // Deserialize all modules
+    let n_mods = modules.len();
+    let n = std::sync::atomic::AtomicUsize::new(0);
     modules
-        .into_iter()
-        .map(|m| {
-            let path = m?;
+        .into_par_iter()
+        .map(|path| {
             let name = path
                 .components()
                 .next_back()
@@ -27,8 +31,27 @@ fn get_modules(path: &std::path::Path) -> Result<Vec<Module>> {
                     .to_str()
                     .context("could not convert path tot string")?,
             )?
-            .map(|x| Ok(x?.to_path_buf()))
+            .map(|x| {
+                let f = x?.to_path_buf();
+                let mut file = std::fs::File::open(&f)?;
+                let mut contents = String::new();
+                use std::io::prelude::*;
+                file.read_to_string(&mut contents)?;
+                let x: File = serde_xml_rs::SerdeXml::new()
+                    .overlapping_sequences(true)
+                    .from_str(&contents)?;
+
+                Ok((f, x))
+            })
             .collect::<Result<_>>()?;
+
+            n.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            println!(
+                "[{:3.0}%] {}",
+                n.load(std::sync::atomic::Ordering::Relaxed) as f32 / n_mods as f32 * 100.,
+                name
+            );
+
             Ok(Module { name, path, files })
         })
         .collect::<Result<_>>()
@@ -49,7 +72,7 @@ struct ReturnType {
     #[serde(rename = "@type")]
     ret_type: String,
     #[serde(rename = "@pointer")]
-    pointer: Option<String>,
+    pointer: Option<Pointer>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -72,6 +95,8 @@ struct Method {
     access: Option<Access>,
     #[serde(rename = "@const")]
     is_const: Option<u8>,
+    #[serde(rename = "@virtual")]
+    is_virtual: Option<u8>,
     signature: String,
     comment: Option<String>,
     #[serde(rename = "return")]
@@ -97,7 +122,7 @@ struct Property {
     #[serde(rename = "@type")]
     r#type: String,
     #[serde(rename = "@pointer")]
-    pointer: Option<String>,
+    pointer: Option<Pointer>,
     comment: Option<String>,
     #[serde(default = "Vec::new")]
     methods: Vec<PropertyMethods>,
@@ -153,6 +178,16 @@ struct Inheritance {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
+enum Pointer {
+    #[serde(rename = "&")]
+    Ref,
+    #[serde(rename = "*")]
+    Star,
+    #[serde(rename = "**")]
+    StarStar,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 struct Member {
     #[serde(rename = "@name")]
     name: String,
@@ -161,16 +196,24 @@ struct Member {
     #[serde(rename = "@type")]
     r#type: String,
     #[serde(rename = "@value")]
-    value: String,
+    value: Option<String>,
+    #[serde(rename = "@pointer")]
+    pointer: Option<Pointer>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename = "class")]
-struct CClass {
+struct Class {
+    #[serde(rename = "@name")]
+    name: String,
+    #[serde(rename = "@access")]
+    access: Option<Access>,
+    #[serde(rename = "@abstract")]
+    is_abstract: Option<u8>,
+    comment: Option<String>,
     #[serde(default = "Vec::new")]
     base: Vec<Base>,
-    #[serde(default = "Vec::new")]
-    inheritance: Vec<Inheritance>,
+    inheritance: Option<Inheritance>,
     #[serde(rename = "method")]
     #[serde(default = "Vec::new")]
     methods: Vec<Method>,
@@ -196,34 +239,6 @@ struct File {
 fn main() -> Result<()> {
     // Obtain all modules
     let modules = get_modules(&std::path::PathBuf::from_iter(["WrapVTK", "build", "xml"]))?;
-
-    // Deserialize all modules
-    let n_mods = modules.len();
-    let n = std::sync::atomic::AtomicUsize::new(0);
-    use rayon::prelude::*;
-    let results = modules
-        .into_par_iter()
-        .map(|m| {
-            let mut files = vec![];
-            for f in m.files.iter() {
-                let mut file = std::fs::File::open(f)?;
-                let mut contents = String::new();
-                use std::io::prelude::*;
-                file.read_to_string(&mut contents)?;
-                let x: File = serde_xml_rs::SerdeXml::new()
-                    .overlapping_sequences(true)
-                    .from_str(&contents)?;
-                files.push(x);
-            }
-            n.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            println!(
-                "[{:3.0}%] {}",
-                (n.load(std::sync::atomic::Ordering::Relaxed) + 1) as f32 / n_mods as f32 * 100.,
-                m.name
-            );
-            Ok(files)
-        })
-        .collect::<Result<Vec<_>>>()?;
 
     Ok(())
 }
