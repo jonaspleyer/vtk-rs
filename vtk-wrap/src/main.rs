@@ -3,6 +3,7 @@ use anyhow::{Context, Result};
 mod code_gen;
 mod parsing;
 
+use code_gen::*;
 use parsing::*;
 
 fn main() -> Result<()> {
