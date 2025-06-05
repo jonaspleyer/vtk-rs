@@ -1,0 +1,3 @@
+[submodule "vtk-wrap/WrapVTK"]
+	path = vtk-wrap/WrapVTK
+	url = https://github.com/dgobbi/WrapVTK
