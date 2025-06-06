@@ -279,6 +279,22 @@ mod test_parsing {
     <return type="const char" pointer="*" />
 </method>"#;
 
+    const METHOD2: &str = r#"
+<method name="PrintSelf" access="public" virtual="1">
+    <signature>
+            virtual void PrintSelf(ostream &amp;os, vtkIndent indent)
+    </signature>
+    <comment>
+            Methods invoked by print to print information about the object
+            including superclasses. Typically not called by the user (use
+            Print() instead) but used in the hierarchical print process to
+            combine the output of several classes.
+    </comment>
+    <param name="os" type="ostream" reference="1" />
+    <param name="indent" type="vtkIndent" />
+    <return type="void" />
+</method>"#;
+
     #[test]
     fn parse_method() -> Result<()> {
         let Method {
@@ -320,6 +336,65 @@ mod test_parsing {
             })
         );
 
+        Ok(())
+    }
+
+    #[test]
+    fn parse_method_2() -> Result<()> {
+        let Method {
+            name,
+            property,
+            access,
+            is_const,
+            is_static,
+            is_virtual,
+            signature,
+            parameters,
+            comment,
+            return_type,
+        } = serde_xml_rs::SerdeXml::new()
+            .overlapping_sequences(true)
+            .from_str(METHOD2)?;
+        assert_eq!(name, "PrintSelf");
+        assert_eq!(property, None);
+        assert_eq!(access, Some(Access::Public));
+        assert_eq!(is_const, None);
+        assert_eq!(is_virtual, Some(1));
+        assert_eq!(is_virtual, Some(1));
+        assert_eq!(
+            signature,
+            "virtual void PrintSelf(ostream &os, vtkIndent indent)"
+        );
+        assert_eq!(
+            comment.unwrap(),
+            "\
+            Methods invoked by print to print information about the object
+            including superclasses. Typically not called by the user (use
+            Print() instead) but used in the hierarchical print process to
+            combine the output of several classes."
+        );
+        assert_eq!(
+            parameters,
+            vec![
+                Parameter {
+                    name: Some("os".into()),
+                    r#type: "ostream".into(),
+                    reference: true,
+                },
+                Parameter {
+                    name: Some("indent".into()),
+                    r#type: "vtkIndent".into(),
+                    reference: false,
+                }
+            ]
+        );
+        assert_eq!(
+            return_type,
+            Some(ReturnType {
+                ret_type: "void".into(),
+                pointer: None
+            })
+        );
         Ok(())
     }
 
