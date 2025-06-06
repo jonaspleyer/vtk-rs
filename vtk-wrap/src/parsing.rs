@@ -96,12 +96,31 @@ pub struct Method {
     pub access: Option<Access>,
     #[serde(rename = "@const")]
     pub is_const: Option<u8>,
+    #[serde(rename = "@static")]
+    pub is_static: Option<u8>,
     #[serde(rename = "@virtual")]
     pub is_virtual: Option<u8>,
+    // #[serde(deserialize_with = "deserialize_signature")]
     pub signature: String,
+    #[serde(rename = "param")]
+    #[serde(default = "Vec::new")]
+    pub parameters: Vec<Parameter>,
     pub comment: Option<String>,
     #[serde(rename = "return")]
     pub return_type: Option<ReturnType>,
+}
+
+#[derive(Deserialize, PartialEq, Debug)]
+#[serde(rename = "param")]
+pub struct Parameter {
+    #[serde(rename = "@name")]
+    pub name: Option<String>,
+    #[serde(rename = "@type")]
+    pub r#type: String,
+    #[serde(rename = "@reference")]
+    #[serde(serialize_with = "option_one_to_bool")]
+    #[serde(default = "Default::default")]
+    pub reference: bool,
 }
 
 #[derive(Deserialize, PartialEq, Debug)]
@@ -267,8 +286,10 @@ mod test_parsing {
             property,
             access,
             is_const,
+            is_static,
             is_virtual,
             signature,
+            parameters,
             comment,
             return_type,
         } = serde_xml_rs::SerdeXml::new()
@@ -278,6 +299,7 @@ mod test_parsing {
         assert_eq!(property.unwrap(), "ClassNameInternal");
         assert_eq!(access, Some(Access::Protected));
         assert_eq!(is_const, Some(1));
+        assert_eq!(is_static, None);
         assert_eq!(is_virtual, Some(1));
         assert_eq!(
             signature,
@@ -452,7 +474,9 @@ mod test_parsing {
                 property: Some("ClassNameInternal".into()),
                 access: Some(Access::Protected),
                 is_const: Some(1),
+                is_static: None,
                 signature: "virtual const char *GetClassNameInternal() const".into(),
+                parameters: vec![],
                 is_virtual: Some(1),
                 comment: Some(
                     "\
