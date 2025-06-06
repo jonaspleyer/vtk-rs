@@ -22,10 +22,11 @@ jobs:
         run: cargo install cxxbridge-cmd
 
       - name: Generate Headers
-        run: chmod +x generate_headers.sh && ./generate_headers.sh
+        run: cd vtk-rs && chmod +x generate_headers.sh && ./generate_headers.sh
 
       - name: Compare Headers
         run: |
+          cd vtk-rs
           for header in libvtkrs/include/*.rs.h; do
             lines=$(git diff $header | wc -l)
             if [ $lines -gt 0 ]; then
