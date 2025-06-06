@@ -85,6 +85,30 @@ pub struct Base {
     pub access: Access,
 }
 
+
+fn option_one_to_bool<'de, D>(de: D) -> Result<bool, D::Error>
+where
+    D: serde::de::Deserializer<'de>,
+{
+    struct Vis;
+    // impl serde::de::Deserializer
+    impl<'de> serde::de::Visitor<'de> for Vis {
+        type Value = bool;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("expected Option<u8>")
+        }
+
+        fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
+        where
+            E: serde::de::Error,
+        {
+            if v == "1" { Ok(true) } else { Ok(false) }
+        }
+    }
+    de.deserialize_string(Vis)
+}
+
 #[derive(Deserialize, PartialEq, Debug)]
 #[serde(rename = "method")]
 pub struct Method {
