@@ -85,7 +85,7 @@ pub struct Base {
     pub access: Access,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug)]
 #[serde(rename = "method")]
 pub struct Method {
     #[serde(rename = "@name")]
