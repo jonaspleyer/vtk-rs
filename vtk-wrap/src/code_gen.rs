@@ -69,9 +69,9 @@ pub fn gen_method(
     let sself = if is_static.is_some_and(|x| x == 1) {
         quote::quote!()
     } else if is_const.is_some_and(|x| x == 1) {
-        quote::quote!(&mut self,)
-    } else {
         quote::quote!(&self,)
+    } else {
+        quote::quote!(&mut self,)
     };
 
     let args = parameters
