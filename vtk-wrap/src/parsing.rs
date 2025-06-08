@@ -117,7 +117,7 @@ pub struct Method {
     #[serde(rename = "@property")]
     pub property: Option<String>,
     #[serde(rename = "@access")]
-    pub access: Option<Access>,
+    pub access: Access,
     #[serde(rename = "@const")]
     #[serde(default = "Default::default")]
     #[serde(deserialize_with = "option_one_to_bool")]
@@ -256,8 +256,6 @@ pub struct Member {
 pub struct Class {
     #[serde(rename = "@name")]
     pub name: String,
-    #[serde(rename = "@access")]
-    pub access: Option<Access>,
     #[serde(rename = "@abstract")]
     #[serde(default = "Default::default")]
     #[serde(deserialize_with = "option_one_to_bool")]
@@ -265,6 +263,7 @@ pub struct Class {
     pub comment: Option<String>,
     #[serde(default = "Vec::new")]
     pub base: Vec<Base>,
+    #[serde(default = "Default::default")]
     pub inheritance: Option<Inheritance>,
     #[serde(rename = "method")]
     #[serde(default = "Vec::new")]
@@ -345,7 +344,7 @@ mod test_parsing {
             .from_str(METHOD)?;
         assert_eq!(name, "GetClassNameInternal");
         assert_eq!(property.unwrap(), "ClassNameInternal");
-        assert_eq!(access, Some(Access::Protected));
+        assert_eq!(access, Access::Protected);
         assert!(is_const);
         assert!(!is_static);
         assert!(is_virtual);
@@ -353,6 +352,7 @@ mod test_parsing {
             signature,
             "virtual const char *GetClassNameInternal() const"
         );
+        assert_eq!(parameters, vec![]);
         assert_eq!(
             comment.unwrap(),
             "\
@@ -389,7 +389,7 @@ mod test_parsing {
             .from_str(METHOD2)?;
         assert_eq!(name, "PrintSelf");
         assert_eq!(property, None);
-        assert_eq!(access, Some(Access::Public));
+        assert_eq!(access, Access::Public);
         assert!(!is_static);
         assert!(!is_const);
         assert!(is_virtual);
@@ -521,7 +521,6 @@ mod test_parsing {
     fn parse_class() -> Result<()> {
         let Class {
             name,
-            access,
             is_abstract,
             comment,
             base,
@@ -579,7 +578,7 @@ mod test_parsing {
             vec![Method {
                 name: "GetClassNameInternal".into(),
                 property: Some("ClassNameInternal".into()),
-                access: Some(Access::Protected),
+                access: Access::Protected,
                 is_const: true,
                 is_static: false,
                 signature: "virtual const char *GetClassNameInternal() const".into(),
