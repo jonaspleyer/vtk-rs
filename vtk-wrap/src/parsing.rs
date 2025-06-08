@@ -58,7 +58,7 @@ pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
         .collect::<Result<_>>()
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub enum Access {
     #[serde(rename = "private")]
     Private,
@@ -68,7 +68,7 @@ pub enum Access {
     Protected,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct ReturnType {
     #[serde(rename = "@type")]
     pub ret_type: String,
@@ -76,7 +76,7 @@ pub struct ReturnType {
     pub pointer: Option<Pointer>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 #[serde(rename = "base")]
 pub struct Base {
     #[serde(rename = "@name")]
@@ -109,7 +109,7 @@ where
     de.deserialize_string(Vis)
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 #[serde(rename = "method")]
 pub struct Method {
     #[serde(rename = "@name")]
@@ -134,7 +134,7 @@ pub struct Method {
     pub return_type: Option<ReturnType>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 #[serde(rename = "param")]
 pub struct Parameter {
     #[serde(rename = "@name")]
@@ -147,7 +147,7 @@ pub struct Parameter {
     pub reference: bool,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct TypeDef {
     #[serde(rename = "@name")]
     name: String,
@@ -157,7 +157,7 @@ pub struct TypeDef {
     r#type: String,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Property {
     #[serde(rename = "@name")]
     pub name: String,
@@ -173,7 +173,7 @@ pub struct Property {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub enum Bitfield {
     #[serde(rename = "GET")]
     Get,
@@ -200,7 +200,7 @@ pub enum Bitfield {
     // ...
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct PropertyMethods {
     #[serde(rename = "@bitfield")]
     pub bitfield: String,
@@ -208,7 +208,7 @@ pub struct PropertyMethods {
     pub access: Access,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct CContext {
     #[serde(rename = "@name")]
     pub name: String,
@@ -216,12 +216,12 @@ pub struct CContext {
     pub access: Access,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Inheritance {
     pub context: Vec<CContext>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub enum Pointer {
     #[serde(rename = "&")]
     Ref,
@@ -231,7 +231,7 @@ pub enum Pointer {
     StarStar,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Member {
     #[serde(rename = "@name")]
     pub name: String,
@@ -245,7 +245,7 @@ pub struct Member {
     pub pointer: Option<Pointer>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 #[serde(rename = "class")]
 pub struct Class {
     #[serde(rename = "@name")]
@@ -271,7 +271,7 @@ pub struct Class {
     pub members: Vec<Member>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct File {
     #[serde(rename = "@name")]
     pub name: String,
