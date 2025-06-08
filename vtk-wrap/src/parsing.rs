@@ -119,11 +119,17 @@ pub struct Method {
     #[serde(rename = "@access")]
     pub access: Option<Access>,
     #[serde(rename = "@const")]
-    pub is_const: Option<u8>,
+    #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
+    pub is_const: bool,
     #[serde(rename = "@static")]
-    pub is_static: Option<u8>,
+    #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
+    pub is_static: bool,
     #[serde(rename = "@virtual")]
-    pub is_virtual: Option<u8>,
+    #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
+    pub is_virtual: bool,
     // #[serde(deserialize_with = "deserialize_signature")]
     pub signature: String,
     #[serde(rename = "param")]
@@ -142,8 +148,8 @@ pub struct Parameter {
     #[serde(rename = "@type")]
     pub r#type: String,
     #[serde(rename = "@reference")]
-    #[serde(serialize_with = "option_one_to_bool")]
     #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
     pub reference: bool,
 }
 
@@ -253,7 +259,9 @@ pub struct Class {
     #[serde(rename = "@access")]
     pub access: Option<Access>,
     #[serde(rename = "@abstract")]
-    pub is_abstract: Option<u8>,
+    #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
+    pub is_abstract: bool,
     pub comment: Option<String>,
     #[serde(default = "Vec::new")]
     pub base: Vec<Base>,
@@ -338,9 +346,9 @@ mod test_parsing {
         assert_eq!(name, "GetClassNameInternal");
         assert_eq!(property.unwrap(), "ClassNameInternal");
         assert_eq!(access, Some(Access::Protected));
-        assert_eq!(is_const, Some(1));
-        assert_eq!(is_static, None);
-        assert_eq!(is_virtual, Some(1));
+        assert!(is_const);
+        assert!(!is_static);
+        assert!(is_virtual);
         assert_eq!(
             signature,
             "virtual const char *GetClassNameInternal() const"
@@ -382,9 +390,10 @@ mod test_parsing {
         assert_eq!(name, "PrintSelf");
         assert_eq!(property, None);
         assert_eq!(access, Some(Access::Public));
-        assert_eq!(is_const, None);
-        assert_eq!(is_virtual, Some(1));
-        assert_eq!(is_virtual, Some(1));
+        assert!(!is_static);
+        assert!(!is_const);
+        assert!(is_virtual);
+        assert!(is_virtual);
         assert_eq!(
             signature,
             "virtual void PrintSelf(ostream &os, vtkIndent indent)"
@@ -526,8 +535,7 @@ mod test_parsing {
             .from_str(CLASS)?;
 
         assert_eq!(name, "vtkChart");
-        assert_eq!(access, None);
-        assert_eq!(is_abstract, Some(1));
+        assert!(is_abstract);
         assert_eq!(
             comment.unwrap(),
             "\
@@ -572,11 +580,11 @@ mod test_parsing {
                 name: "GetClassNameInternal".into(),
                 property: Some("ClassNameInternal".into()),
                 access: Some(Access::Protected),
-                is_const: Some(1),
-                is_static: None,
+                is_const: true,
+                is_static: false,
                 signature: "virtual const char *GetClassNameInternal() const".into(),
                 parameters: vec![],
-                is_virtual: Some(1),
+                is_virtual: true,
                 comment: Some(
                     "\
        Return the class name as a string. This method is overridden
