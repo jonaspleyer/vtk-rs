@@ -1,9 +1,11 @@
 use anyhow::{Context, Result};
 
 mod code_gen;
+mod inheritance_hierarchy;
 mod parsing;
 
 use code_gen::*;
+use inheritance_hierarchy::*;
 use parsing::*;
 
 fn main() -> Result<()> {
