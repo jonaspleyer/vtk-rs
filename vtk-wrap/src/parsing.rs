@@ -140,6 +140,52 @@ pub struct Method {
     pub return_type: Option<ReturnType>,
 }
 
+#[derive(PartialEq, Debug, Clone, Default)]
+pub struct Methods {
+    pub private: Vec<Method>,
+    pub public: Vec<Method>,
+    pub protected: Vec<Method>,
+}
+
+fn deserialize_methods<'de, D>(de: D) -> Result<Methods, D::Error>
+where
+    D: serde::de::Deserializer<'de>,
+{
+    struct Visitor;
+    impl<'de> serde::de::Visitor<'de> for Visitor {
+        type Value = Methods;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("Exptected list of methods")
+        }
+
+        fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>,
+        {
+            let mut private = vec![];
+            let mut public = vec![];
+            let mut protected = vec![];
+
+            while let Some(method) = seq.next_element::<Method>()? {
+                match method.access {
+                    Access::Protected => protected.push(method),
+                    Access::Public => public.push(method),
+                    Access::Private => private.push(method),
+                }
+            }
+
+            Ok(Methods {
+                private,
+                public,
+                protected,
+            })
+        }
+    }
+
+    de.deserialize_seq(Visitor)
+}
+
 #[derive(Deserialize, PartialEq, Debug, Clone)]
 #[serde(rename = "param")]
 pub struct Parameter {
@@ -266,8 +312,9 @@ pub struct Class {
     #[serde(default = "Default::default")]
     pub inheritance: Option<Inheritance>,
     #[serde(rename = "method")]
-    #[serde(default = "Vec::new")]
-    pub methods: Vec<Method>,
+    #[serde(deserialize_with = "deserialize_methods")]
+    #[serde(default = "Default::default")]
+    pub methods: Methods,
     #[serde(rename = "typedef")]
     #[serde(default = "Vec::new")]
     pub typedefs: Vec<TypeDef>,
@@ -574,7 +621,7 @@ mod test_parsing {
             }
         );
         assert_eq!(
-            methods,
+            methods.protected,
             vec![Method {
                 name: "GetClassNameInternal".into(),
                 property: Some("ClassNameInternal".into()),
@@ -597,6 +644,8 @@ mod test_parsing {
                 }),
             }]
         );
+        assert_eq!(methods.public, vec![]);
+        assert_eq!(methods.private, vec![]);
         assert_eq!(
             typedefs,
             vec![TypeDef {
