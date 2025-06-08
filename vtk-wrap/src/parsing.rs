@@ -325,6 +325,60 @@ pub struct Class {
     pub members: Vec<Member>,
 }
 
+impl Class {
+    pub fn combine(&mut self, other: &Self) -> Result<()> {
+        let Class {
+            name,
+            is_abstract,
+            comment,
+            base,
+            inheritance,
+            methods,
+            typedefs,
+            properties,
+            members,
+        } = self;
+
+        let cmp_inheritence = match (inheritance, &other.inheritance) {
+            (Some(i1), Some(i2)) => i1.context.iter().any(|c| !i2.context.contains(c)),
+            (None, Some(_)) | (Some(_), None) => false,
+            (None, None) => true,
+        };
+        if *name != other.name
+            || *is_abstract != other.is_abstract
+            || base.iter().any(|b| !other.base.contains(b))
+            || *comment != other.comment
+            || cmp_inheritence
+        {
+            return Err(anyhow::anyhow!(
+                "Properties of Classes which should be combined are not matching"
+            ));
+        }
+
+        macro_rules! add_new(
+            ($($to:tt)*) => {
+                let new_methods = other
+                    .$($to)*
+                    .iter()
+                    .filter(|method| !$($to)* .contains(method))
+                    .cloned()
+                    .collect::<Vec<_>>();
+
+                $($to)* .extend(new_methods);
+            }
+        );
+
+        add_new!(methods.public);
+        add_new!(methods.private);
+        add_new!(methods.protected);
+        add_new!(typedefs);
+        add_new!(properties);
+        add_new!(members);
+
+        Ok(())
+    }
+}
+
 #[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct File {
     #[serde(rename = "@name")]
