@@ -61,14 +61,14 @@ pub fn gen_method(
     } = &method;
 
     // We do not provide wrappers for private methods
-    if access == &Some(Access::Private) {
+    if access == &Access::Private {
         return Ok((quote::quote!(), quote::quote!()));
     }
 
     // Determine &self, &mut self or nothing (for static methods)
-    let sself = if is_static.is_some_and(|x| x == 1) {
+    let sself = if *is_static {
         quote::quote!()
-    } else if is_const.is_some_and(|x| x == 1) {
+    } else if *is_const {
         quote::quote!(&self,)
     } else {
         quote::quote!(&mut self,)
@@ -117,7 +117,9 @@ pub fn gen_wrapper(class: &Class) -> Result<String> {
     let mut errors = vec![];
     let (methods_ffi, methods_impl): (Vec<_>, Vec<_>) = class
         .methods
+        .public
         .iter()
+        .filter(|method| !method.is_virtual)
         .filter_map(|method| match gen_method(class, method) {
             Ok(v) => Some(v),
             Err(e) => {
