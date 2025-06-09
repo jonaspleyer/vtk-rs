@@ -1,46 +1,111 @@
 use crate::parsing::*;
 use anyhow::{Context, Result};
+use log::warn;
 use std::str::FromStr;
 
 macro_rules! ident(
     (@snake $($to:tt)*) => {
-        proc_macro2::Ident::new(
+        proc_macro2::Ident::new_raw(
             &convert_case::Casing::to_case(&format!($($to)*), convert_case::Case::Snake),
             proc_macro2::Span::call_site()
         )
     };
     ($($to:tt)*) => {
-        proc_macro2::Ident::new(&format!($($to)*), proc_macro2::Span::call_site())
+        proc_macro2::Ident::new_raw(&format!($($to)*), proc_macro2::Span::call_site())
     };
 );
 
-pub fn translate_type(r#type: &str) -> proc_macro2::TokenStream {
-    let ttype = r#type.trim();
-    match ttype {
-        "const char" | "char" => quote::quote!(String),
-        "double" => quote::quote!(f64),
-        "float" => quote::quote!(f32),
-        "int" | "long" => quote::quote!(i64),
-        "longlong" => quote::quote!(i64),
-        "bool" => quote::quote!(bool),
-        "void" => quote::quote!(()),
-        "unsigned int" | "unsigned long" => quote::quote!(u64),
-        other => {
-            let other_new = other.replace(" ", "");
-            // quote::quote!(#other_new)
-            proc_macro2::TokenStream::from_str(&other_new).unwrap()
+pub struct Generator {
+    pub hierarchy: crate::inheritance_hierarchy::Hierarchy,
+}
+
+impl Generator {
+    pub fn new(modules: &[crate::parsing::Module]) -> Result<Self> {
+        let hierarchy = crate::inheritance_hierarchy::Hierarchy::new(modules)?;
+
+        Ok(Self { hierarchy })
+    }
+
+    pub fn format_code(tokenstream: proc_macro2::TokenStream) -> Result<String> {
+        let file: Result<syn::File, _> = syn::parse_file(&tokenstream.to_string());
+        match file {
+            Ok(res) => Ok(prettyplease::unparse(&res)),
+            Err(e) => {
+                warn!("Formatting failed: \"{e}\" Returning unformatted Code");
+                Ok(tokenstream.to_string())
+            }
+        }
+    }
+
+    pub fn generate_trait(&self, class: &Class) -> Result<Option<String>> {
+        if !self.hierarchy.has_dependant(class) {
+            return Ok(None);
+        }
+
+        let methods = self
+            .hierarchy
+            .get_non_inherited_public_methods(&class.name)?
+            .into_iter()
+            .map(|method| gen_method(class, &method).map(|x| x.1))
+            .collect::<Result<Vec<_>>>()?;
+
+        let name = proc_macro2::TokenStream::from_str(&class.name)
+            .ok()
+            .context("Cannot parse class name")?;
+
+        if methods.is_empty() {
+            Ok(None)
+        } else {
+            let code = quote::quote!(
+                pub trait #name {
+                    #(#methods)*
+                }
+            );
+            Ok(Some(Self::format_code(code)?))
         }
     }
 }
 
-pub fn convert_type(r#type: &str) -> String {
-    r#type.replace(" ", "_")
+pub fn translate_type(ttype: &str) -> proc_macro2::TokenStream {
+    match ttype {
+        "const char" | "char" => quote::quote!(char),
+        "const char*" | "char*" | "std::string" | "const std::string" => quote::quote!(String),
+        "const double" | "double" => quote::quote!(f64),
+        "const float" | "float" => quote::quote!(f32),
+        "const int" | "int" | "const long" | "long" => quote::quote!(i64),
+        "const longlong" | "longlong" => quote::quote!(i64),
+        "const bool" | "bool" => quote::quote!(bool),
+        "void" => quote::quote!(()),
+        "const unsigned int" | "unsigned int" | "const unsigned long" | "unsigned long" => {
+            quote::quote!(u64)
+        }
+        other => {
+            let mut ttype = other.trim().replace(" ", "_");
+
+            if ttype.contains("*") {
+                ttype = format!("&{}", ttype.replace("*", ""));
+            // Detect if we have a type which represents a pointer
+            } else if ttype.contains("**") {
+                ttype = format!("&[{}]", ttype.replace("*", ""));
+            }
+            proc_macro2::TokenStream::from_str(&ttype).unwrap()
+        }
+    }
 }
 
-pub fn convert_ident(n: usize, ident: &Option<&String>) -> String {
-    ident
-        .unwrap_or(&format!("value{n}"))
-        .replace("type", "r#type")
+pub fn convert_ident(n: usize, ident: &Option<&String>) -> Result<proc_macro2::TokenStream> {
+    if let Some(ident) = ident {
+        if *ident == "self" {
+            Ok(quote::quote!(sself))
+        } else {
+            let ident = ident!("{}", ident);
+            Ok(quote::quote!(#ident))
+        }
+    } else {
+        proc_macro2::TokenStream::from_str(&format!("value{n}"))
+            .ok()
+            .context("Could not parse string to tokenstream")
+    }
 }
 
 pub fn gen_method(
@@ -66,26 +131,34 @@ pub fn gen_method(
     }
 
     // Determine &self, &mut self or nothing (for static methods)
-    let sself = if *is_static {
-        quote::quote!()
+    let (mut args_all, mut args_method) = if *is_static {
+        (vec![], vec![])
     } else if *is_const {
-        quote::quote!(&self,)
+        (
+            vec![quote::quote!(&self)],
+            vec![quote::quote!(self.as_pointer())],
+        )
     } else {
-        quote::quote!(&mut self,)
+        (
+            vec![quote::quote!(&mut self)],
+            vec![quote::quote!(self.as_pointer_mut())],
+        )
     };
 
-    let args = parameters
+    let _args = parameters
         .iter()
         .enumerate()
         .map(|(n, param)| {
-            let name = proc_macro2::TokenStream::from_str(&convert_ident(n, &param.name.as_ref()))?;
-            let ttype = convert_type(&param.r#type);
-            let ttype = proc_macro2::TokenStream::from_str(&ttype)?;
-            Ok(quote::quote!(#name: #ttype))
+            let name = convert_ident(n, &param.name.as_ref())?;
+            let ttype = translate_type(&param.r#type);
+            Ok((name, ttype))
         })
-        .collect::<Result<Vec<_>, proc_macro2::LexError>>()
+        .collect::<Result<Vec<_>>>()
         .ok()
         .context("could not construct tokenstream")?;
+
+    args_all.extend(_args.iter().map(|(n, t)| quote::quote!(#n: #t)));
+    args_method.extend(_args.into_iter().map(|(name, _)| name));
 
     // let name = proc_macro2::Ident::new(name.to_case(Case::Snake), proc_macro2::Span::call_site());
     let name_ffi = ident!(@snake "{}_{name}", class.name);
@@ -96,11 +169,13 @@ pub fn gen_method(
         .unwrap_or(quote::quote!(()));
 
     let gen_ffi = quote::quote!(
-        fn #name_ffi(#(#args),*) -> #return_type;
+        fn #name_ffi(#(#args_all),*) -> #return_type;
     );
     let gen_impl = quote::quote!(
-        fn #name_impl(#sself #(#args),*) -> #return_type {
-            ffi::#name_ffi()
+        #[doc(alias = #name)]
+        #[inline(always)]
+        fn #name_impl(#(#args_all),*) -> #return_type {
+            ffi::#name_ffi(#(#args_method),*)
         }
     );
 
@@ -128,9 +203,6 @@ pub fn gen_wrapper(class: &Class) -> Result<String> {
             }
         })
         .unzip();
-
-    // let methods_ffi = vec![&methods_ffi[0], &methods_ffi[1]];
-    // let methods_impl = vec![&methods_impl[0], &methods_impl[1]];
 
     if let Some(e) = errors.into_iter().next() {
         return Err(e);
