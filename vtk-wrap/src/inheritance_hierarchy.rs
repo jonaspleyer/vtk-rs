@@ -5,7 +5,7 @@ use crate::{
     parsing::{Class, Method, Module},
 };
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Hash, PartialEq, Eq, Clone)]
 pub struct ClassNode {
     name: ClassName,
 }
@@ -16,6 +16,7 @@ pub struct Hierarchy {
     /// Contains (class_name, (module_name, class))
     classes: HashMap<ClassName, Class>,
     tree: HashMap<ClassNode, (Class, Vec<ClassNode>)>,
+    dependents: HashMap<ClassNode, Vec<ClassNode>>,
 }
 
 impl Hierarchy {
@@ -40,6 +41,7 @@ impl Hierarchy {
             Err(e)?;
         }
 
+        let mut dependents = HashMap::<ClassNode, Vec<ClassNode>>::new();
         let tree: HashMap<_, _> = classes
             .iter()
             .map(|(class_name, class)| {
@@ -59,6 +61,18 @@ impl Hierarchy {
                         }
                     })
                     .collect::<Vec<_>>();
+                parents.iter().for_each(|parent| {
+                    dependents
+                        .entry(parent.clone())
+                        .and_modify(|x: &mut Vec<_>| {
+                            x.push(ClassNode {
+                                name: class_name.clone(),
+                            })
+                        })
+                        .or_insert(vec![ClassNode {
+                            name: class_name.clone(),
+                        }]);
+                });
                 Ok((
                     ClassNode {
                         name: class_name.clone(),
@@ -68,7 +82,19 @@ impl Hierarchy {
             })
             .collect::<Result<_>>()?;
 
-        Ok(Self { classes, tree })
+        Ok(Self {
+            classes,
+            tree,
+            dependents,
+        })
+    }
+
+    pub fn has_dependant(&self, class: &Class) -> bool {
+        self.dependents
+            .get(&ClassNode {
+                name: class.name.clone(),
+            })
+            .is_some_and(|x| !x.is_empty())
     }
 
     pub fn get_non_inherited_public_methods(&self, class_name: &str) -> Result<Vec<Method>> {
