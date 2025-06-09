@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use log::info;
 use serde::Deserialize;
 
 pub struct Module {
@@ -18,6 +19,7 @@ pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
     // Deserialize all modules
     let n_mods = modules.len();
     let n = std::sync::atomic::AtomicUsize::new(0);
+    info!("Reading Modules");
     modules
         .into_par_iter()
         .map(|path| {
@@ -47,7 +49,7 @@ pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
             .collect::<Result<_>>()?;
 
             n.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            println!(
+            info!(
                 "[{:3.0}%] {}",
                 n.load(std::sync::atomic::Ordering::Relaxed) as f32 / n_mods as f32 * 100.,
                 name
@@ -84,7 +86,6 @@ pub struct Base {
     #[serde(rename = "@access")]
     pub access: Access,
 }
-
 
 fn option_one_to_bool<'de, D>(de: D) -> Result<bool, D::Error>
 where

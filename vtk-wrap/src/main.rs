@@ -9,6 +9,8 @@ use inheritance_hierarchy::*;
 use parsing::*;
 
 fn main() -> Result<()> {
+    pretty_env_logger::init();
+
     // Obtain all modules
     let modules = get_modules("WrapVTK/build/xml/*ChartsCore")?;
 
