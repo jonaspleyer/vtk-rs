@@ -5,18 +5,13 @@ use crate::{
     parsing::{Class, Method, Module},
 };
 
-#[derive(Hash, PartialEq, Eq, Clone)]
-pub struct ClassNode {
-    name: ClassName,
-}
-
 type ClassName = String;
 
 pub struct Hierarchy {
     /// Contains (class_name, (module_name, class))
-    classes: HashMap<ClassName, Class>,
-    tree: HashMap<ClassNode, (Class, Vec<ClassNode>)>,
-    dependents: HashMap<ClassNode, Vec<ClassNode>>,
+    pub classes: HashMap<ClassName, Class>,
+    pub tree: HashMap<ClassName, (Class, Vec<ClassName>)>,
+    pub dependents: HashMap<ClassName, Vec<ClassName>>,
 }
 
 impl Hierarchy {
@@ -41,7 +36,7 @@ impl Hierarchy {
             Err(e)?;
         }
 
-        let mut dependents = HashMap::<ClassNode, Vec<ClassNode>>::new();
+        let mut dependents = HashMap::<ClassName, Vec<ClassName>>::new();
         let tree: HashMap<_, _> = classes
             .iter()
             .map(|(class_name, class)| {
@@ -56,29 +51,16 @@ impl Hierarchy {
                         // Deterct generic type arguments
                         let re = regex::Regex::new(r#"([a-zA-Z0-9:]*)(<[.*]>)?"#).unwrap();
                         let name_reduced = &re.captures(&context.name).unwrap()[0];
-                        ClassNode {
-                            name: name_reduced.to_string(),
-                        }
+                        name_reduced.to_string()
                     })
                     .collect::<Vec<_>>();
                 parents.iter().for_each(|parent| {
                     dependents
                         .entry(parent.clone())
-                        .and_modify(|x: &mut Vec<_>| {
-                            x.push(ClassNode {
-                                name: class_name.clone(),
-                            })
-                        })
-                        .or_insert(vec![ClassNode {
-                            name: class_name.clone(),
-                        }]);
+                        .and_modify(|x: &mut Vec<_>| x.push(class_name.clone()))
+                        .or_insert(vec![class_name.clone()]);
                 });
-                Ok((
-                    ClassNode {
-                        name: class_name.clone(),
-                    },
-                    (class.clone(), parents),
-                ))
+                Ok((class_name.clone(), (class.clone(), parents)))
             })
             .collect::<Result<_>>()?;
 
@@ -91,34 +73,23 @@ impl Hierarchy {
 
     pub fn has_dependant(&self, class: &Class) -> bool {
         self.dependents
-            .get(&ClassNode {
-                name: class.name.clone(),
-            })
+            .get(&class.name.clone())
             .is_some_and(|x| !x.is_empty())
     }
 
     pub fn get_non_inherited_public_methods(&self, class_name: &str) -> Result<Vec<Method>> {
         let mut all_parents: Vec<ClassName> = self
             .tree
-            .get(&ClassNode {
-                name: class_name.to_string(),
-            })
-            .map(|x| x.1.iter().map(|node| node.name.clone()).collect())
+            .get(class_name)
+            .map(|x| x.1.clone())
             .unwrap_or_default();
 
         let mut remaining_parents = all_parents.clone();
 
         while let Some(class_name) = remaining_parents.pop() {
-            if let Some((_, nodes)) = self.tree.get(&ClassNode {
-                name: class_name.clone(),
-            }) {
-                let new_names = nodes
-                    .iter()
-                    .map(|node| node.name.clone())
-                    .collect::<Vec<_>>();
-
-                remaining_parents.extend(new_names.clone());
-                all_parents.extend(new_names);
+            if let Some((_, nodes)) = self.tree.get(&class_name.clone()) {
+                remaining_parents.extend(nodes.clone());
+                all_parents.extend(nodes.clone());
             }
         }
 
