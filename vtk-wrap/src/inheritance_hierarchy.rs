@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     Result,
-    parsing::{Class, Method, Module},
+    parse_wrap_vtk_xml::{Class, Method, Module},
 };
 
 type ClassName = String;

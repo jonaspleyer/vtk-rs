@@ -1,4 +1,4 @@
-use crate::parsing::*;
+use crate::parse_wrap_vtk_xml::*;
 use anyhow::{Context, Result};
 use log::warn;
 use quote::ToTokens;
@@ -34,7 +34,7 @@ pub struct Generator {
 }
 
 impl Generator {
-    pub fn new(modules: &[crate::parsing::Module]) -> Result<Self> {
+    pub fn new(modules: &[crate::parse_wrap_vtk_xml::Module]) -> Result<Self> {
         let hierarchy = crate::inheritance_hierarchy::ClassHierarchy::new(modules)?;
 
         Ok(Self { hierarchy })

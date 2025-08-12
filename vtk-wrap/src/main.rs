@@ -2,10 +2,12 @@ use anyhow::Result;
 
 mod code_gen;
 mod inheritance_hierarchy;
-mod parsing;
+mod parse_cpp;
+mod parse_wrap_vtk_xml;
 
 use code_gen::*;
-use parsing::*;
+use parse_cpp::*;
+use parse_wrap_vtk_xml::*;
 
 fn main() -> Result<()> {
     pretty_env_logger::init();
