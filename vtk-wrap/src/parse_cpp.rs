@@ -33,7 +33,6 @@ fn generic_args_regex() -> regex::Regex {
 
 impl CppType {
     fn parse(input: &str) -> Result<Self> {
-        println!("{input}");
         if input.contains("<") && input.contains(">") {
             // It must be a generic
             let re = generic_args_regex();
