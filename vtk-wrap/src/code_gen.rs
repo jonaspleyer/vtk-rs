@@ -166,14 +166,14 @@ impl Generator {
             .map(|method| self.gen_method(class, &method).map(|x| x.1))
             .collect::<Result<Vec<_>>>()?;
 
-        let name = proc_macro2::TokenStream::from_str(&class.name)
-            .ok()
-            .context("Cannot parse class name")?;
+        let name = proc_macro2::TokenStream::from_str(&class.name).convert()?;
+        let class_doc = comment_to_docs(&class.comment.as_ref().map(|x| x.replace("@brief ", "")));
 
         if methods.is_empty() {
             Ok(None)
         } else {
             let code = quote::quote!(
+                #(#[doc = #class_doc])*
                 pub trait #name {
                     #(#methods)*
                 }
