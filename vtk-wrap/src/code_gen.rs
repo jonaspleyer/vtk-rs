@@ -21,6 +21,9 @@ macro_rules! ident(
             proc_macro2::Span::call_site()
         )
     };
+    (@non_raw $($to:tt)*) => {
+        proc_macro2::Ident::new(&format!($($to)*), proc_macro2::Span::call_site())
+    };
     ($($to:tt)*) => {
         proc_macro2::Ident::new_raw(&format!($($to)*), proc_macro2::Span::call_site())
     };
