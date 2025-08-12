@@ -154,6 +154,7 @@ impl Generator {
     }
 
     pub fn generate_trait(&self, class: &Class) -> Result<Option<String>> {
+        log::info!("Generating trait code for class {}", class.name);
         if !self.hierarchy.has_dependant(class) {
             return Ok(None);
         }
