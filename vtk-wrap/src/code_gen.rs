@@ -1,7 +1,18 @@
 use crate::parsing::*;
 use anyhow::{Context, Result};
 use log::warn;
+use quote::ToTokens;
 use std::str::FromStr;
+
+trait TokenStreamToError<T> {
+    fn convert(self) -> anyhow::Result<T>;
+}
+
+impl<T> TokenStreamToError<T> for Result<T, proc_macro2::LexError> {
+    fn convert(self) -> anyhow::Result<T> {
+        self.ok().context("Could not convert to TokenStream")
+    }
+}
 
 macro_rules! ident(
     (@snake $($to:tt)*) => {
