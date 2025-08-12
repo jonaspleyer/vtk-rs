@@ -1,24 +1,28 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 
 mod code_gen;
 mod inheritance_hierarchy;
 mod parsing;
 
 use code_gen::*;
-use inheritance_hierarchy::*;
 use parsing::*;
 
 fn main() -> Result<()> {
     pretty_env_logger::init();
 
     // Obtain all modules
-    let modules = get_modules("WrapVTK/build/xml/*ChartsCore")?;
+    let modules = get_modules("WrapVTK/build/xml/*CommonCore")?;
 
-    let file = &modules[0].files[0].1;
-    for class in file.classes.iter() {
-        let wrapper = gen_wrapper(class)?;
-        println!("{wrapper}");
+    let generator = Generator::new(&modules)?;
+
+    for module in modules.iter() {
+        for (_, file) in module.files.iter() {
+            for class in file.classes.iter() {
+                if let Some(trait_code) = generator.generate_trait(class)? {
+                    // TODO
+                }
+            }
+        }
     }
-
     Ok(())
 }
