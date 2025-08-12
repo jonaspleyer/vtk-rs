@@ -47,6 +47,15 @@ impl CppType {
                     let n = usize::from_str(args[1].trim())?;
                     Ok(CppType::Array(Box::new(ty), n))
                 }
+                "std::map" | "map" => {
+                    let key = CppType::parse(args[0].trim())?;
+                    let value = CppType::parse(args[1].trim())?;
+                    Ok(CppType::Map(Box::new(key), Box::new(value)))
+                }
+                "std::list" | "list" => {
+                    let ty = CppType::parse(args[0].trim())?;
+                    Ok(CppType::LinkedList(Box::new(ty)))
+                }
                 _ => todo!(),
             }
         } else if input.contains("::") {
@@ -110,8 +119,58 @@ mod test {
     }
 
     #[test]
-    fn parse_hashmap() -> Result<()> {
-        // let hashmap1 = "std::array"
+    fn parse_map() -> Result<()> {
+        macro_rules! parse_map(
+            ($map:ident, $cppkey:path, $cppvalue:path) => {
+                let parsed = CppType::parse($map)?;
+                if let CppType::Map(key, value) = parsed {
+                    match key.as_ref() {
+                        $cppkey => (),
+                        _ => panic!(),
+                    }
+                    match value.as_ref() {
+                        $cppvalue => (),
+                        _ => panic!(),
+                    }
+                } else {
+                    panic!();
+                }
+            }
+        );
+
+        let map1 = "std::map<int, float>";
+        parse_map!(map1, CppType::Int, CppType::Float);
+        let map2 = "std::map<long, char>";
+        parse_map!(map2, CppType::LongInt, CppType::SignedChar);
+        let map3 = "std::map<unsigned char, double>";
+        parse_map!(map3, CppType::UnsignedChar, CppType::Double);
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_list() -> Result<()> {
+        macro_rules! parse_list(
+            ($list:ident, $cppty:path) => {
+                let parsed = CppType::parse($list)?;
+                if let CppType::LinkedList(ty) = parsed {
+                    match ty.as_ref() {
+                        $cppty => (),
+                        _ => panic!(),
+                    }
+                } else {
+                    panic!();
+                }
+            }
+        );
+
+        let list1 = "std::list<float>";
+        parse_list!(list1, CppType::Float);
+        let list2 = "std::list<char>";
+        parse_list!(list2, CppType::SignedChar);
+        let list3 = "std::list<unsigned char>";
+        parse_list!(list3, CppType::UnsignedChar);
+
         Ok(())
     }
 }
