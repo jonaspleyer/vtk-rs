@@ -18,7 +18,7 @@ the scope of additional crates.
 This crate will be reworked using
 [vtkWrap](https://docs.vtk.org/en/latest/advanced/WrappingTools.html) in order to automate much of
 the process of generating the bindings.
-In its current state, the crate will probably remain unusable for the coming weeks.
+In its current state, the crate will probably remain unusable for now.
 
 ## Testing
 
