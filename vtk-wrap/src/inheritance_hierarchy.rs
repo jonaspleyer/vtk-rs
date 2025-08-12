@@ -7,14 +7,14 @@ use crate::{
 
 type ClassName = String;
 
-pub struct Hierarchy {
+pub struct ClassHierarchy {
     /// Contains (class_name, (module_name, class))
     pub classes: HashMap<ClassName, Class>,
     pub tree: HashMap<ClassName, (Class, Vec<ClassName>)>,
     pub dependents: HashMap<ClassName, Vec<ClassName>>,
 }
 
-impl Hierarchy {
+impl ClassHierarchy {
     pub fn new(modules: &[Module]) -> Result<Self> {
         let mut errors = vec![];
         let classes: HashMap<String, Class> = modules

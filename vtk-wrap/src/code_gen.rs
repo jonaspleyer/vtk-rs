@@ -16,12 +16,12 @@ macro_rules! ident(
 );
 
 pub struct Generator {
-    pub hierarchy: crate::inheritance_hierarchy::Hierarchy,
+    pub hierarchy: crate::inheritance_hierarchy::ClassHierarchy,
 }
 
 impl Generator {
     pub fn new(modules: &[crate::parsing::Module]) -> Result<Self> {
-        let hierarchy = crate::inheritance_hierarchy::Hierarchy::new(modules)?;
+        let hierarchy = crate::inheritance_hierarchy::ClassHierarchy::new(modules)?;
 
         Ok(Self { hierarchy })
     }
