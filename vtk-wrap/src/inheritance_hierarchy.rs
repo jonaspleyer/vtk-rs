@@ -14,6 +14,10 @@ pub struct ClassHierarchy {
     pub dependents: HashMap<ClassName, Vec<ClassName>>,
 }
 
+pub fn type_regex() -> regex::Regex {
+    regex::Regex::new(r#"([a-zA-Z0-9:]*)(<[.*]>)?"#).unwrap()
+}
+
 impl ClassHierarchy {
     pub fn new(modules: &[Module]) -> Result<Self> {
         let mut errors = vec![];
@@ -49,7 +53,7 @@ impl ClassHierarchy {
                     .iter()
                     .map(|context| {
                         // Deterct generic type arguments
-                        let re = regex::Regex::new(r#"([a-zA-Z0-9:]*)(<[.*]>)?"#).unwrap();
+                        let re = type_regex();
                         let name_reduced = &re.captures(&context.name).unwrap()[0];
                         name_reduced.to_string()
                     })
