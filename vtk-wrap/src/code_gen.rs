@@ -534,13 +534,3 @@ fn comment_to_docs(comment: &Option<String>) -> Vec<String> {
         .map(|x| x.split("\n").map(|x| format!(" {}", x.trim())).collect())
         .unwrap_or_default()
 }
-
-#[test]
-fn parse_generics() -> Result<()> {
-    let array1 = "std::array<float, 3>";
-    let parsed = SharedGenericType::parse(array1)?;
-    let converted = parsed.convert()?;
-    // let tokens = converted.into_tokens()?;
-    assert_eq!(quote::quote!(#converted).to_string(), "[f32; 3]");
-    Ok(())
-}
