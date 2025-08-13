@@ -46,6 +46,7 @@ fn split_into_arguments(input: &str) -> Vec<String> {
         if char == ',' && level == 0 {
             args.push("".to_string());
         } else {
+            // We know that this element must be present. Thus we can safely unwrap.
             args.last_mut().unwrap().push(char);
         }
     }
