@@ -247,6 +247,8 @@ mod test {
                     for (p1, p2) in p.into_iter().zip($($segments)*.into_iter()) {
                         assert!(p1 == p2);
                     }
+                } else {
+                    panic!();
                 }
             }
         );
