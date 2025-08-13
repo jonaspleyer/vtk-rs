@@ -40,6 +40,10 @@ impl CppType {
             let pre = &segments[1];
             let args: Vec<_> = segments[2].split(",").collect();
             match pre.trim() {
+                "std::vector" | "vector" => {
+                    let ty = CppType::parse(args[0].trim())?;
+                    Ok(CppType::Vec(Box::new(ty)))
+                }
                 "std::array" | "array" => {
                     let ty = CppType::parse(args[0])?;
                     use std::str::FromStr;
@@ -169,6 +173,32 @@ mod test {
         parse_list!(list2, CppType::SignedChar);
         let list3 = "std::list<unsigned char>";
         parse_list!(list3, CppType::UnsignedChar);
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_vec() -> Result<()> {
+        macro_rules! parse_vec(
+            ($vec:ident, $($cppty:tt)*) => {
+                let parsed = CppType::parse($vec)?;
+                if let CppType::Vec(ty) = parsed {
+                    match ty.as_ref() {
+                        $($cppty)* => (),
+                        _ => panic!(),
+                    }
+                } else {
+                    panic!();
+                }
+            }
+        );
+
+        let vec1 = "std::vector<long>";
+        parse_vec!(vec1, CppType::LongInt);
+        let vec2 = "std::vector<std::vector<int>>";
+        parse_vec!(vec2, CppType::Vec(_));
+        let vec3 = "vector<char>";
+        parse_vec!(vec3, CppType::SignedChar);
 
         Ok(())
     }
