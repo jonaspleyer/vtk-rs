@@ -60,7 +60,10 @@ impl CppType {
         if input.contains("<") && input.contains(">") {
             // It must be a generic
             let re = generic_args_regex();
-            let segments = &re.captures(input).unwrap();
+            let segments = &anyhow::Context::context(
+                re.captures(input),
+                "Cannot parse empty genric arguments",
+            )?;
             let pre = &segments[1];
 
             let args: Vec<_> = split_into_arguments(&segments[2]);
@@ -127,7 +130,7 @@ impl CppType {
                 "long double" => Ok(LongDouble),
                 "float" => Ok(Float),
                 "char" => Ok(SignedChar),
-                _ => todo!(),
+                _ => anyhow::Context::context(None, format!("Cannot parse input: {}", input))?,
             }
         }
     }
