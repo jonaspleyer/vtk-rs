@@ -57,6 +57,8 @@ fn split_into_arguments(input: &str) -> Vec<String> {
 
 impl CppType {
     fn parse(input: &str) -> Result<Self> {
+        let input = input.trim();
+
         if input.contains("<") && input.contains(">") {
             // It must be a generic
             let re = generic_args_regex();
