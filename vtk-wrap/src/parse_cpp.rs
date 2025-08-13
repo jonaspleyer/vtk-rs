@@ -84,7 +84,20 @@ impl CppType {
                     let ty = CppType::parse(args[0].trim())?;
                     Ok(CppType::LinkedList(Box::new(ty)))
                 }
-                _ => todo!(),
+                // Parse as some other not known generic
+                _ => {
+                    let pre = pre
+                        .trim()
+                        .split("::")
+                        .filter(|x| !x.is_empty())
+                        .map(String::from)
+                        .collect();
+                    let args = args
+                        .into_iter()
+                        .map(|x| CppType::parse(&x))
+                        .collect::<Result<Vec<_>, _>>()?;
+                    Ok(CppType::Generic { pre, args })
+                }
             }
         } else if input.contains("::") {
             // It must be some sort of path
@@ -256,6 +269,41 @@ mod test {
         parse_path!(path2, ["std", "vector"]);
         let path3 = "::std::vector";
         parse_path!(path3, ["std", "vector"]);
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_generic() -> Result<()> {
+        macro_rules! parse_generic(
+            ($generic:ident, $pre:literal, [$($args:path),*]) => {
+                let parsed = CppType::parse($generic)?;
+                if let CppType::Generic {
+                    pre,
+                    args,
+                } = parsed {
+                    assert!(pre.join("::") == $pre);
+                    let mut args = args.into_iter();
+                    $(
+                        match args.next().unwrap() {
+                            $args => (),
+                            _ => panic!(),
+                        }
+                    )*
+                } else {
+                    panic!();
+                }
+            }
+        );
+
+        let generic1 = "json<int, char>";
+        parse_generic!(generic1, "json", [CppType::Int, CppType::SignedChar]);
+        let generic2 = "what::the<unsigned char, double, int>";
+        parse_generic!(
+            generic2,
+            "what::the",
+            [CppType::UnsignedChar, CppType::Double, CppType::Int]
+        );
 
         Ok(())
     }
