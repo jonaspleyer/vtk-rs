@@ -24,7 +24,7 @@ pub enum CppType {
         pre: Box<CppType>,
         args: Vec<Box<CppType>>,
     },
-    Path(syn::Path),
+    Path(Vec<String>),
 }
 
 fn generic_args_regex() -> regex::Regex {
@@ -90,11 +90,17 @@ impl CppType {
             }
         } else if input.contains("::") {
             // It must be some sort of path
-            let path: syn::Path = syn::parse_str(input)?;
-            Ok(CppType::Path(path))
+            Ok(CppType::Path(
+                input
+                    .split("::")
+                    .map(String::from)
+                    .filter(|x| !x.is_empty())
+                    .collect(),
+            ))
         } else {
             use CppType::*;
-            match input.trim() {
+            println!("{input}");
+            match input {
                 "signed char" => Ok(SignedChar),
                 "short" | "short int" | "signed short" | "signed short int" => Ok(ShortInt),
                 "int" | "signed" | "signed int" => Ok(Int),
@@ -228,6 +234,29 @@ mod test {
         parse_vec!(vec2, CppType::Vec(_));
         let vec3 = "vector<char>";
         parse_vec!(vec3, CppType::SignedChar);
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_path() -> Result<()> {
+        macro_rules! parse_path(
+            ($path:ident, $($segments:tt)*) => {
+                let parsed = CppType::parse($path)?;
+                if let CppType::Path(p) = parsed {
+                    for (p1, p2) in p.into_iter().zip($($segments)*.into_iter()) {
+                        assert!(p1 == p2);
+                    }
+                }
+            }
+        );
+
+        let path1 = "namespace::function";
+        parse_path!(path1, ["namespace", "function"]);
+        let path2 = "std::vector";
+        parse_path!(path2, ["std", "vector"]);
+        let path3 = "::std::vector";
+        parse_path!(path3, ["std", "vector"]);
 
         Ok(())
     }
