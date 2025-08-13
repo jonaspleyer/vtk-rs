@@ -115,7 +115,7 @@ mod test {
         parse_array!(array1, CppType::Float, 3);
         let array2 = "std::array<double, 12>";
         parse_array!(array2, CppType::Double, 12);
-        let array3 = "std::array<int, 4>";
+        let array3 = "array<int, 4>";
         parse_array!(array3, CppType::Int, 4);
 
         Ok(())
@@ -145,7 +145,7 @@ mod test {
         parse_map!(map1, CppType::Int, CppType::Float);
         let map2 = "std::map<long, char>";
         parse_map!(map2, CppType::LongInt, CppType::SignedChar);
-        let map3 = "std::map<unsigned char, double>";
+        let map3 = "map<unsigned char, double>";
         parse_map!(map3, CppType::UnsignedChar, CppType::Double);
 
         Ok(())
