@@ -49,7 +49,6 @@ fn split_into_arguments(input: &str) -> Vec<String> {
             args.last_mut().unwrap().push(char);
         }
     }
-    println!("{:?}", args);
 
     args
 }
@@ -98,7 +97,6 @@ impl CppType {
             ))
         } else {
             use CppType::*;
-            println!("{input}");
             match input {
                 "signed char" => Ok(SignedChar),
                 "short" | "short int" | "signed short" | "signed short int" => Ok(ShortInt),
