@@ -1,5 +1,7 @@
 use crate::Result;
 
+type Path = Vec<String>;
+
 pub enum CppType {
     Void,
     NullPointer,
@@ -20,11 +22,8 @@ pub enum CppType {
     Vec(Box<CppType>),
     Map(Box<CppType>, Box<CppType>),
     LinkedList(Box<CppType>),
-    Generic {
-        pre: Box<CppType>,
-        args: Vec<Box<CppType>>,
-    },
-    Path(Vec<String>),
+    Generic { pre: Path, args: Vec<CppType> },
+    Path(Path),
 }
 
 fn generic_args_regex() -> regex::Regex {
