@@ -181,11 +181,11 @@ mod test {
     #[test]
     fn parse_list() -> Result<()> {
         macro_rules! parse_list(
-            ($list:ident, $cppty:path) => {
+            ($list:ident, $($cppty:tt)*) => {
                 let parsed = CppType::parse($list)?;
                 if let CppType::LinkedList(ty) = parsed {
                     match ty.as_ref() {
-                        $cppty => (),
+                        $($cppty)* => (),
                         _ => panic!(),
                     }
                 } else {
@@ -200,6 +200,8 @@ mod test {
         parse_list!(list2, CppType::SignedChar);
         let list3 = "std::list<unsigned char>";
         parse_list!(list3, CppType::UnsignedChar);
+        let list4 = "std::list<map<int, char>>";
+        parse_list!(list4, CppType::Map(_, _));
 
         Ok(())
     }
