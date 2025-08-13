@@ -72,7 +72,7 @@ impl CppType {
                     Ok(CppType::Vec(Box::new(ty)))
                 }
                 "std::array" | "array" => {
-                    let ty = CppType::parse(args[0])?;
+                    let ty = CppType::parse(args[0].trim())?;
                     use std::str::FromStr;
                     let n = usize::from_str(args[1].trim())?;
                     Ok(CppType::Array(Box::new(ty), n))
