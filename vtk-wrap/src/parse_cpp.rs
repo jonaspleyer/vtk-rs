@@ -31,6 +31,30 @@ fn generic_args_regex() -> regex::Regex {
     regex::Regex::new(r#"([a-zA-Z0-9:]*)<(.*)>"#).unwrap()
 }
 
+fn split_into_arguments(input: &str) -> Vec<String> {
+    if !input.contains(">") && input.contains("<") {
+        return input.split(",").map(String::from).collect();
+    }
+
+    let mut level = 0;
+    let mut args = vec!["".to_string()];
+    for char in input.chars() {
+        if char == '<' {
+            level += 1;
+        } else if char == '>' {
+            level -= 1;
+        }
+        if char == ',' && level == 0 {
+            args.push("".to_string());
+        } else {
+            args.last_mut().unwrap().push(char);
+        }
+    }
+    println!("{:?}", args);
+
+    args
+}
+
 impl CppType {
     fn parse(input: &str) -> Result<Self> {
         if input.contains("<") && input.contains(">") {
@@ -38,7 +62,8 @@ impl CppType {
             let re = generic_args_regex();
             let segments = &re.captures(input).unwrap();
             let pre = &segments[1];
-            let args: Vec<_> = segments[2].split(",").collect();
+
+            let args: Vec<_> = split_into_arguments(&segments[2]);
             match pre.trim() {
                 "std::vector" | "vector" => {
                     let ty = CppType::parse(args[0].trim())?;
