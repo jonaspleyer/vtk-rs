@@ -2,6 +2,7 @@ use crate::Result;
 
 type Path = Vec<String>;
 
+#[derive(Debug, PartialEq)]
 pub enum CppRawType {
     Void,
     NullPointer,
