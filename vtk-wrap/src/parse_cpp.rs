@@ -265,6 +265,19 @@ mod test {
     use super::*;
 
     #[test]
+    fn parse_types() -> Result<()> {
+        let t0 = "char";
+        let cpp_type = CppRawType::parse(t0)?;
+        assert_eq!(cpp_type, CppRawType::SignedChar);
+
+        let t1 = "unsigned char";
+        let cpp_type = CppRawType::parse(t1)?;
+        assert_eq!(cpp_type, CppRawType::UnsignedChar);
+
+        Ok(())
+    }
+
+    #[test]
     fn parse_array() -> Result<()> {
         macro_rules! parse_array(
             ($arr:ident, $cppty:path, $n:literal) => {
