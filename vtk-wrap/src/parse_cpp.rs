@@ -136,6 +136,7 @@ impl Parse for CppRawType {
         } else {
             use CppRawType::*;
             match input {
+                "void" => Ok(Void),
                 "signed char" => Ok(SignedChar),
                 "short" | "short int" | "signed short" | "signed short int" => Ok(ShortInt),
                 "int" | "signed" | "signed int" => Ok(Int),
