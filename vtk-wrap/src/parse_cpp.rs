@@ -451,4 +451,44 @@ mod test {
 
         Ok(())
     }
+
+    #[test]
+    fn parse_type_with_modifier() -> Result<()> {
+        let cpp_type = CppType::parse("const int")?;
+        assert_eq!(cpp_type.modifiers, vec![Modifier::Const]);
+        assert_eq!(cpp_type.r#type, CppRawType::Int);
+        let cpp_type = CppType::parse("&float")?;
+        assert_eq!(cpp_type.modifiers, vec![Modifier::Ref]);
+        assert_eq!(cpp_type.r#type, CppRawType::Float);
+        let cpp_type = CppType::parse("*char")?;
+        assert_eq!(cpp_type.modifiers, vec![Modifier::Pointer]);
+        assert_eq!(cpp_type.r#type, CppRawType::SignedChar);
+        let cpp_type = CppType::parse("unsigned char")?;
+        // assert_eq!(cpp_type.modifiers, vec![Modifier::Volatile]);
+        assert_eq!(cpp_type.r#type, CppRawType::UnsignedChar);
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_function_signature() -> Result<()> {
+        let function_signature_1 = "void calc()";
+        let signature1 = FunctionSignature::parse(function_signature_1)?;
+        assert_eq!(signature1.name, "calc");
+        assert_eq!(signature1.return_type.modifiers, vec![]);
+        assert_eq!(signature1.return_type.r#type, CppRawType::Void);
+        assert!(signature1.args.is_empty());
+
+        let function_signature_2 = "void xapy(float, float&, float*)";
+        let signature2 = FunctionSignature::parse(function_signature_2)?;
+        assert_eq!(signature2.args.len(), 3);
+        assert_eq!(signature2.args[0].1.modifiers, vec![]);
+        assert_eq!(signature2.args[0].1.r#type, CppRawType::Float);
+        assert_eq!(signature2.args[1].1.modifiers, vec![Modifier::Ref]);
+        assert_eq!(signature2.args[1].1.r#type, CppRawType::Float);
+        assert_eq!(signature2.args[2].1.modifiers, vec![Modifier::Pointer]);
+        assert_eq!(signature2.args[2].1.r#type, CppRawType::Float);
+
+        Ok(())
+    }
 }
