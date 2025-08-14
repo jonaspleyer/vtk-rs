@@ -37,14 +37,14 @@ fn generic_args_regex() -> regex::Regex {
     regex::Regex::new(r#"([a-zA-Z0-9:]*)<(.*)>"#).unwrap()
 }
 
-fn split_into_arguments(input: &str, split_token: char) -> Vec<String> {
+fn split_into_arguments(input: &str, bra: char, ket: char, split_token: char) -> Vec<String> {
     // Return nothing if input is empty
     if input.trim().is_empty() {
         return vec![];
     }
 
     // Simply split at commata if  no brackets are present
-    if !input.contains(">") && !input.contains("<") {
+    if !input.contains(bra) && !input.contains(ket) {
         return input
             .split(&split_token.to_string())
             .map(String::from)
@@ -55,9 +55,9 @@ fn split_into_arguments(input: &str, split_token: char) -> Vec<String> {
 
     let mut args = vec!["".to_string()];
     for char in input.chars() {
-        if char == '<' {
+        if char == bra {
             level += 1;
-        } else if char == '>' {
+        } else if char == ket {
             level -= 1;
         }
         if char == split_token && level == 0 {
@@ -88,7 +88,7 @@ impl Parse for CppRawType {
             )?;
             let pre = &segments[1];
 
-            let args: Vec<_> = split_into_arguments(&segments[2], ',');
+            let args: Vec<_> = split_into_arguments(&segments[2], '<', '>', ',');
             match pre.trim() {
                 "std::vector" | "vector" => {
                     let ty = CppRawType::parse(args[0].trim())?;
@@ -169,7 +169,7 @@ impl Parse for CppType {
 
         let mut modifiers = vec![];
         let mut cpp_type = None;
-        let args = split_into_arguments(arg, ' ');
+        let args = split_into_arguments(arg, '<', '>', ' ');
         for n in 0..args.len() {
             let current_segm = &args[n];
 
@@ -243,7 +243,7 @@ impl Parse for FunctionSignature {
         )?;
         let outer = segments[1].trim();
         let inner = segments[2].trim();
-        let args = split_into_arguments(inner, ',')
+        let args = split_into_arguments(inner, '<', '>', ',')
             .into_iter()
             .map(|arg| CppType::parse_with_name(&arg))
             .collect::<Result<Vec<_>>>()?;
