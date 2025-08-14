@@ -71,7 +71,11 @@ fn split_into_arguments(input: &str, split_token: char) -> Vec<String> {
     args.into_iter().filter(|x| !x.is_empty()).collect()
 }
 
-impl CppRawType {
+pub trait Parse: Sized {
+    fn parse(input: &str) -> Result<Self>;
+}
+
+impl Parse for CppRawType {
     fn parse(input: &str) -> Result<Self> {
         let input = input.trim();
 
@@ -154,7 +158,7 @@ impl CppRawType {
     }
 }
 
-impl CppType {
+impl Parse for CppType {
     fn parse(input: &str) -> Result<Self> {
         use anyhow::Context;
 
@@ -215,7 +219,7 @@ pub struct FunctionSignature {
     args: Vec<(String, CppType)>,
 }
 
-impl Modifier {
+impl Parse for Modifier {
     fn parse(input: &str) -> Result<Self> {
         use Modifier::*;
         match input {
@@ -228,7 +232,7 @@ impl Modifier {
     }
 }
 
-impl FunctionSignature {
+impl Parse for FunctionSignature {
     fn parse(input: &str) -> Result<Self> {
         let re = regex::Regex::new(r#"([a-zA-Z0-9_: ]*)\((.*)\)"#).unwrap();
 
