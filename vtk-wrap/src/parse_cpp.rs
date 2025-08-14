@@ -193,16 +193,28 @@ impl Parse for CppType {
 }
 
 impl CppType {
-    fn parse_with_name(input: &str) -> Result<(String, Self)> {
+    fn parse_with_name(input: &str) -> Result<(Option<String>, Self)> {
         let arg = input.replace("&", " & ");
         let arg = arg.replace("*", " * ");
 
-        todo!()
+        let args = split_into_arguments(&arg, '<', '>', ' ');
+        if args.is_empty() {
+            use anyhow::Context;
+            None.context("Cannot parse empty type declaration")?;
+        }
 
-        // Ok((
-        //     modifiers,
-        //     cpp_type.context("Could not find function argument type")?,
-        // ))
+        if let Ok(cpp_ty) = CppType::parse(&arg) {
+            Ok((None, cpp_ty))
+        } else {
+            let name = args[args.len() - 1].clone();
+
+            let n = args.len() - 1;
+            let ty_input = args.into_iter().take(n).collect::<Vec<_>>().join(" ");
+
+            let rtype = CppType::parse(&ty_input)?;
+
+            Ok((Some(name), rtype))
+        }
     }
 }
 
@@ -217,7 +229,7 @@ pub enum Modifier {
 pub struct FunctionSignature {
     return_type: CppType,
     name: String,
-    args: Vec<(String, CppType)>,
+    args: Vec<(Option<String>, CppType)>,
 }
 
 impl Parse for Modifier {
@@ -248,9 +260,9 @@ impl Parse for FunctionSignature {
             .map(|arg| CppType::parse_with_name(&arg))
             .collect::<Result<Vec<_>>>()?;
 
-        let segments = outer.split(" ").collect::<Vec<_>>();
-        let return_type = CppType::parse(segments[0])?;
-        let name = segments[1].to_string();
+        let (name, return_type) = CppType::parse_with_name(outer)?;
+        use anyhow::Context;
+        let name = name.context("function declaration is missing name")?;
 
         Ok(FunctionSignature {
             return_type,
