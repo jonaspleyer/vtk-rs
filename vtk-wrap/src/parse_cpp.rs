@@ -37,12 +37,22 @@ fn generic_args_regex() -> regex::Regex {
     regex::Regex::new(r#"([a-zA-Z0-9:]*)<(.*)>"#).unwrap()
 }
 
-fn split_into_arguments(input: &str) -> Vec<String> {
-    if !input.contains(">") && input.contains("<") {
-        return input.split(",").map(String::from).collect();
+fn split_into_arguments(input: &str, split_token: char) -> Vec<String> {
+    // Return nothing if input is empty
+    if input.trim().is_empty() {
+        return vec![];
+    }
+
+    // Simply split at commata if  no brackets are present
+    if !input.contains(">") && !input.contains("<") {
+        return input
+            .split(&split_token.to_string())
+            .map(String::from)
+            .collect();
     }
 
     let mut level = 0;
+
     let mut args = vec!["".to_string()];
     for char in input.chars() {
         if char == '<' {
@@ -50,7 +60,7 @@ fn split_into_arguments(input: &str) -> Vec<String> {
         } else if char == '>' {
             level -= 1;
         }
-        if char == ',' && level == 0 {
+        if char == split_token && level == 0 {
             args.push("".to_string());
         } else {
             // We know that this element must be present. Thus we can safely unwrap.
@@ -58,7 +68,7 @@ fn split_into_arguments(input: &str) -> Vec<String> {
         }
     }
 
-    args
+    args.into_iter().filter(|x| !x.is_empty()).collect()
 }
 
 impl CppRawType {
@@ -74,7 +84,7 @@ impl CppRawType {
             )?;
             let pre = &segments[1];
 
-            let args: Vec<_> = split_into_arguments(&segments[2]);
+            let args: Vec<_> = split_into_arguments(&segments[2], ',');
             match pre.trim() {
                 "std::vector" | "vector" => {
                     let ty = CppRawType::parse(args[0].trim())?;
