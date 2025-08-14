@@ -2,7 +2,7 @@ use crate::Result;
 
 type Path = Vec<String>;
 
-pub enum CppType {
+pub enum CppRawType {
     Void,
     NullPointer,
     SignedChar,
@@ -18,12 +18,18 @@ pub enum CppType {
     LongDouble,
     Double,
     Float,
-    Array(Box<CppType>, usize),
-    Vec(Box<CppType>),
-    Map(Box<CppType>, Box<CppType>),
-    LinkedList(Box<CppType>),
-    Generic { pre: Path, args: Vec<CppType> },
+    Array(Box<CppRawType>, usize),
+    Vec(Box<CppRawType>),
+    Map(Box<CppRawType>, Box<CppRawType>),
+    LinkedList(Box<CppRawType>),
+    Generic { pre: Path, args: Vec<CppRawType> },
     Path(Path),
+}
+
+#[derive(Debug, PartialEq)]
+struct CppType {
+    modifiers: Vec<Modifier>,
+    r#type: CppRawType,
 }
 
 fn generic_args_regex() -> regex::Regex {
@@ -54,7 +60,7 @@ fn split_into_arguments(input: &str) -> Vec<String> {
     args
 }
 
-impl CppType {
+impl CppRawType {
     fn parse(input: &str) -> Result<Self> {
         let input = input.trim();
 
@@ -70,23 +76,23 @@ impl CppType {
             let args: Vec<_> = split_into_arguments(&segments[2]);
             match pre.trim() {
                 "std::vector" | "vector" => {
-                    let ty = CppType::parse(args[0].trim())?;
-                    Ok(CppType::Vec(Box::new(ty)))
+                    let ty = CppRawType::parse(args[0].trim())?;
+                    Ok(CppRawType::Vec(Box::new(ty)))
                 }
                 "std::array" | "array" => {
-                    let ty = CppType::parse(args[0].trim())?;
+                    let ty = CppRawType::parse(args[0].trim())?;
                     use std::str::FromStr;
                     let n = usize::from_str(args[1].trim())?;
-                    Ok(CppType::Array(Box::new(ty), n))
+                    Ok(CppRawType::Array(Box::new(ty), n))
                 }
                 "std::map" | "map" => {
-                    let key = CppType::parse(args[0].trim())?;
-                    let value = CppType::parse(args[1].trim())?;
-                    Ok(CppType::Map(Box::new(key), Box::new(value)))
+                    let key = CppRawType::parse(args[0].trim())?;
+                    let value = CppRawType::parse(args[1].trim())?;
+                    Ok(CppRawType::Map(Box::new(key), Box::new(value)))
                 }
                 "std::list" | "list" => {
-                    let ty = CppType::parse(args[0].trim())?;
-                    Ok(CppType::LinkedList(Box::new(ty)))
+                    let ty = CppRawType::parse(args[0].trim())?;
+                    Ok(CppRawType::LinkedList(Box::new(ty)))
                 }
                 // Parse as some other not known generic
                 _ => {
@@ -98,14 +104,14 @@ impl CppType {
                         .collect();
                     let args = args
                         .into_iter()
-                        .map(|x| CppType::parse(&x))
+                        .map(|x| CppRawType::parse(&x))
                         .collect::<Result<Vec<_>, _>>()?;
-                    Ok(CppType::Generic { pre, args })
+                    Ok(CppRawType::Generic { pre, args })
                 }
             }
         } else if input.contains("::") {
             // It must be some sort of path
-            Ok(CppType::Path(
+            Ok(CppRawType::Path(
                 input
                     .split("::")
                     .map(String::from)
@@ -113,7 +119,7 @@ impl CppType {
                     .collect(),
             ))
         } else {
-            use CppType::*;
+            use CppRawType::*;
             match input {
                 "signed char" => Ok(SignedChar),
                 "short" | "short int" | "signed short" | "signed short int" => Ok(ShortInt),
@@ -146,7 +152,7 @@ mod test {
         macro_rules! parse_array(
             ($arr:ident, $cppty:path, $n:literal) => {
                 let parsed = CppType::parse($arr)?;
-                if let CppType::Array(ty, n) = parsed {
+                if let CppRawType::Array(ty, n) = parsed.r#type {
                     assert_eq!(n, $n);
                     match ty.as_ref() {
                         $cppty => (),
@@ -159,11 +165,11 @@ mod test {
         );
 
         let array1 = "std::array<float, 3>";
-        parse_array!(array1, CppType::Float, 3);
+        parse_array!(array1, CppRawType::Float, 3);
         let array2 = "std::array<double, 12>";
-        parse_array!(array2, CppType::Double, 12);
+        parse_array!(array2, CppRawType::Double, 12);
         let array3 = "array<int, 4>";
-        parse_array!(array3, CppType::Int, 4);
+        parse_array!(array3, CppRawType::Int, 4);
 
         Ok(())
     }
@@ -173,7 +179,7 @@ mod test {
         macro_rules! parse_map(
             ($map:ident, $cppkey:path, $cppvalue:path) => {
                 let parsed = CppType::parse($map)?;
-                if let CppType::Map(key, value) = parsed {
+                if let CppRawType::Map(key, value) = parsed.r#type {
                     match key.as_ref() {
                         $cppkey => (),
                         _ => panic!(),
@@ -189,11 +195,11 @@ mod test {
         );
 
         let map1 = "std::map<int, float>";
-        parse_map!(map1, CppType::Int, CppType::Float);
+        parse_map!(map1, CppRawType::Int, CppRawType::Float);
         let map2 = "std::map<long, char>";
-        parse_map!(map2, CppType::LongInt, CppType::SignedChar);
+        parse_map!(map2, CppRawType::LongInt, CppRawType::SignedChar);
         let map3 = "map<unsigned char, double>";
-        parse_map!(map3, CppType::UnsignedChar, CppType::Double);
+        parse_map!(map3, CppRawType::UnsignedChar, CppRawType::Double);
 
         Ok(())
     }
@@ -203,7 +209,7 @@ mod test {
         macro_rules! parse_list(
             ($list:ident, $($cppty:tt)*) => {
                 let parsed = CppType::parse($list)?;
-                if let CppType::LinkedList(ty) = parsed {
+                if let CppRawType::LinkedList(ty) = parsed.r#type {
                     match ty.as_ref() {
                         $($cppty)* => (),
                         _ => panic!(),
@@ -215,13 +221,13 @@ mod test {
         );
 
         let list1 = "std::list<float>";
-        parse_list!(list1, CppType::Float);
+        parse_list!(list1, CppRawType::Float);
         let list2 = "std::list<char>";
-        parse_list!(list2, CppType::SignedChar);
+        parse_list!(list2, CppRawType::SignedChar);
         let list3 = "std::list<unsigned char>";
-        parse_list!(list3, CppType::UnsignedChar);
+        parse_list!(list3, CppRawType::UnsignedChar);
         let list4 = "std::list<map<int, char>>";
-        parse_list!(list4, CppType::Map(_, _));
+        parse_list!(list4, CppRawType::Map(_, _));
 
         Ok(())
     }
@@ -231,7 +237,7 @@ mod test {
         macro_rules! parse_vec(
             ($vec:ident, $($cppty:tt)*) => {
                 let parsed = CppType::parse($vec)?;
-                if let CppType::Vec(ty) = parsed {
+                if let CppRawType::Vec(ty) = parsed.r#type {
                     match ty.as_ref() {
                         $($cppty)* => (),
                         _ => panic!(),
@@ -243,11 +249,11 @@ mod test {
         );
 
         let vec1 = "std::vector<long>";
-        parse_vec!(vec1, CppType::LongInt);
+        parse_vec!(vec1, CppRawType::LongInt);
         let vec2 = "std::vector<std::vector<int>>";
-        parse_vec!(vec2, CppType::Vec(_));
+        parse_vec!(vec2, CppRawType::Vec(_));
         let vec3 = "vector<char>";
-        parse_vec!(vec3, CppType::SignedChar);
+        parse_vec!(vec3, CppRawType::SignedChar);
 
         Ok(())
     }
@@ -257,7 +263,7 @@ mod test {
         macro_rules! parse_path(
             ($path:ident, $($segments:tt)*) => {
                 let parsed = CppType::parse($path)?;
-                if let CppType::Path(p) = parsed {
+                if let CppRawType::Path(p) = parsed.r#type {
                     for (p1, p2) in p.into_iter().zip($($segments)*.into_iter()) {
                         assert!(p1 == p2);
                     }
@@ -282,10 +288,10 @@ mod test {
         macro_rules! parse_generic(
             ($generic:ident, $pre:literal, [$($args:path),*]) => {
                 let parsed = CppType::parse($generic)?;
-                if let CppType::Generic {
+                if let CppRawType::Generic {
                     pre,
                     args,
-                } = parsed {
+                } = parsed.r#type {
                     assert!(pre.join("::") == $pre);
                     let mut args = args.into_iter();
                     $(
@@ -301,12 +307,16 @@ mod test {
         );
 
         let generic1 = "json<int, char>";
-        parse_generic!(generic1, "json", [CppType::Int, CppType::SignedChar]);
+        parse_generic!(generic1, "json", [CppRawType::Int, CppRawType::SignedChar]);
         let generic2 = "what::the<unsigned char, double, int>";
         parse_generic!(
             generic2,
             "what::the",
-            [CppType::UnsignedChar, CppType::Double, CppType::Int]
+            [
+                CppRawType::UnsignedChar,
+                CppRawType::Double,
+                CppRawType::Int
+            ]
         );
 
         Ok(())
