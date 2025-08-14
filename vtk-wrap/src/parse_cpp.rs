@@ -144,6 +144,107 @@ impl CppRawType {
     }
 }
 
+impl CppType {
+    fn parse(input: &str) -> Result<Self> {
+        use anyhow::Context;
+
+        let arg = input.replace("&", " & ");
+        let arg = arg.replace("*", " * ");
+        let arg = arg.trim();
+
+        let mut modifiers = vec![];
+        let mut cpp_type = None;
+        let args = split_into_arguments(arg, ' ');
+        for n in 0..args.len() {
+            let current_segm = &args[n];
+
+            if let Ok(modifier) = Modifier::parse(current_segm) {
+                modifiers.push(modifier);
+            } else {
+                let mut final_args = vec![current_segm.clone()];
+                for arg in args.iter().skip(n + 1) {
+                    final_args.push(arg.clone());
+                }
+                cpp_type = Some(CppRawType::parse(&final_args.join(" "))?);
+                break;
+            }
+        }
+
+        Ok(CppType {
+            modifiers,
+            r#type: cpp_type.context("Could not find suitable type to parse")?,
+        })
+    }
+}
+
+impl CppType {
+    fn parse_with_name(input: &str) -> Result<(String, Self)> {
+        let arg = input.replace("&", " & ");
+        let arg = arg.replace("*", " * ");
+
+        todo!()
+
+        // Ok((
+        //     modifiers,
+        //     cpp_type.context("Could not find function argument type")?,
+        // ))
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Modifier {
+    Ref,
+    Pointer,
+    Const,
+    Volatile,
+}
+
+pub struct FunctionSignature {
+    return_type: CppType,
+    name: String,
+    args: Vec<(String, CppType)>,
+}
+
+impl Modifier {
+    fn parse(input: &str) -> Result<Self> {
+        use Modifier::*;
+        match input {
+            "&" => Ok(Ref),
+            "*" => Ok(Pointer),
+            "const" => Ok(Const),
+            "volatile" => Ok(Volatile),
+            _ => anyhow::Context::context(None, "")?,
+        }
+    }
+}
+
+impl FunctionSignature {
+    fn parse(input: &str) -> Result<Self> {
+        let re = regex::Regex::new(r#"([a-zA-Z0-9_: ]*)\((.*)\)"#).unwrap();
+
+        let segments = &anyhow::Context::context(
+            re.captures(input),
+            format!("Cannot parse function signature: {}", input),
+        )?;
+        let outer = segments[1].trim();
+        let inner = segments[2].trim();
+        let args = split_into_arguments(inner, ',')
+            .into_iter()
+            .map(|arg| CppType::parse_with_name(&arg))
+            .collect::<Result<Vec<_>>>()?;
+
+        let segments = outer.split(" ").collect::<Vec<_>>();
+        let return_type = CppType::parse(segments[0])?;
+        let name = segments[1].to_string();
+
+        Ok(FunctionSignature {
+            return_type,
+            name,
+            args,
+        })
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
