@@ -19,6 +19,8 @@ pub enum CppRawType {
     LongDouble,
     Double,
     Float,
+    // Standard Library
+    String,
     Array(Box<CppRawType>, usize),
     Vec(Box<CppRawType>),
     Map(Box<CppRawType>, Box<CppRawType>),
@@ -125,14 +127,17 @@ impl Parse for CppRawType {
                 }
             }
         } else if input.contains("::") {
-            // It must be some sort of path
-            Ok(CppRawType::Path(
-                input
-                    .split("::")
-                    .map(String::from)
-                    .filter(|x| !x.is_empty())
-                    .collect(),
-            ))
+            match input.trim() {
+                "std::string" | "string" => Ok(CppRawType::String),
+                // It must be some sort of path
+                _ => Ok(CppRawType::Path(
+                    input
+                        .split("::")
+                        .map(String::from)
+                        .filter(|x| !x.is_empty())
+                        .collect(),
+                )),
+            }
         } else {
             use CppRawType::*;
             match input {
@@ -460,6 +465,15 @@ mod test {
                 CppRawType::Int
             ]
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_string() -> Result<()> {
+        let cpp_type = CppType::parse("const std::string")?;
+        assert_eq!(cpp_type.r#type, CppRawType::String);
+        assert_eq!(cpp_type.modifiers, vec![Modifier::Const]);
 
         Ok(())
     }
