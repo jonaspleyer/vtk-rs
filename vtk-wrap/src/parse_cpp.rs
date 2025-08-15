@@ -19,6 +19,8 @@ pub enum CppRawType {
     LongDouble,
     Double,
     Float,
+    Bool,
+    Ostream,
     // Standard Library
     String,
     Array(Box<CppRawType>, usize),
@@ -157,7 +159,9 @@ impl Parse for CppRawType {
                 "double" => Ok(Double),
                 "long double" => Ok(LongDouble),
                 "float" => Ok(Float),
+                "bool" => Ok(Bool),
                 "char" => Ok(SignedChar),
+                "ostream" => Ok(Ostream),
                 _ => anyhow::Context::context(None, format!("Cannot parse input: {}", input))?,
             }
         }
