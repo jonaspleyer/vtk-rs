@@ -308,12 +308,12 @@ mod test {
     #[test]
     fn parse_types() -> Result<()> {
         let t0 = "char";
-        let cpp_type = CppRawType::parse(t0)?;
-        assert_eq!(cpp_type, CppRawType::SignedChar);
+        let cpp_type = CppType::parse(t0)?;
+        assert_eq!(cpp_type, CppType::SignedChar);
 
         let t1 = "unsigned char";
-        let cpp_type = CppRawType::parse(t1)?;
-        assert_eq!(cpp_type, CppRawType::UnsignedChar);
+        let cpp_type = CppType::parse(t1)?;
+        assert_eq!(cpp_type, CppType::UnsignedChar);
 
         Ok(())
     }
@@ -323,7 +323,7 @@ mod test {
         macro_rules! parse_array(
             ($arr:ident, $cppty:path, $n:literal) => {
                 let parsed = CppType::parse($arr)?;
-                if let CppRawType::Array(ty, n) = parsed.r#type {
+                if let CppType::Array(ty, n) = parsed {
                     assert_eq!(n, $n);
                     match ty.as_ref() {
                         $cppty => (),
@@ -336,11 +336,11 @@ mod test {
         );
 
         let array1 = "std::array<float, 3>";
-        parse_array!(array1, CppRawType::Float, 3);
+        parse_array!(array1, CppType::Float, 3);
         let array2 = "std::array<double, 12>";
-        parse_array!(array2, CppRawType::Double, 12);
+        parse_array!(array2, CppType::Double, 12);
         let array3 = "array<int, 4>";
-        parse_array!(array3, CppRawType::Int, 4);
+        parse_array!(array3, CppType::Int, 4);
 
         Ok(())
     }
@@ -350,7 +350,7 @@ mod test {
         macro_rules! parse_map(
             ($map:ident, $cppkey:path, $cppvalue:path) => {
                 let parsed = CppType::parse($map)?;
-                if let CppRawType::Map(key, value) = parsed.r#type {
+                if let CppType::Map(key, value) = parsed {
                     match key.as_ref() {
                         $cppkey => (),
                         _ => panic!(),
@@ -366,11 +366,11 @@ mod test {
         );
 
         let map1 = "std::map<int, float>";
-        parse_map!(map1, CppRawType::Int, CppRawType::Float);
+        parse_map!(map1, CppType::Int, CppType::Float);
         let map2 = "std::map<long, char>";
-        parse_map!(map2, CppRawType::LongInt, CppRawType::SignedChar);
+        parse_map!(map2, CppType::LongInt, CppType::SignedChar);
         let map3 = "map<unsigned char, double>";
-        parse_map!(map3, CppRawType::UnsignedChar, CppRawType::Double);
+        parse_map!(map3, CppType::UnsignedChar, CppType::Double);
 
         Ok(())
     }
@@ -380,7 +380,7 @@ mod test {
         macro_rules! parse_list(
             ($list:ident, $($cppty:tt)*) => {
                 let parsed = CppType::parse($list)?;
-                if let CppRawType::LinkedList(ty) = parsed.r#type {
+                if let CppType::LinkedList(ty) = parsed {
                     match ty.as_ref() {
                         $($cppty)* => (),
                         _ => panic!(),
@@ -392,13 +392,13 @@ mod test {
         );
 
         let list1 = "std::list<float>";
-        parse_list!(list1, CppRawType::Float);
+        parse_list!(list1, CppType::Float);
         let list2 = "std::list<char>";
-        parse_list!(list2, CppRawType::SignedChar);
+        parse_list!(list2, CppType::SignedChar);
         let list3 = "std::list<unsigned char>";
-        parse_list!(list3, CppRawType::UnsignedChar);
+        parse_list!(list3, CppType::UnsignedChar);
         let list4 = "std::list<map<int, char>>";
-        parse_list!(list4, CppRawType::Map(_, _));
+        parse_list!(list4, CppType::Map(_, _));
 
         Ok(())
     }
@@ -408,7 +408,7 @@ mod test {
         macro_rules! parse_vec(
             ($vec:ident, $($cppty:tt)*) => {
                 let parsed = CppType::parse($vec)?;
-                if let CppRawType::Vec(ty) = parsed.r#type {
+                if let CppType::Vec(ty) = parsed {
                     match ty.as_ref() {
                         $($cppty)* => (),
                         _ => panic!(),
@@ -420,11 +420,11 @@ mod test {
         );
 
         let vec1 = "std::vector<long>";
-        parse_vec!(vec1, CppRawType::LongInt);
+        parse_vec!(vec1, CppType::LongInt);
         let vec2 = "std::vector<std::vector<int>>";
-        parse_vec!(vec2, CppRawType::Vec(_));
+        parse_vec!(vec2, CppType::Vec(_));
         let vec3 = "vector<char>";
-        parse_vec!(vec3, CppRawType::SignedChar);
+        parse_vec!(vec3, CppType::SignedChar);
 
         Ok(())
     }
@@ -434,7 +434,7 @@ mod test {
         macro_rules! parse_path(
             ($path:ident, $($segments:tt)*) => {
                 let parsed = CppType::parse($path)?;
-                if let CppRawType::Path(p) = parsed.r#type {
+                if let CppType::Path(p) = parsed {
                     for (p1, p2) in p.into_iter().zip($($segments)*.into_iter()) {
                         assert!(p1 == p2);
                     }
@@ -459,10 +459,10 @@ mod test {
         macro_rules! parse_generic(
             ($generic:ident, $pre:literal, [$($args:path),*]) => {
                 let parsed = CppType::parse($generic)?;
-                if let CppRawType::Generic {
+                if let CppType::Generic {
                     pre,
                     args,
-                } = parsed.r#type {
+                } = parsed {
                     assert!(pre.join("::") == $pre);
                     let mut args = args.into_iter();
                     $(
@@ -478,16 +478,12 @@ mod test {
         );
 
         let generic1 = "json<int, char>";
-        parse_generic!(generic1, "json", [CppRawType::Int, CppRawType::SignedChar]);
+        parse_generic!(generic1, "json", [CppType::Int, CppType::SignedChar]);
         let generic2 = "what::the<unsigned char, double, int>";
         parse_generic!(
             generic2,
             "what::the",
-            [
-                CppRawType::UnsignedChar,
-                CppRawType::Double,
-                CppRawType::Int
-            ]
+            [CppType::UnsignedChar, CppType::Double, CppType::Int]
         );
 
         Ok(())
@@ -496,8 +492,7 @@ mod test {
     #[test]
     fn parse_string() -> Result<()> {
         let cpp_type = CppType::parse("const std::string")?;
-        assert_eq!(cpp_type.r#type, CppRawType::String);
-        assert_eq!(cpp_type.modifiers, vec![Modifier::Const]);
+        assert_eq!(cpp_type, CppType::Const(Box::new(CppType::String)));
 
         Ok(())
     }
@@ -505,17 +500,23 @@ mod test {
     #[test]
     fn parse_type_with_modifier() -> Result<()> {
         let cpp_type = CppType::parse("const int")?;
-        assert_eq!(cpp_type.modifiers, vec![Modifier::Const]);
-        assert_eq!(cpp_type.r#type, CppRawType::Int);
+        assert_eq!(cpp_type, CppType::Const(Box::new(CppType::Int)));
+        let cpp_type = CppType::parse("const int*")?;
+        assert_eq!(
+            cpp_type,
+            CppType::Pointer(Box::new(CppType::Const(Box::new(CppType::Int))))
+        );
+        let cpp_type = CppType::parse("int* const")?;
+        assert_eq!(
+            cpp_type,
+            CppType::Const(Box::new(CppType::Pointer(Box::new(CppType::Int))))
+        );
         let cpp_type = CppType::parse("&float")?;
-        assert_eq!(cpp_type.modifiers, vec![Modifier::Ref]);
-        assert_eq!(cpp_type.r#type, CppRawType::Float);
-        let cpp_type = CppType::parse("*char")?;
-        assert_eq!(cpp_type.modifiers, vec![Modifier::Pointer]);
-        assert_eq!(cpp_type.r#type, CppRawType::SignedChar);
+        assert_eq!(cpp_type, CppType::Ref(Box::new(CppType::Float)));
+        let cpp_type = CppType::parse("char*")?;
+        assert_eq!(cpp_type, CppType::Pointer(Box::new(CppType::SignedChar)));
         let cpp_type = CppType::parse("unsigned char")?;
-        // assert_eq!(cpp_type.modifiers, vec![Modifier::Volatile]);
-        assert_eq!(cpp_type.r#type, CppRawType::UnsignedChar);
+        assert_eq!(cpp_type, CppType::UnsignedChar);
 
         Ok(())
     }
@@ -525,20 +526,26 @@ mod test {
         let function_signature_1 = "void calc()";
         let signature1 = FunctionSignature::parse(function_signature_1)?;
         assert_eq!(signature1.name, "calc");
-        assert_eq!(signature1.return_type.modifiers, vec![]);
-        assert_eq!(signature1.return_type.r#type, CppRawType::Void);
+        assert_eq!(signature1.return_type, CppType::Void);
         assert!(signature1.args.is_empty());
 
-        // We may assume that modifiers are on the left-hand side as generated by WrapVTK
-        let function_signature_2 = "void xapy(float, &float, *float)";
+        let function_signature_2 = "void xapy(float, float&, float*)";
         let signature2 = FunctionSignature::parse(function_signature_2)?;
         assert_eq!(signature2.args.len(), 3);
-        assert_eq!(signature2.args[0].1.modifiers, vec![]);
-        assert_eq!(signature2.args[0].1.r#type, CppRawType::Float);
-        assert_eq!(signature2.args[1].1.modifiers, vec![Modifier::Ref]);
-        assert_eq!(signature2.args[1].1.r#type, CppRawType::Float);
-        assert_eq!(signature2.args[2].1.modifiers, vec![Modifier::Pointer]);
-        assert_eq!(signature2.args[2].1.r#type, CppRawType::Float);
+        assert_eq!(signature2.args[0].1, CppType::Float);
+        assert_eq!(signature2.args[1].1, CppType::Ref(Box::new(CppType::Float)));
+        assert_eq!(
+            signature2.args[2].1,
+            CppType::Pointer(Box::new(CppType::Float))
+        );
+
+        let function_signature_2 = "void IsType(const char *type)";
+        let signature2 = FunctionSignature::parse(function_signature_2)?;
+        assert_eq!(signature2.args.len(), 1);
+        assert_eq!(
+            signature2.args[0].1,
+            CppType::Pointer(Box::new(CppType::Const(Box::new(CppType::SignedChar))))
+        );
 
         Ok(())
     }
