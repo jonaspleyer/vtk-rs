@@ -250,17 +250,28 @@ pub struct FunctionSignature {
     args: Vec<(Option<String>, CppType)>,
 }
 
-impl Parse for Modifier {
+#[derive(Debug, PartialEq)]
+pub enum MemberKeyword {
+    Static,
+    Virtual,
+}
+
+impl Parse for MemberKeyword {
     fn parse(input: &str) -> Result<Self> {
-        use Modifier::*;
+        use MemberKeyword::*;
+        use anyhow::Context;
         match input {
-            "&" => Ok(Ref),
-            "*" => Ok(Pointer),
-            "const" => Ok(Const),
-            "volatile" => Ok(Volatile),
-            _ => anyhow::Context::context(None, "")?,
+            "static" => Ok(Static),
+            "virtual" => Ok(Virtual),
+            _ => None.context(format!("cannot parse: {input} as MemberKeyword")),
         }
     }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct ClassMethod {
+    keywords: Vec<MemberKeyword>,
+    function_signature: FunctionSignature,
 }
 
 impl Parse for FunctionSignature {
