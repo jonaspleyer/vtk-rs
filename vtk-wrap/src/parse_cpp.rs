@@ -3,7 +3,7 @@ use crate::Result;
 type Path = Vec<String>;
 
 #[derive(Debug, PartialEq)]
-pub enum CppRawType {
+pub enum CppType {
     Void,
     NullPointer,
     SignedChar,
@@ -23,18 +23,12 @@ pub enum CppRawType {
     Ostream,
     // Standard Library
     String,
-    Array(Box<CppRawType>, usize),
-    Vec(Box<CppRawType>),
-    Map(Box<CppRawType>, Box<CppRawType>),
-    LinkedList(Box<CppRawType>),
-    Generic { pre: Path, args: Vec<CppRawType> },
+    Array(Box<CppType>, usize),
+    Vec(Box<CppType>),
+    Map(Box<CppType>, Box<CppType>),
+    LinkedList(Box<CppType>),
+    Generic { pre: Path, args: Vec<CppType> },
     Path(Path),
-}
-
-#[derive(Debug, PartialEq)]
-struct CppType {
-    modifiers: Vec<Modifier>,
-    r#type: CppRawType,
 }
 
 fn generic_args_regex() -> regex::Regex {
@@ -79,7 +73,7 @@ pub trait Parse: Sized {
     fn parse(input: &str) -> Result<Self>;
 }
 
-impl Parse for CppRawType {
+impl Parse for CppType {
     fn parse(input: &str) -> Result<Self> {
         let input = input.trim();
 
@@ -95,23 +89,23 @@ impl Parse for CppRawType {
             let args: Vec<_> = split_into_arguments(&segments[2], '<', '>', ',');
             match pre.trim() {
                 "std::vector" | "vector" => {
-                    let ty = CppRawType::parse(args[0].trim())?;
-                    Ok(CppRawType::Vec(Box::new(ty)))
+                    let ty = CppType::parse(args[0].trim())?;
+                    Ok(CppType::Vec(Box::new(ty)))
                 }
                 "std::array" | "array" => {
-                    let ty = CppRawType::parse(args[0].trim())?;
+                    let ty = CppType::parse(args[0].trim())?;
                     use std::str::FromStr;
                     let n = usize::from_str(args[1].trim())?;
-                    Ok(CppRawType::Array(Box::new(ty), n))
+                    Ok(CppType::Array(Box::new(ty), n))
                 }
                 "std::map" | "map" => {
-                    let key = CppRawType::parse(args[0].trim())?;
-                    let value = CppRawType::parse(args[1].trim())?;
-                    Ok(CppRawType::Map(Box::new(key), Box::new(value)))
+                    let key = CppType::parse(args[0].trim())?;
+                    let value = CppType::parse(args[1].trim())?;
+                    Ok(CppType::Map(Box::new(key), Box::new(value)))
                 }
                 "std::list" | "list" => {
-                    let ty = CppRawType::parse(args[0].trim())?;
-                    Ok(CppRawType::LinkedList(Box::new(ty)))
+                    let ty = CppType::parse(args[0].trim())?;
+                    Ok(CppType::LinkedList(Box::new(ty)))
                 }
                 // Parse as some other not known generic
                 _ => {
@@ -123,16 +117,18 @@ impl Parse for CppRawType {
                         .collect();
                     let args = args
                         .into_iter()
-                        .map(|x| CppRawType::parse(&x))
+                        .map(|x| CppType::parse(&x))
                         .collect::<Result<Vec<_>, _>>()?;
-                    Ok(CppRawType::Generic { pre, args })
+                    Ok(CppType::Generic { pre, args })
                 }
             }
         } else if input.contains("::") {
             match input.trim() {
-                "std::string" | "string" => Ok(CppRawType::String),
+                "std::string" => Ok(CppType::String),
+                "std::type_info" => Ok(CppType::TypeInfo),
+                "std::size_t" => Ok(CppType::SizeT),
                 // It must be some sort of path
-                _ => Ok(CppRawType::Path(
+                _ => Ok(CppType::Path(
                     input
                         .split("::")
                         .map(String::from)
@@ -141,7 +137,7 @@ impl Parse for CppRawType {
                 )),
             }
         } else {
-            use CppRawType::*;
+            use CppType::*;
             match input {
                 "void" => Ok(Void),
                 "signed char" => Ok(SignedChar),
@@ -162,42 +158,15 @@ impl Parse for CppRawType {
                 "bool" => Ok(Bool),
                 "char" => Ok(SignedChar),
                 "ostream" => Ok(Ostream),
-                _ => anyhow::Context::context(None, format!("Cannot parse input: {}", input))?,
-            }
-        }
-    }
-}
-
-impl Parse for CppType {
-    fn parse(input: &str) -> Result<Self> {
-        use anyhow::Context;
-
-        let arg = input.replace("&", " & ");
-        let arg = arg.replace("*", " * ");
-        let arg = arg.trim();
-
-        let mut modifiers = vec![];
-        let mut cpp_type = None;
-        let args = split_into_arguments(arg, '<', '>', ' ');
-        for n in 0..args.len() {
-            let current_segm = &args[n];
-
-            if let Ok(modifier) = Modifier::parse(current_segm) {
-                modifiers.push(modifier);
-            } else {
-                let mut final_args = vec![current_segm.clone()];
-                for arg in args.iter().skip(n + 1) {
-                    final_args.push(arg.clone());
+                other => {
+                    if other.trim().contains(" ") {
+                        anyhow::Context::context(None, "Paths must not contain spaces")
+                    } else {
+                        Ok(Path(vec![other.to_string()]))
+                    }
                 }
-                cpp_type = Some(CppRawType::parse(&final_args.join(" "))?);
-                break;
             }
         }
-
-        Ok(CppType {
-            modifiers,
-            r#type: cpp_type.context("Could not find suitable type to parse")?,
-        })
     }
 }
 
@@ -228,13 +197,6 @@ impl CppType {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Modifier {
-    Ref,
-    Pointer,
-    Const,
-    Volatile,
-}
-
 pub struct FunctionSignature {
     return_type: CppType,
     name: String,
