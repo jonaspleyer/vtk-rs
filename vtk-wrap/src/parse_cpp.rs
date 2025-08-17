@@ -21,6 +21,10 @@ pub enum CppType {
     Float,
     Bool,
     Ostream,
+    // Containers
+    Ref(Box<CppType>),
+    Pointer(Box<CppType>),
+    Const(Box<CppType>),
     // Standard Library
     String,
     Array(Box<CppType>, usize),
@@ -77,7 +81,38 @@ impl Parse for CppType {
     fn parse(input: &str) -> Result<Self> {
         let input = input.trim();
 
-        if input.contains("<") && input.contains(">") {
+        let first_char = input.chars().next();
+        let last_char = input.chars().last();
+        let remaining_last_chars = input.chars().skip(1).collect::<String>();
+        let remaining_first_chars = {
+            let n = input.len().saturating_sub(1);
+            input.chars().take(n).collect::<String>()
+        };
+        let first_word = input.split(" ").next();
+        let last_word = input.split(" ").last();
+        let remaining_words = input.split(" ").skip(1).collect::<Vec<_>>().join(" ");
+        let initial_words = {
+            let i = input.split(" ").collect::<Vec<_>>();
+            let n = i.len() - 1;
+            i.into_iter().take(n).collect::<Vec<_>>().join(" ")
+        };
+
+        if let Some('*') = last_char {
+            let head = CppType::parse(&remaining_first_chars)?;
+            Ok(CppType::Pointer(Box::new(head)))
+        } else if let Some('&') = first_char {
+            let tail = CppType::parse(&remaining_last_chars)?;
+            Ok(CppType::Ref(Box::new(tail)))
+        } else if let Some('&') = last_char {
+            let head = CppType::parse(&remaining_first_chars)?;
+            Ok(CppType::Ref(Box::new(head)))
+        } else if let Some("const") = first_word {
+            let inner = CppType::parse(&remaining_words)?;
+            Ok(CppType::Const(Box::new(inner)))
+        } else if let Some("const") = last_word {
+            let inner = CppType::parse(&initial_words)?;
+            Ok(CppType::Const(Box::new(inner)))
+        } else if input.contains("<") && input.contains(">") {
             // It must be a generic
             let re = generic_args_regex();
             let segments = &anyhow::Context::context(
