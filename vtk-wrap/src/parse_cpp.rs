@@ -21,16 +21,22 @@ pub enum CppType {
     Float,
     Bool,
     Ostream,
+    SizeT,
+    File,
+    FileMode,
+    Function,
     // Containers
     Ref(Box<CppType>),
     Pointer(Box<CppType>),
     Const(Box<CppType>),
     // Standard Library
     String,
+    TypeInfo,
     Array(Box<CppType>, usize),
     Vec(Box<CppType>),
     Map(Box<CppType>, Box<CppType>),
     LinkedList(Box<CppType>),
+    // Others
     Generic { pre: Path, args: Vec<CppType> },
     Path(Path),
 }
@@ -191,6 +197,12 @@ impl Parse for CppType {
                 "long double" => Ok(LongDouble),
                 "float" => Ok(Float),
                 "bool" => Ok(Bool),
+                "function" => Ok(Function),
+                "FILE" => Ok(File),
+                "FileMode" => Ok(FileMode),
+                "string" => Ok(CppType::String),
+                "type_info" => Ok(TypeInfo),
+                "size_t" => Ok(SizeT),
                 "char" => Ok(SignedChar),
                 "ostream" => Ok(Ostream),
                 other => {
