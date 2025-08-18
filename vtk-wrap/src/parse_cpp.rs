@@ -5,7 +5,6 @@ type Path = Vec<String>;
 #[derive(Debug, PartialEq)]
 pub enum CppType {
     Void,
-    NullPointer,
     SignedChar,
     UnsignedChar,
     ShortInt,
