@@ -210,7 +210,10 @@ impl Parse for CppType {
                 "ostream" => Ok(Ostream),
                 other => {
                     if other.trim().contains(" ") {
-                        anyhow::Context::context(None, "Paths must not contain spaces")
+                        anyhow::Context::context(
+                            None,
+                            format!("Could not parse path due to spaces: {}", other),
+                        )
                     } else {
                         Ok(Path(vec![other.to_string()]))
                     }
