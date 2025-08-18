@@ -27,6 +27,7 @@ pub enum CppType {
     // Containers
     Ref(Box<CppType>),
     Pointer(Box<CppType>),
+    Static(Box<CppType>),
     Const(Box<CppType>),
     // Standard Library
     String,
@@ -111,6 +112,9 @@ impl Parse for CppType {
         } else if let Some("const") = last_word {
             let inner = CppType::parse(&initial_words)?;
             Ok(CppType::Const(Box::new(inner)))
+        } else if let Some("static") = first_word {
+            let inner = CppType::parse(&remaining_words)?;
+            Ok(CppType::Static(Box::new(inner)))
         } else if let Some('&') = first_char {
             let tail = CppType::parse(&remaining_last_chars)?;
             Ok(CppType::Ref(Box::new(tail)))
@@ -593,6 +597,17 @@ mod test {
                 return_type: CppType::Bool,
                 args: vec![CppType::Float, CppType::Float]
             }))
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn parse_static() -> Result<()> {
+        let cpp_ty = "static std::array<float, 3>";
+        let ty = CppType::parse(cpp_ty)?;
+        assert_eq!(
+            ty,
+            CppType::Static(Box::new(CppType::Array(Box::new(CppType::Float), 3)))
         );
         Ok(())
     }
