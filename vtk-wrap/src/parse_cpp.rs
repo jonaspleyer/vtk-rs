@@ -24,7 +24,7 @@ pub enum CppType {
     SizeT,
     File,
     FileMode,
-    Function,
+    Function(Box<StdFunction>),
     // Containers
     Ref(Box<CppType>),
     Pointer(Box<CppType>),
@@ -148,6 +148,10 @@ impl Parse for CppType {
                     let ty = CppType::parse(args[0].trim())?;
                     Ok(CppType::LinkedList(Box::new(ty)))
                 }
+                "std::function" | "function" => {
+                    let ty = segments[2].trim();
+                    Ok(CppType::Function(Box::new(StdFunction::parse(ty)?)))
+                }
                 // Parse as some other not known generic
                 _ => {
                     let pre = pre
@@ -197,7 +201,6 @@ impl Parse for CppType {
                 "long double" => Ok(LongDouble),
                 "float" => Ok(Float),
                 "bool" => Ok(Bool),
-                "function" => Ok(Function),
                 "FILE" => Ok(File),
                 "FileMode" => Ok(FileMode),
                 "string" => Ok(CppType::String),
@@ -240,6 +243,34 @@ impl CppType {
 
             Ok((Some(name), rtype))
         }
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct StdFunction {
+    return_type: CppType,
+    args: Vec<CppType>,
+}
+
+impl Parse for StdFunction {
+    fn parse(input: &str) -> Result<Self> {
+        let re = regex::Regex::new(r#"([a-zA-Z0-9_: ]*)\((.*)\)"#).unwrap();
+
+        let segments = &anyhow::Context::context(
+            re.captures(input),
+            format!("Cannot parse function signature: {}", input),
+        )?;
+        let outer = segments[1].trim();
+        let inner = segments[2].trim();
+
+        let args = split_into_arguments(inner, '<', '>', ',')
+            .into_iter()
+            .map(|arg| CppType::parse(&arg))
+            .collect::<Result<Vec<_>>>()?;
+
+        let return_type = CppType::parse(outer)?;
+
+        Ok(Self { return_type, args })
     }
 }
 
