@@ -103,21 +103,21 @@ impl Parse for CppType {
             i.into_iter().take(n).collect::<Vec<_>>().join(" ")
         };
 
-        if let Some('*') = last_char {
-            let head = CppType::parse(&remaining_first_chars)?;
-            Ok(CppType::Pointer(Box::new(head)))
+        if let Some("const") = first_word {
+            let inner = CppType::parse(&remaining_words)?;
+            Ok(CppType::Const(Box::new(inner)))
+        } else if let Some("const") = last_word {
+            let inner = CppType::parse(&initial_words)?;
+            Ok(CppType::Const(Box::new(inner)))
         } else if let Some('&') = first_char {
             let tail = CppType::parse(&remaining_last_chars)?;
             Ok(CppType::Ref(Box::new(tail)))
         } else if let Some('&') = last_char {
             let head = CppType::parse(&remaining_first_chars)?;
             Ok(CppType::Ref(Box::new(head)))
-        } else if let Some("const") = first_word {
-            let inner = CppType::parse(&remaining_words)?;
-            Ok(CppType::Const(Box::new(inner)))
-        } else if let Some("const") = last_word {
-            let inner = CppType::parse(&initial_words)?;
-            Ok(CppType::Const(Box::new(inner)))
+        } else if let Some('*') = last_char {
+            let head = CppType::parse(&remaining_first_chars)?;
+            Ok(CppType::Pointer(Box::new(head)))
         } else if input.contains("<") && input.contains(">") {
             // It must be a generic
             let re = generic_args_regex();
