@@ -580,4 +580,18 @@ mod test {
 
         Ok(())
     }
+
+    #[test]
+    fn parse_std_function() -> Result<()> {
+        let std_function_ty = "std::function<bool(float, float)>";
+        let ty = CppType::parse(std_function_ty)?;
+        assert_eq!(
+            ty,
+            CppType::Function(Box::new(StdFunction {
+                return_type: CppType::Bool,
+                args: vec![CppType::Float, CppType::Float]
+            }))
+        );
+        Ok(())
+    }
 }
