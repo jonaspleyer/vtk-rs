@@ -222,32 +222,6 @@ impl Parse for CppType {
     }
 }
 
-impl CppType {
-    fn parse_with_name(input: &str) -> Result<(Option<String>, Self)> {
-        let arg = input.replace("&", " & ");
-        let arg = arg.replace("*", " * ");
-
-        let args = split_into_arguments(&arg, '<', '>', ' ');
-        if args.is_empty() {
-            use anyhow::Context;
-            None.context("Cannot parse empty type declaration")?;
-        }
-
-        if let Ok(cpp_ty) = CppType::parse(&arg) {
-            Ok((None, cpp_ty))
-        } else {
-            let name = args[args.len() - 1].clone();
-
-            let n = args.len() - 1;
-            let ty_input = args.into_iter().take(n).collect::<Vec<_>>().join(" ");
-
-            let rtype = CppType::parse(&ty_input)?;
-
-            Ok((Some(name), rtype))
-        }
-    }
-}
-
 #[derive(Debug, PartialEq)]
 pub struct StdFunction {
     return_type: CppType,
@@ -273,64 +247,6 @@ impl Parse for StdFunction {
         let return_type = CppType::parse(outer)?;
 
         Ok(Self { return_type, args })
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct FunctionSignature {
-    return_type: CppType,
-    name: String,
-    args: Vec<(Option<String>, CppType)>,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum MemberKeyword {
-    Static,
-    Virtual,
-}
-
-impl Parse for MemberKeyword {
-    fn parse(input: &str) -> Result<Self> {
-        use MemberKeyword::*;
-        use anyhow::Context;
-        match input {
-            "static" => Ok(Static),
-            "virtual" => Ok(Virtual),
-            _ => None.context(format!("cannot parse: {input} as MemberKeyword")),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct ClassMethod {
-    keywords: Vec<MemberKeyword>,
-    function_signature: FunctionSignature,
-}
-
-impl Parse for FunctionSignature {
-    fn parse(input: &str) -> Result<Self> {
-        let re = regex::Regex::new(r#"([a-zA-Z0-9_: ]*)\((.*)\)"#).unwrap();
-
-        let segments = &anyhow::Context::context(
-            re.captures(input),
-            format!("Cannot parse function signature: {}", input),
-        )?;
-        let outer = segments[1].trim();
-        let inner = segments[2].trim();
-        let args = split_into_arguments(inner, '<', '>', ',')
-            .into_iter()
-            .map(|arg| CppType::parse_with_name(&arg))
-            .collect::<Result<Vec<_>>>()?;
-
-        let (name, return_type) = CppType::parse_with_name(outer)?;
-        use anyhow::Context;
-        let name = name.context("function declaration is missing name")?;
-
-        Ok(FunctionSignature {
-            return_type,
-            name,
-            args,
-        })
     }
 }
 
@@ -550,35 +466,6 @@ mod test {
         assert_eq!(cpp_type, CppType::Pointer(Box::new(CppType::SignedChar)));
         let cpp_type = CppType::parse("unsigned char")?;
         assert_eq!(cpp_type, CppType::UnsignedChar);
-
-        Ok(())
-    }
-
-    #[test]
-    fn parse_function_signature() -> Result<()> {
-        let function_signature_1 = "void calc()";
-        let signature1 = FunctionSignature::parse(function_signature_1)?;
-        assert_eq!(signature1.name, "calc");
-        assert_eq!(signature1.return_type, CppType::Void);
-        assert!(signature1.args.is_empty());
-
-        let function_signature_2 = "void xapy(float, float&, float*)";
-        let signature2 = FunctionSignature::parse(function_signature_2)?;
-        assert_eq!(signature2.args.len(), 3);
-        assert_eq!(signature2.args[0].1, CppType::Float);
-        assert_eq!(signature2.args[1].1, CppType::Ref(Box::new(CppType::Float)));
-        assert_eq!(
-            signature2.args[2].1,
-            CppType::Pointer(Box::new(CppType::Float))
-        );
-
-        let function_signature_2 = "void IsType(const char *type)";
-        let signature2 = FunctionSignature::parse(function_signature_2)?;
-        assert_eq!(signature2.args.len(), 1);
-        assert_eq!(
-            signature2.args[0].1,
-            CppType::Pointer(Box::new(CppType::Const(Box::new(CppType::SignedChar))))
-        );
 
         Ok(())
     }
