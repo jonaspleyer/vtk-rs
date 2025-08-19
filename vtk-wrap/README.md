@@ -6,7 +6,7 @@
 4. [ ] Gather information on exposable methods, defined types, modules, features etc. (modules
    `inheritance_hierarchy.rs`)
 5. [ ] Convert to rust-specific information (module `intermediate.rs`)
-6. [ ] Generate ffi code (`module code_gen.rs`)
+6. [ ] Generate ffi code (module `code_gen.rs`)
 7. [ ] Generate C++ code
     - Generate `CmakeLists` file
     - Determine linker args
