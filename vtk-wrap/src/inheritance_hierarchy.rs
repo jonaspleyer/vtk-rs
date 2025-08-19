@@ -5,7 +5,7 @@ use crate::{
     parse_wrap_vtk_xml::{Class, Method, Module},
 };
 
-type ClassName = String;
+pub type ClassName = String;
 
 pub struct ClassHierarchy {
     /// Contains (class_name, (module_name, class))
@@ -73,6 +73,19 @@ impl ClassHierarchy {
             tree,
             dependents,
         })
+    }
+
+    pub fn get_parent_names(&self, class_name: &str) -> impl IntoIterator<Item = &String> {
+        self.tree
+            .get(class_name)
+            .into_iter()
+            .flat_map(|(_, names)| names)
+    }
+
+    pub fn get_parents(&self, class_name: &str) -> impl IntoIterator<Item = &Class> {
+        self.get_parent_names(class_name)
+            .into_iter()
+            .filter_map(|name| self.classes.get(name))
     }
 
     pub fn has_dependant(&self, class: &Class) -> bool {
