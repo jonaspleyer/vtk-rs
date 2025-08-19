@@ -1,6 +1,38 @@
 use crate::Result;
 
-type Path = Vec<String>;
+#[derive(Debug, PartialEq)]
+pub struct Ident(pub String);
+
+impl Parse for Ident {
+    fn parse(value: &str) -> Result<Self> {
+        if !value.trim().contains(" ") {
+            Ok(Ident(value.trim().to_string()))
+        } else {
+            Err(anyhow::anyhow!("Ident may not contain spaces!"))
+        }
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Path(pub Vec<String>);
+
+impl Parse for Path {
+    fn parse(value: &str) -> Result<Self> {
+        if value.trim().contains(" ") {
+            return Err(anyhow::anyhow!("path \"{}\"contains spaces", value.trim()));
+        }
+
+        // TODO fix this
+        Ok(Path(
+            value
+                .trim()
+                .split("::")
+                .filter(|x| !x.is_empty())
+                .map(|x| x.to_string())
+                .collect(),
+        ))
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub enum CppType {
@@ -153,12 +185,7 @@ impl Parse for CppType {
                 }
                 // Parse as some other not known generic
                 _ => {
-                    let pre = pre
-                        .trim()
-                        .split("::")
-                        .filter(|x| !x.is_empty())
-                        .map(String::from)
-                        .collect();
+                    let pre = Path::parse(pre)?;
                     let args = args
                         .into_iter()
                         .map(|x| CppType::parse(&x))
@@ -172,13 +199,7 @@ impl Parse for CppType {
                 "std::type_info" => Ok(CppType::TypeInfo),
                 "std::size_t" => Ok(CppType::SizeT),
                 // It must be some sort of path
-                _ => Ok(CppType::Path(
-                    input
-                        .split("::")
-                        .map(String::from)
-                        .filter(|x| !x.is_empty())
-                        .collect(),
-                )),
+                _ => Ok(CppType::Path(Path::parse(input)?)),
             }
         } else {
             use CppType::*;
@@ -214,7 +235,7 @@ impl Parse for CppType {
                             format!("Could not parse path due to spaces: {}", other),
                         )
                     } else {
-                        Ok(Path(vec![other.to_string()]))
+                        Ok(CppType::Path(crate::parse_cpp::Path::parse(other)?))
                     }
                 }
             }
@@ -384,7 +405,7 @@ mod test {
             ($path:ident, $($segments:tt)*) => {
                 let parsed = CppType::parse($path)?;
                 if let CppType::Path(p) = parsed {
-                    for (p1, p2) in p.into_iter().zip($($segments)*.into_iter()) {
+                    for (p1, p2) in p.0.into_iter().zip($($segments)*.into_iter()) {
                         assert!(p1 == p2);
                     }
                 } else {
@@ -412,7 +433,7 @@ mod test {
                     pre,
                     args,
                 } = parsed {
-                    assert!(pre.join("::") == $pre);
+                    assert!(pre.0.join("::") == $pre);
                     let mut args = args.into_iter();
                     $(
                         match args.next().unwrap() {
