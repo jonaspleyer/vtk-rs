@@ -122,7 +122,7 @@ impl Parse for CppType {
             let re = generic_args_regex();
             let segments = &anyhow::Context::context(
                 re.captures(input),
-                "Cannot parse empty genric arguments",
+                "Cannot parse empty generic arguments",
             )?;
             let pre = &segments[1];
 
