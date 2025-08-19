@@ -87,7 +87,7 @@ impl ToTokens for crate::RustMethod {
 }
 
 impl quote::ToTokens for crate::RustModule {
-    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+    fn to_tokens(&self, _tokens: &mut proc_macro2::TokenStream) {
         for class in self.classes.values() {
             for method in &class.exposable_methods {
                 println!("{}", quote::quote!(#method));

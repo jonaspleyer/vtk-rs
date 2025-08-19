@@ -92,7 +92,6 @@ where
     D: serde::de::Deserializer<'de>,
 {
     struct Vis;
-    // impl serde::de::Deserializer
     impl<'de> serde::de::Visitor<'de> for Vis {
         type Value = bool;
 
