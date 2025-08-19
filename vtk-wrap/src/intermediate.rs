@@ -8,7 +8,7 @@ use crate::parse_wrap_vtk_xml::Module;
 pub struct RustMethod {
     pub name: String,
     pub return_type: CppType,
-    pub args: Vec<(String, CppType)>,
+    pub args: Vec<(crate::parse_cpp::Ident, CppType)>,
 }
 
 pub struct RustStruct {
