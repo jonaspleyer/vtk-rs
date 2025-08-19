@@ -1,18 +1,16 @@
 # Internals
 
 1. [x] Generate xml data using WrapVTK
-2. [x] Parse xml data
-3. [x] Construct inheritance hierarchy for all classes in all modules
-4. [x] Identify traits as non-inherited public methods
-5. [ ] Define 1:1 conversion between `C++` and Rust types
-    - Remove/Treat modifiers such as `const` or `unsigned`
-    - Destructure Generics `std::array<float, 3>` <-> `[f32; 3]`
-    - Treat positioning of pointers/references
-6. [ ] Generate Code for ffi and traits
-    - Generate `C++` code which can be wrapped in Rust
-    - Generate `CMakeLists` file
+2. [x] Parse xml data into custom Rust structs (module `parse_wrap_vtk_xml.rs`)
+3. [x] Parse C++ types (module `parse_cpp.rs`)
+4. [ ] Gather information on exposable methods, defined types, modules, features etc. (modules
+   `inheritance_hierarchy.rs`)
+5. [ ] Convert to rust-specific information (module `intermediate.rs`)
+6. [ ] Generate ffi code (`module code_gen.rs`)
+7. [ ] Generate C++ code
+    - Generate `CmakeLists` file
     - Determine linker args
-    - Generate Rust ffi glue and implementation code
+8. [ ] Generate Tests
 
 In the future I will also have to decide how to publish the generated code.
 I will probably provide crates with corresponding version numbers (i.e. `vtk-rs094`, `vtk-rs091`)
