@@ -6,8 +6,7 @@ mod intermediate;
 mod parse_cpp;
 mod parse_wrap_vtk_xml;
 
-use code_gen::*;
-use parse_cpp::*;
+use inheritance_hierarchy::*;
 use intermediate::*;
 use parse_wrap_vtk_xml::*;
 
@@ -17,16 +16,56 @@ fn main() -> Result<()> {
     // Obtain all modules
     let modules = get_modules("WrapVTK/build/xml/*CommonCore")?;
 
-    let generator = Generator::new(&modules)?;
+    let class_hierarchy = ClassHierarchy::new(&modules)?;
+    let rust_modules: Vec<_> = modules
+        .into_iter()
+        .map(|module| RustModule::new(&class_hierarchy, module))
+        .collect::<Result<Vec<_>>>()?;
 
-    for module in modules.iter() {
-        for (_, file) in module.files.iter() {
-            for class in file.classes.iter() {
-                if let Some(trait_code) = generator.generate_trait(class)? {
-                    // TODO
-                }
+    for rm in rust_modules {
+        println!("{}", rm.name);
+        for (name, _) in rm.classes {
+            for method in class_hierarchy.get_non_inherited_public_methods(&name)? {
+                println!("{}", method.name);
             }
         }
     }
+
+    // let generator = Generator::new(&modules)?;
+
+    /* for module in modules.iter() {
+        for (_, file) in module.files.iter() {
+            for class in file.classes.iter() {
+                for method in class
+                    .methods
+                    .public
+                    .iter()
+                    .filter(|m| m.access == Access::Public && !m.signature.contains("template"))
+                {
+                    if let Some(ReturnType { ret_type, pointer }) = &method.return_type {
+                        let ty = CppType::parse(ret_type)?;
+                        match pointer {
+                            Some(Pointer::Ref) => println!("&{:?}", CppType::Ref(Box::new(ty))),
+                            Some(Pointer::Star) => println!("{:?}", CppType::Pointer(Box::new(ty))),
+                            Some(Pointer::StarStar) => println!(
+                                "{:?}",
+                                CppType::Pointer(Box::new(CppType::Pointer(Box::new(ty))))
+                            ),
+                            None => println!("{ty:?}"),
+                        }
+                    }
+                    for param in &method.parameters {
+                        let Parameter {
+                            name,
+                            r#type,
+                            reference,
+                        } = param;
+                        let ty = CppType::parse(r#type)?;
+                    }
+                }
+            }
+        }
+    }*/
+
     Ok(())
 }
