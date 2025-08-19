@@ -23,12 +23,7 @@ fn main() -> Result<()> {
         .collect::<Result<Vec<_>>>()?;
 
     for rm in rust_modules {
-        println!("{}", rm.name);
-        for (name, _) in rm.classes {
-            for method in class_hierarchy.get_non_inherited_public_methods(&name)? {
-                println!("{}", method.name);
-            }
-        }
+        println!("{}", quote::quote!(#rm));
     }
 
     // let generator = Generator::new(&modules)?;
