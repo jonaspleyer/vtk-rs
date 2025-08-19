@@ -1,4 +1,6 @@
 # Internals
+In order to correctly determine which methods and types to expose, `vtk-wrap` converts the
+information obtained by `WrapVTK` between multiple layers until the desired code can be generated.
 
 1. [x] Generate xml data using WrapVTK
 2. [x] Parse xml data into custom Rust structs (module `parse_wrap_vtk_xml.rs`)
