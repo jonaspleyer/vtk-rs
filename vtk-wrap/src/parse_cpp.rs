@@ -245,8 +245,8 @@ impl Parse for CppType {
 
 #[derive(Debug, PartialEq)]
 pub struct StdFunction {
-    return_type: CppType,
-    args: Vec<CppType>,
+    pub return_type: CppType,
+    pub args: Vec<CppType>,
 }
 
 impl Parse for StdFunction {
