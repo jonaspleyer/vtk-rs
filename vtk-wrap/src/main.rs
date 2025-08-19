@@ -2,11 +2,13 @@ use anyhow::Result;
 
 mod code_gen;
 mod inheritance_hierarchy;
+mod intermediate;
 mod parse_cpp;
 mod parse_wrap_vtk_xml;
 
 use code_gen::*;
 use parse_cpp::*;
+use intermediate::*;
 use parse_wrap_vtk_xml::*;
 
 fn main() -> Result<()> {
