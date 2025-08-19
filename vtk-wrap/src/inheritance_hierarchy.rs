@@ -94,7 +94,13 @@ impl ClassHierarchy {
             .is_some_and(|x| !x.is_empty())
     }
 
-    pub fn get_non_inherited_public_methods(&self, class_name: &str) -> Result<Vec<Method>> {
+    /// This function returns a list of methods which can be used to define a trait for this class.
+    ///
+    /// In particular we filter for the following
+    /// 1. public methods
+    /// 2. non-inherited methods
+    /// 3. non-generic (no templates)
+    pub fn get_exposable_methods(&self, class_name: &str) -> Result<Vec<Method>> {
         let mut all_parents: Vec<ClassName> = self
             .tree
             .get(class_name)
@@ -121,6 +127,7 @@ impl ClassHierarchy {
             .clone()
             .into_iter()
             .filter(|x| !parent_methods.contains(&x))
+            .filter(|x| x.signature.trim().chars().take(8).collect::<String>() != "template")
             .collect();
 
         Ok(unique_methods)
