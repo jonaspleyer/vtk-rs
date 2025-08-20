@@ -11,10 +11,8 @@ pub struct RustMethod {
     pub args: Vec<(crate::parse_cpp::Ident, CppType)>,
 }
 
-impl TryFrom<crate::Method> for RustMethod {
-    type Error = anyhow::Error;
-
-    fn try_from(value: crate::Method) -> Result<Self> {
+impl RustMethod {
+    fn convert_from_class(class: &crate::Class, value: crate::Method) -> Result<Self> {
         use crate::parse_cpp::Parse;
         let return_type = if let Some(crate::ReturnType { ret_type, pointer }) = value.return_type {
             let inner_ty = CppType::parse(&ret_type)?;
@@ -45,8 +43,9 @@ impl TryFrom<crate::Method> for RustMethod {
             })
             .collect::<Result<Vec<_>>>()?;
 
+        use convert_case::*;
         Ok(RustMethod {
-            name: value.name,
+            name: format!("{}_{}", class.name, value.name).to_case(Case::Snake),
             return_type,
             args,
         })
@@ -84,7 +83,7 @@ impl RustModule {
                         exposable_methods: class_hierarchy
                             .get_exposable_methods(&class.name)?
                             .into_iter()
-                            .map(RustMethod::try_from)
+                            .map(|method| RustMethod::convert_from_class(&class, method))
                             .collect::<Result<Vec<_>>>()?,
                     },
                 ))
