@@ -100,6 +100,8 @@ impl ClassHierarchy {
     /// 1. public methods
     /// 2. non-inherited methods
     /// 3. non-generic (no templates)
+    /// 4. any method containing the keyword
+    ///    [`typename`](https://en.cppreference.com/w/cpp/keyword/typename.html)
     pub fn get_exposable_methods(&self, class_name: &str) -> Result<Vec<Method>> {
         let mut all_parents: Vec<ClassName> = self
             .tree
@@ -128,6 +130,7 @@ impl ClassHierarchy {
             .into_iter()
             .filter(|x| !parent_methods.contains(&x))
             .filter(|x| x.signature.trim().chars().take(8).collect::<String>() != "template")
+            .filter(|x| !x.signature.contains("typename"))
             .collect();
 
         Ok(unique_methods)
