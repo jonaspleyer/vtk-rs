@@ -88,9 +88,21 @@ fn gather_link_paths() -> Result<impl IntoIterator<Item = std::path::PathBuf>> {
     Ok(link_paths)
 }
 
-/// Try to find information about the VTK installation.
+/// Try to find information about the VTK installation. See [VTKVersionInfo].
 ///
-/// See [VTKVersionInfo]
+/// # Schematic Functionality
+/// If VTK_VERSION && !VTK_DIR:
+///      => set version_suffix
+///      => Search for matching VTK Version in possible link paths
+///      => Hopefully find something and emit linker vars
+/// If VTK_VERSION && VTK_DIR::
+///      => Simply emit this linker combination
+/// If !VTK_VERSION && VTK_DIR:
+///      => Search for matching VTK Version in given path
+/// If !VTK_VERSION && !VTK_DIR:
+///      => Search in possible link paths for any version of vtk
+///         by inferring version from (lib)vtkCommonCore{version}.(so|lib|...)
+///      => Hopefully find something and emit linker vars
 pub fn find_vtk_info() -> Result<VTKVersionInfo> {
     let vtk_version = std::env::var("VTK_VERSION").ok();
     let vtk_dir = std::env::var("VTK_DIR").ok();

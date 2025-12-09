@@ -18,18 +18,6 @@ fn build_cmake() {
     println!("cargo:rustc-link-lib=static=vtkrs");
 }
 
-/// If VTK_VERSION && !VTK_DIR:
-///      => set version_suffix
-///      => Search for matching VTK Version in possible link paths
-///      => Hopefully find something and emit linker vars
-/// If VTK_VERSION && VTK_DIR::
-///      => Simply emit this linker combination
-/// If !VTK_VERSION && VTK_DIR:
-///      => Search for matching VTK Version in given path
-/// If !VTK_VERSION && !VTK_DIR:
-///      => Search in possible link paths for any version of vtk
-///         by inferring version from (lib)vtkCommonCore{version}.(so|lib|...)
-///      => Hopefully find something and emit linker vars
 fn main() -> Result<()> {
     // Exit early without doing anything if we are building for docsrs
     if std::env::var("DOCS_RS").is_ok() {
