@@ -210,3 +210,24 @@ pub fn link_std_lib() {
 pub fn link_to_vtk_module(module: &str, version_suffix: &str) {
     println!("cargo:rustc-link-lib=dylib={}{}", module, version_suffix);
 }
+
+/// Link vtk to externally built cmake project
+pub fn link_cmake_project<I, J>(modules: I) -> Result<()>
+where
+    I: IntoIterator<Item = J>,
+    J: AsRef<str>,
+{
+    let VTKVersionInfo {
+        version: _,
+        dir: _,
+        version_suffix,
+    } = find_vtk_info()?;
+
+    for module in modules {
+        link_to_vtk_module(module.as_ref(), &version_suffix);
+    }
+
+    link_std_lib();
+
+    Ok(())
+}

@@ -43,21 +43,12 @@ fn main() -> Result<()> {
         }
     }
 
-    let vtk_rs_link::VTKVersionInfo {
-        version: _,
-        dir: _,
-        version_suffix,
-    } = vtk_rs_link::find_vtk_info()?;
-
     // Build cpp project
     build_cmake();
 
     let linker_args_raw = include_str!("linker-args.txt");
-    for line in linker_args_raw.lines() {
-        vtk_rs_link::link_to_vtk_module(line, &version_suffix);
-    }
-
-    vtk_rs_link::link_std_lib();
+    let modules = linker_args_raw.lines();
+    vtk_rs_link::link_cmake_project(modules)?;
 
     Ok(())
 }
