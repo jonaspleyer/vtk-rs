@@ -1,8 +1,6 @@
 use cmake::Config;
 
-type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
-
-use vtk_rs_link::{log, WARN};
+use vtk_rs_link::{log, Result, WARN};
 
 // Handle building of cmake project
 fn build_cmake() {

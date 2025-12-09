@@ -1,7 +1,9 @@
-type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
+/// Generic Result type using a [Box]
+pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
 /// Regex to search for version of vtk library
 pub const VERSION_REGEX: &str = "(lib)vtkCommonCore([-0-9._]*).(so|dylib|so|dll|a|lib)";
+
 /// AtomicBool to store flag if logging is enabled
 pub static WARN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
