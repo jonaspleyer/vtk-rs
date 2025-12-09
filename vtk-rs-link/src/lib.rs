@@ -162,6 +162,17 @@ pub fn find_vtk_info() -> Result<VTKVersionInfo> {
     })
 }
 
+/// Links with the STL. Should be called once within build script.
+pub fn link_std_lib() {
+    // Link with c++ standard library
+    if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
+    if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-lib=dylib=c++");
+    }
+}
+
 /// Links to VTK modules
 ///
 /// Inputs are e.g. `vtkCommonCore`, `vtkCommonDataModel`, `vtkCommonMath` etc.

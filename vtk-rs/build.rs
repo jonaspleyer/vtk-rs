@@ -57,13 +57,7 @@ fn main() -> Result<()> {
         vtk_rs_link::link_to_vtk_module(line, &version_suffix);
     }
 
-    // Link with c++ standard library
-    if cfg!(target_os = "linux") {
-        println!("cargo:rustc-link-lib=dylib=stdc++");
-    }
-    if cfg!(target_os = "macos") {
-        println!("cargo:rustc-link-lib=dylib=c++");
-    }
+    vtk_rs_link::link_std_lib();
 
     Ok(())
 }
