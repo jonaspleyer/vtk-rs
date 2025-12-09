@@ -34,8 +34,8 @@ fn main() -> Result<()> {
     // Build cpp project
     build_cmake();
 
-    let linker_args_raw = include_str!("linker-args.txt");
-    let modules = linker_args_raw.lines();
+    // Link to VTK
+    let modules = include_str!("linker-args.txt").lines();
     vtk_rs_link::link_cmake_project(modules)?;
 
     Ok(())
