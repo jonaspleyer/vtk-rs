@@ -1,24 +1,20 @@
 [package]
-name = "vtk-rs"
+name = "vtk-rs-link"
 version = "0.2.0"
 edition = "2021"
-build = "build.rs"
 license = "MIT"
 description = "Rust bindings for the Visualization Toolkit (VTK)"
 repository = "https://github.com/jonaspleyer/vtk-rs"
-links = "vtk"
-
-[dependencies]
-cxx = "1.0.158"
 
 [build-dependencies]
 cmake = "0.1.54"
 glob = "0.3.2"
 regex = "1.11.1"
-vtk-rs-link = { path="../vtk-rs-link" }
-
-[dev-dependencies]
-approx = { package = "approxim", version = "0.6.4", features = ["array_impl"]}
 
 [features]
 v094 = []
+
+[dependencies]
+glob = "0.3.2"
+log = "0.4.29"
+regex = "1.11.1"
