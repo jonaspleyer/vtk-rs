@@ -54,7 +54,7 @@ fn main() -> Result<()> {
 
     let linker_args_raw = include_str!("linker-args.txt");
     for line in linker_args_raw.lines() {
-        println!("cargo:rustc-link-lib=dylib={}{}", line, version_suffix);
+        vtk_rs_link::link_to_vtk_module(line, &version_suffix);
     }
 
     // Link with c++ standard library

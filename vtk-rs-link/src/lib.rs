@@ -161,3 +161,41 @@ pub fn find_vtk_info() -> Result<VTKVersionInfo> {
         version_suffix,
     })
 }
+
+/// Links to VTK modules
+///
+/// Inputs are e.g. `vtkCommonCore`, `vtkCommonDataModel`, `vtkCommonMath` etc.
+/// This should work for every operating system.
+/// The suffix can be obtained via the [find_vtk_info] function.
+///
+/// # Usage
+/// ```
+/// use vtk_rs_link::link_to_vtk_module;
+///
+/// // Leave empty when no suffix is needed
+/// link_to_vtk_module("vtkCommonCore", "")
+/// ```
+///
+/// # Some common module names
+/// ```text
+/// vtkCommonColor
+/// vtkCommonComputationalGeometry
+/// vtkCommonCore
+/// vtkCommonDataModel
+/// vtkCommonExecutionModel
+/// vtkCommonMath
+/// vtkCommonMisc
+/// vtkCommonSystem
+/// vtkCommonTransforms
+/// vtkFiltersSources
+/// vtkRenderingCore
+/// vtkRenderingContextOpenGL2
+/// vtkRenderingOpenGL2
+/// vtkRenderingGL2PSOpenGL2
+/// vtkInteractionStyle
+/// vtkRenderingFreeType
+/// vtksys
+/// ```
+pub fn link_to_vtk_module(module: &str, version_suffix: &str) {
+    println!("cargo:rustc-link-lib=dylib={}{}", module, version_suffix);
+}
