@@ -9,7 +9,7 @@ repository = "https://github.com/jonaspleyer/vtk-rs"
 links = "vtk"
 
 [dependencies]
-cxx = "1.0.158"
+cxx = "1.0.190"
 
 [build-dependencies]
 cmake = "0.1.54"
