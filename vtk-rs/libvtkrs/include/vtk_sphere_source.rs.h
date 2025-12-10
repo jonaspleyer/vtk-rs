@@ -6,55 +6,62 @@
 #include <new>
 #include <utility>
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkSphereSource = ::vtkSphereSource;
 
 extern "C" {
-::vtkSphereSource *cxxbridge1$vtk_sphere_source_new() noexcept {
+::vtkSphereSource *cxxbridge1$190$vtk_sphere_source_new() noexcept {
   ::vtkSphereSource *(*vtk_sphere_source_new$)() = ::vtk_sphere_source_new;
   return vtk_sphere_source_new$();
 }
 
-void cxxbridge1$vtk_sphere_source_delete(::vtkSphereSource &ptr) noexcept {
+void cxxbridge1$190$vtk_sphere_source_delete(::vtkSphereSource &ptr) noexcept {
   void (*vtk_sphere_source_delete$)(::vtkSphereSource &) = ::vtk_sphere_source_delete;
   vtk_sphere_source_delete$(ptr);
 }
 
-void cxxbridge1$vtk_sphere_source_set_radius(::vtkSphereSource &sphere_source, double radius) noexcept {
+void cxxbridge1$190$vtk_sphere_source_set_radius(::vtkSphereSource &sphere_source, double radius) noexcept {
   void (*vtk_sphere_source_set_radius$)(::vtkSphereSource &, double) = ::vtk_sphere_source_set_radius;
   vtk_sphere_source_set_radius$(sphere_source, radius);
 }
 
-double cxxbridge1$vtk_sphere_source_get_radius(::vtkSphereSource const &sphere_source) noexcept {
+double cxxbridge1$190$vtk_sphere_source_get_radius(::vtkSphereSource const &sphere_source) noexcept {
   double (*vtk_sphere_source_get_radius$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_radius;
   return vtk_sphere_source_get_radius$(sphere_source);
 }
 
-void cxxbridge1$vtk_sphere_source_set_center(::vtkSphereSource &sphere_source, ::std::array<double, 3> *center) noexcept {
+void cxxbridge1$190$vtk_sphere_source_set_center(::vtkSphereSource &sphere_source, ::std::array<double, 3> *center) noexcept {
   void (*vtk_sphere_source_set_center$)(::vtkSphereSource &, ::std::array<double, 3>) = ::vtk_sphere_source_set_center;
   vtk_sphere_source_set_center$(sphere_source, ::std::move(*center));
 }
 
-void cxxbridge1$vtk_sphere_source_get_center(::vtkSphereSource const &sphere_source, ::std::array<double, 3> *return$) noexcept {
+void cxxbridge1$190$vtk_sphere_source_get_center(::vtkSphereSource const &sphere_source, ::std::array<double, 3> *return$) noexcept {
   ::std::array<double, 3> (*vtk_sphere_source_get_center$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_center;
   new (return$) ::std::array<double, 3>(vtk_sphere_source_get_center$(sphere_source));
 }
 
-void cxxbridge1$vtk_sphere_source_set_phi_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
+void cxxbridge1$190$vtk_sphere_source_set_phi_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
   void (*vtk_sphere_source_set_phi_resolution$)(::vtkSphereSource &, ::std::int64_t) = ::vtk_sphere_source_set_phi_resolution;
   vtk_sphere_source_set_phi_resolution$(sphere_source, resolution);
 }
 
-::std::int64_t cxxbridge1$vtk_sphere_source_get_phi_resolution(::vtkSphereSource const &sphere_source) noexcept {
+::std::int64_t cxxbridge1$190$vtk_sphere_source_get_phi_resolution(::vtkSphereSource const &sphere_source) noexcept {
   ::std::int64_t (*vtk_sphere_source_get_phi_resolution$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_phi_resolution;
   return vtk_sphere_source_get_phi_resolution$(sphere_source);
 }
 
-void cxxbridge1$vtk_sphere_source_set_theta_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
+void cxxbridge1$190$vtk_sphere_source_set_theta_resolution(::vtkSphereSource &sphere_source, ::std::int64_t resolution) noexcept {
   void (*vtk_sphere_source_set_theta_resolution$)(::vtkSphereSource &, ::std::int64_t) = ::vtk_sphere_source_set_theta_resolution;
   vtk_sphere_source_set_theta_resolution$(sphere_source, resolution);
 }
 
-::std::int64_t cxxbridge1$vtk_sphere_source_get_theta_resolution(::vtkSphereSource const &sphere_source) noexcept {
+::std::int64_t cxxbridge1$190$vtk_sphere_source_get_theta_resolution(::vtkSphereSource const &sphere_source) noexcept {
   ::std::int64_t (*vtk_sphere_source_get_theta_resolution$)(::vtkSphereSource const &) = ::vtk_sphere_source_get_theta_resolution;
   return vtk_sphere_source_get_theta_resolution$(sphere_source);
 }

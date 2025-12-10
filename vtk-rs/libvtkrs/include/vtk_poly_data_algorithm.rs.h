@@ -2,48 +2,56 @@
 
 #include "vtk_poly_data_algorithm.h"
 #include <cstdint>
+#include <new>
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
 
 using vtkPolyDataAlgorithm = ::vtkPolyDataAlgorithm;
 using vtkDataObject = ::vtkDataObject;
 using vtkPolyData = ::vtkPolyData;
 
 extern "C" {
-::vtkPolyDataAlgorithm *cxxbridge1$vtk_poly_data_algorithm_new() noexcept {
+::vtkPolyDataAlgorithm *cxxbridge1$190$vtk_poly_data_algorithm_new() noexcept {
   ::vtkPolyDataAlgorithm *(*vtk_poly_data_algorithm_new$)() = ::vtk_poly_data_algorithm_new;
   return vtk_poly_data_algorithm_new$();
 }
 
-void cxxbridge1$vtk_poly_data_algorithm_delete(::vtkPolyDataAlgorithm &poly_data_algorithm) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_delete(::vtkPolyDataAlgorithm &poly_data_algorithm) noexcept {
   void (*vtk_poly_data_algorithm_delete$)(::vtkPolyDataAlgorithm &) = ::vtk_poly_data_algorithm_delete;
   vtk_poly_data_algorithm_delete$(poly_data_algorithm);
 }
 
-::vtkDataObject const *cxxbridge1$vtk_poly_data_algorithm_get_input(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_get_input(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const **return$) noexcept {
   ::vtkDataObject const &(*vtk_poly_data_algorithm_get_input$)(::vtkPolyDataAlgorithm const &, ::std::int64_t) = ::vtk_poly_data_algorithm_get_input;
-  return &vtk_poly_data_algorithm_get_input$(vtk_poly_data_algorithm, port);
+  new (return$) ::vtkDataObject const *(&vtk_poly_data_algorithm_get_input$(vtk_poly_data_algorithm, port));
 }
 
-::vtkPolyData const *cxxbridge1$vtk_poly_data_algorithm_get_poly_data_input(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_get_poly_data_input(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port, ::vtkPolyData const **return$) noexcept {
   ::vtkPolyData const &(*vtk_poly_data_algorithm_get_poly_data_input$)(::vtkPolyDataAlgorithm const &, ::std::int64_t) = ::vtk_poly_data_algorithm_get_poly_data_input;
-  return &vtk_poly_data_algorithm_get_poly_data_input$(vtk_poly_data_algorithm, port);
+  new (return$) ::vtkPolyData const *(&vtk_poly_data_algorithm_get_poly_data_input$(vtk_poly_data_algorithm, port));
 }
 
-::vtkPolyData const *cxxbridge1$vtk_poly_data_algorithm_get_output(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_get_output(::vtkPolyDataAlgorithm const &vtk_poly_data_algorithm, ::std::int64_t port, ::vtkPolyData const **return$) noexcept {
   ::vtkPolyData const &(*vtk_poly_data_algorithm_get_output$)(::vtkPolyDataAlgorithm const &, ::std::int64_t) = ::vtk_poly_data_algorithm_get_output;
-  return &vtk_poly_data_algorithm_get_output$(vtk_poly_data_algorithm, port);
+  new (return$) ::vtkPolyData const *(&vtk_poly_data_algorithm_get_output$(vtk_poly_data_algorithm, port));
 }
 
-void cxxbridge1$vtk_poly_data_algorithm_set_output(::vtkPolyDataAlgorithm &vtk_poly_data_algorithm, ::vtkDataObject const &data_object) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_set_output(::vtkPolyDataAlgorithm &vtk_poly_data_algorithm, ::vtkDataObject const &data_object) noexcept {
   void (*vtk_poly_data_algorithm_set_output$)(::vtkPolyDataAlgorithm &, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_set_output;
   vtk_poly_data_algorithm_set_output$(vtk_poly_data_algorithm, data_object);
 }
 
-void cxxbridge1$vtk_poly_data_algorithm_set_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_set_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
   void (*vtk_poly_data_algorithm_set_input_data$)(::vtkPolyDataAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_set_input_data;
   vtk_poly_data_algorithm_set_input_data$(poly_data_algorithm, port, data_object);
 }
 
-void cxxbridge1$vtk_poly_data_algorithm_add_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
+void cxxbridge1$190$vtk_poly_data_algorithm_add_input_data(::vtkPolyDataAlgorithm &poly_data_algorithm, ::std::int64_t port, ::vtkDataObject const &data_object) noexcept {
   void (*vtk_poly_data_algorithm_add_input_data$)(::vtkPolyDataAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_poly_data_algorithm_add_input_data;
   vtk_poly_data_algorithm_add_input_data$(poly_data_algorithm, port, data_object);
 }

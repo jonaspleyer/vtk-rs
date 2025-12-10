@@ -2,15 +2,23 @@
 
 #include "vtk_information.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkInformation = ::vtkInformation;
+using vtkInformationKey = ::vtkInformationKey;
 
 extern "C" {
-::vtkInformation *cxxbridge1$vtk_information_new() noexcept {
+::vtkInformation *cxxbridge1$190$vtk_information_new() noexcept {
   ::vtkInformation *(*vtk_information_new$)() = ::vtk_information_new;
   return vtk_information_new$();
 }
 
-void cxxbridge1$vtk_information_delete(::vtkInformation &information) noexcept {
+void cxxbridge1$190$vtk_information_delete(::vtkInformation &information) noexcept {
   void (*vtk_information_delete$)(::vtkInformation &) = ::vtk_information_delete;
   vtk_information_delete$(information);
 }

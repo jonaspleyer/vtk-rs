@@ -2,10 +2,17 @@
 
 #include "vtk_executive.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkExecutive = ::vtkExecutive;
 
 extern "C" {
-void cxxbridge1$vtk_executive_delete(::vtkExecutive &executive) noexcept {
+void cxxbridge1$190$vtk_executive_delete(::vtkExecutive &executive) noexcept {
   void (*vtk_executive_delete$)(::vtkExecutive &) = ::vtk_executive_delete;
   vtk_executive_delete$(executive);
 }

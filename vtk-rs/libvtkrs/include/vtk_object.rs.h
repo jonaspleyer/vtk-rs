@@ -3,50 +3,57 @@
 #include "vtk_object.h"
 #include <cstdint>
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkObject = ::vtkObject;
 
 extern "C" {
-void cxxbridge1$vtk_object_debug_on(::vtkObject &vtk_object) noexcept {
+void cxxbridge1$190$vtk_object_debug_on(::vtkObject &vtk_object) noexcept {
   void (*vtk_object_debug_on$)(::vtkObject &) = ::vtk_object_debug_on;
   vtk_object_debug_on$(vtk_object);
 }
 
-void cxxbridge1$vtk_object_debug_off(::vtkObject &vtk_object) noexcept {
+void cxxbridge1$190$vtk_object_debug_off(::vtkObject &vtk_object) noexcept {
   void (*vtk_object_debug_off$)(::vtkObject &) = ::vtk_object_debug_off;
   vtk_object_debug_off$(vtk_object);
 }
 
-void cxxbridge1$vtk_object_set_debug(::vtkObject &object, bool status) noexcept {
+void cxxbridge1$190$vtk_object_set_debug(::vtkObject &object, bool status) noexcept {
   void (*vtk_object_set_debug$)(::vtkObject &, bool) = ::vtk_object_set_debug;
   vtk_object_set_debug$(object, status);
 }
 
-bool cxxbridge1$vtk_object_get_debug(::vtkObject const &object) noexcept {
+bool cxxbridge1$190$vtk_object_get_debug(::vtkObject const &object) noexcept {
   bool (*vtk_object_get_debug$)(::vtkObject const &) = ::vtk_object_get_debug;
   return vtk_object_get_debug$(object);
 }
 
-void cxxbridge1$vtk_object_modified(::vtkObject const &object) noexcept {
+void cxxbridge1$190$vtk_object_modified(::vtkObject const &object) noexcept {
   void (*vtk_object_modified$)(::vtkObject const &) = ::vtk_object_modified;
   vtk_object_modified$(object);
 }
 
-void cxxbridge1$vtk_object_remove_observer(::vtkObject &object, ::std::uint64_t tag) noexcept {
+void cxxbridge1$190$vtk_object_remove_observer(::vtkObject &object, ::std::uint64_t tag) noexcept {
   void (*vtk_object_remove_observer$)(::vtkObject &, ::std::uint64_t) = ::vtk_object_remove_observer;
   vtk_object_remove_observer$(object, tag);
 }
 
-void cxxbridge1$vtk_object_remove_observers(::vtkObject &object, ::std::uint64_t event) noexcept {
+void cxxbridge1$190$vtk_object_remove_observers(::vtkObject &object, ::std::uint64_t event) noexcept {
   void (*vtk_object_remove_observers$)(::vtkObject &, ::std::uint64_t) = ::vtk_object_remove_observers;
   vtk_object_remove_observers$(object, event);
 }
 
-void cxxbridge1$vtk_object_remove_all_observers(::vtkObject &object) noexcept {
+void cxxbridge1$190$vtk_object_remove_all_observers(::vtkObject &object) noexcept {
   void (*vtk_object_remove_all_observers$)(::vtkObject &) = ::vtk_object_remove_all_observers;
   vtk_object_remove_all_observers$(object);
 }
 
-::std::uint64_t cxxbridge1$vtk_object_has_observer(::vtkObject const &object, ::std::uint64_t event) noexcept {
+::std::uint64_t cxxbridge1$190$vtk_object_has_observer(::vtkObject const &object, ::std::uint64_t event) noexcept {
   ::std::uint64_t (*vtk_object_has_observer$)(::vtkObject const &, ::std::uint64_t) = ::vtk_object_has_observer;
   return vtk_object_has_observer$(object, event);
 }

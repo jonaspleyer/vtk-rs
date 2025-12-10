@@ -9,6 +9,13 @@
 #include <string_view>
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 namespace rust {
 inline namespace cxxbridge1 {
 // #include "rust/cxx.h"
@@ -146,62 +153,62 @@ private:
 using vtkObjectBase = ::vtkObjectBase;
 
 extern "C" {
-void cxxbridge1$vtk_object_base_get_class_name(::vtkObjectBase const &obj, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_object_base_get_class_name(::vtkObjectBase const &obj, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_object_base_get_class_name$)(::vtkObjectBase const &) = ::vtk_object_base_get_class_name;
   new (return$) ::rust::String(vtk_object_base_get_class_name$(obj));
 }
 
-void cxxbridge1$vtk_object_base_get_object_description(::vtkObjectBase const &obj, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_object_base_get_object_description(::vtkObjectBase const &obj, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_object_base_get_object_description$)(::vtkObjectBase const &) = ::vtk_object_base_get_object_description;
   new (return$) ::rust::String(vtk_object_base_get_object_description$(obj));
 }
 
-bool cxxbridge1$vtk_object_base_is_a(::vtkObjectBase const &obj, ::rust::Str class_name) noexcept {
+bool cxxbridge1$190$vtk_object_base_is_a(::vtkObjectBase const &obj, ::rust::Str class_name) noexcept {
   bool (*vtk_object_base_is_a$)(::vtkObjectBase const &, ::rust::Str) = ::vtk_object_base_is_a;
   return vtk_object_base_is_a$(obj, class_name);
 }
 
-::std::int64_t cxxbridge1$vtk_object_base_get_number_of_generations_from_base(::vtkObjectBase const &obj, ::rust::Str base_class) noexcept {
+::std::int64_t cxxbridge1$190$vtk_object_base_get_number_of_generations_from_base(::vtkObjectBase const &obj, ::rust::Str base_class) noexcept {
   ::std::int64_t (*vtk_object_base_get_number_of_generations_from_base$)(::vtkObjectBase const &, ::rust::Str) = ::vtk_object_base_get_number_of_generations_from_base;
   return vtk_object_base_get_number_of_generations_from_base$(obj, base_class);
 }
 
-void cxxbridge1$vtk_object_base_fast_delete(::vtkObjectBase &obj) noexcept {
+void cxxbridge1$190$vtk_object_base_fast_delete(::vtkObjectBase &obj) noexcept {
   void (*vtk_object_base_fast_delete$)(::vtkObjectBase &) = ::vtk_object_base_fast_delete;
   vtk_object_base_fast_delete$(obj);
 }
 
-::std::int64_t cxxbridge1$vtk_object_base_get_reference_count(::vtkObjectBase const &obj) noexcept {
+::std::int64_t cxxbridge1$190$vtk_object_base_get_reference_count(::vtkObjectBase const &obj) noexcept {
   ::std::int64_t (*vtk_object_base_get_reference_count$)(::vtkObjectBase const &) = ::vtk_object_base_get_reference_count;
   return vtk_object_base_get_reference_count$(obj);
 }
 
-void cxxbridge1$vtk_object_base_set_reference_count(::vtkObjectBase &obj, ::std::int64_t count) noexcept {
+void cxxbridge1$190$vtk_object_base_set_reference_count(::vtkObjectBase &obj, ::std::int64_t count) noexcept {
   void (*vtk_object_base_set_reference_count$)(::vtkObjectBase &, ::std::int64_t) = ::vtk_object_base_set_reference_count;
   vtk_object_base_set_reference_count$(obj, count);
 }
 
-bool cxxbridge1$vtk_object_base_get_is_in_memkind(::vtkObjectBase const &obj) noexcept {
+bool cxxbridge1$190$vtk_object_base_get_is_in_memkind(::vtkObjectBase const &obj) noexcept {
   bool (*vtk_object_base_get_is_in_memkind$)(::vtkObjectBase const &) = ::vtk_object_base_get_is_in_memkind;
   return vtk_object_base_get_is_in_memkind$(obj);
 }
 
-void cxxbridge1$vtk_object_base_print_self(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_object_base_print_self(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_object_base_print_self$)(::vtkObjectBase const &, ::std::uint64_t) = ::vtk_object_base_print_self;
   new (return$) ::rust::String(vtk_object_base_print_self$(obj, indent));
 }
 
-void cxxbridge1$vtk_object_base_print_header(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_object_base_print_header(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_object_base_print_header$)(::vtkObjectBase const &, ::std::uint64_t) = ::vtk_object_base_print_header;
   new (return$) ::rust::String(vtk_object_base_print_header$(obj, indent));
 }
 
-void cxxbridge1$vtk_object_base_print_trailer(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_object_base_print_trailer(::vtkObjectBase const &obj, ::std::uint64_t indent, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_object_base_print_trailer$)(::vtkObjectBase const &, ::std::uint64_t) = ::vtk_object_base_print_trailer;
   new (return$) ::rust::String(vtk_object_base_print_trailer$(obj, indent));
 }
 
-bool cxxbridge1$vtk_object_base_uses_garbage_collector(::vtkObjectBase const &obj) noexcept {
+bool cxxbridge1$190$vtk_object_base_uses_garbage_collector(::vtkObjectBase const &obj) noexcept {
   bool (*vtk_object_base_uses_garbage_collector$)(::vtkObjectBase const &) = ::vtk_object_base_uses_garbage_collector;
   return vtk_object_base_uses_garbage_collector$(obj);
 }

@@ -2,15 +2,22 @@
 
 #include "vtk_poly_data.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkPolyData = ::vtkPolyData;
 
 extern "C" {
-::vtkPolyData *cxxbridge1$poly_data_new() noexcept {
+::vtkPolyData *cxxbridge1$190$poly_data_new() noexcept {
   ::vtkPolyData *(*poly_data_new$)() = ::poly_data_new;
   return poly_data_new$();
 }
 
-void cxxbridge1$poly_data_delete(::vtkPolyData &ptr) noexcept {
+void cxxbridge1$190$poly_data_delete(::vtkPolyData &ptr) noexcept {
   void (*poly_data_delete$)(::vtkPolyData &) = ::poly_data_delete;
   poly_data_delete$(ptr);
 }

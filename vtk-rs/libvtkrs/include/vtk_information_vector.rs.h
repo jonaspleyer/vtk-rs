@@ -2,15 +2,22 @@
 
 #include "vtk_information_vector.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkInformationVector = ::vtkInformationVector;
 
 extern "C" {
-::vtkInformationVector *cxxbridge1$vtk_information_vector_new() noexcept {
+::vtkInformationVector *cxxbridge1$190$vtk_information_vector_new() noexcept {
   ::vtkInformationVector *(*vtk_information_vector_new$)() = ::vtk_information_vector_new;
   return vtk_information_vector_new$();
 }
 
-void cxxbridge1$vtk_information_vector_delete(::vtkInformationVector &information_vector) noexcept {
+void cxxbridge1$190$vtk_information_vector_delete(::vtkInformationVector &information_vector) noexcept {
   void (*vtk_information_vector_delete$)(::vtkInformationVector &) = ::vtk_information_vector_delete;
   vtk_information_vector_delete$(information_vector);
 }

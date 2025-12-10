@@ -2,15 +2,22 @@
 
 #include "vtk_poly_data_mapper.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkPolyDataMapper = ::vtkPolyDataMapper;
 
 extern "C" {
-::vtkPolyDataMapper *cxxbridge1$poly_data_mapper_new() noexcept {
+::vtkPolyDataMapper *cxxbridge1$190$poly_data_mapper_new() noexcept {
   ::vtkPolyDataMapper *(*poly_data_mapper_new$)() = ::poly_data_mapper_new;
   return poly_data_mapper_new$();
 }
 
-void cxxbridge1$poly_data_mapper_delete(::vtkPolyDataMapper &pdm) noexcept {
+void cxxbridge1$190$poly_data_mapper_delete(::vtkPolyDataMapper &pdm) noexcept {
   void (*poly_data_mapper_delete$)(::vtkPolyDataMapper &) = ::poly_data_mapper_delete;
   poly_data_mapper_delete$(pdm);
 }

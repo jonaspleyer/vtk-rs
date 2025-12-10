@@ -17,6 +17,13 @@
 #include <ranges>
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 namespace rust {
 inline namespace cxxbridge1 {
 // #include "rust/cxx.h"
@@ -552,287 +559,287 @@ using vtkExecutive = ::vtkExecutive;
 using vtkDataObject = ::vtkDataObject;
 
 extern "C" {
-::vtkAlgorithm *cxxbridge1$vtk_algorithm_new() noexcept {
+::vtkAlgorithm *cxxbridge1$190$vtk_algorithm_new() noexcept {
   ::vtkAlgorithm *(*vtk_algorithm_new$)() = ::vtk_algorithm_new;
   return vtk_algorithm_new$();
 }
 
-void cxxbridge1$vtk_algorithm_delete(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_delete(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_delete$)(::vtkAlgorithm &) = ::vtk_algorithm_delete;
   vtk_algorithm_delete$(algorithm);
 }
 
-bool cxxbridge1$vtk_algorithm_has_executive(::vtkAlgorithm const &algorithm) noexcept {
+bool cxxbridge1$190$vtk_algorithm_has_executive(::vtkAlgorithm const &algorithm) noexcept {
   bool (*vtk_algorithm_has_executive$)(::vtkAlgorithm const &) = ::vtk_algorithm_has_executive;
   return vtk_algorithm_has_executive$(algorithm);
 }
 
-::vtkExecutive const *cxxbridge1$vtk_algorithm_get_executive(::vtkAlgorithm const &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_executive(::vtkAlgorithm const &algorithm, ::vtkExecutive const **return$) noexcept {
   ::vtkExecutive const &(*vtk_algorithm_get_executive$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_executive;
-  return &vtk_algorithm_get_executive$(algorithm);
+  new (return$) ::vtkExecutive const *(&vtk_algorithm_get_executive$(algorithm));
 }
 
-void cxxbridge1$vtk_algorithm_set_executive(::vtkAlgorithm &algorithm, ::vtkExecutive &executive) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_executive(::vtkAlgorithm &algorithm, ::vtkExecutive &executive) noexcept {
   void (*vtk_algorithm_set_executive$)(::vtkAlgorithm &, ::vtkExecutive &) = ::vtk_algorithm_set_executive;
   vtk_algorithm_set_executive$(algorithm, executive);
 }
 
-bool cxxbridge1$vtk_algorithm_process_request(::vtkAlgorithm const &algorithm, ::vtkInformation const &request, ::rust::Slice<::vtkInformationVector *> in_info, ::vtkInformationVector &out_info) noexcept {
+bool cxxbridge1$190$vtk_algorithm_process_request(::vtkAlgorithm const &algorithm, ::vtkInformation const &request, ::rust::Slice<::vtkInformationVector *> in_info, ::vtkInformationVector &out_info) noexcept {
   bool (*vtk_algorithm_process_request$)(::vtkAlgorithm const &, ::vtkInformation const &, ::rust::Slice<::vtkInformationVector *>, ::vtkInformationVector &) = ::vtk_algorithm_process_request;
   return vtk_algorithm_process_request$(algorithm, request, in_info, out_info);
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_modify_request(::vtkAlgorithm const &algorithm, ::vtkInformation &request, ::std::int64_t when) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_modify_request(::vtkAlgorithm const &algorithm, ::vtkInformation &request, ::std::int64_t when) noexcept {
   ::std::int64_t (*vtk_algorithm_modify_request$)(::vtkAlgorithm const &, ::vtkInformation &, ::std::int64_t) = ::vtk_algorithm_modify_request;
   return vtk_algorithm_modify_request$(algorithm, request, when);
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_input_port_information(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_port_information(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_input_port_information$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_input_port_information;
-  return &vtk_algorithm_get_input_port_information$(algorithm, port);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_input_port_information$(algorithm, port));
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_output_port_information(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_output_port_information(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_output_port_information$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_output_port_information;
-  return &vtk_algorithm_get_output_port_information$(algorithm, port);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_output_port_information$(algorithm, port));
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_get_number_of_input_ports(::vtkAlgorithm const &algorithm) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_get_number_of_input_ports(::vtkAlgorithm const &algorithm) noexcept {
   ::std::int64_t (*vtk_algorithm_get_number_of_input_ports$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_number_of_input_ports;
   return vtk_algorithm_get_number_of_input_ports$(algorithm);
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_get_number_of_output_ports(::vtkAlgorithm const &algorithm) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_get_number_of_output_ports(::vtkAlgorithm const &algorithm) noexcept {
   ::std::int64_t (*vtk_algorithm_get_number_of_output_ports$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_number_of_output_ports;
   return vtk_algorithm_get_number_of_output_ports$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_set_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
   void (*vtk_algorithm_set_input_connection$)(::vtkAlgorithm &, ::std::int64_t, ::vtkAlgorithmOutput const &) = ::vtk_algorithm_set_input_connection;
   vtk_algorithm_set_input_connection$(algorithm, port, input);
 }
 
-void cxxbridge1$vtk_algorithm_set_abort_execute_and_update_time(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_abort_execute_and_update_time(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_set_abort_execute_and_update_time$)(::vtkAlgorithm &) = ::vtk_algorithm_set_abort_execute_and_update_time;
   vtk_algorithm_set_abort_execute_and_update_time$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_update_progress(::vtkAlgorithm &algorithm, double amount) noexcept {
+void cxxbridge1$190$vtk_algorithm_update_progress(::vtkAlgorithm &algorithm, double amount) noexcept {
   void (*vtk_algorithm_update_progress$)(::vtkAlgorithm &, double) = ::vtk_algorithm_update_progress;
   vtk_algorithm_update_progress$(algorithm, amount);
 }
 
-bool cxxbridge1$vtk_algorithm_check_abort(::vtkAlgorithm const &algorithm) noexcept {
+bool cxxbridge1$190$vtk_algorithm_check_abort(::vtkAlgorithm const &algorithm) noexcept {
   bool (*vtk_algorithm_check_abort$)(::vtkAlgorithm const &) = ::vtk_algorithm_check_abort;
   return vtk_algorithm_check_abort$(algorithm);
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_input_array_information(::vtkAlgorithm const &algorithm, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_array_information(::vtkAlgorithm const &algorithm, ::std::int64_t idx, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_input_array_information$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_input_array_information;
-  return &vtk_algorithm_get_input_array_information$(algorithm, idx);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_input_array_information$(algorithm, idx));
 }
 
-void cxxbridge1$vtk_algorithm_remove_all_inputs(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_remove_all_inputs(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_remove_all_inputs$)(::vtkAlgorithm &) = ::vtk_algorithm_remove_all_inputs;
   vtk_algorithm_remove_all_inputs$(algorithm);
 }
 
-::vtkDataObject const *cxxbridge1$vtk_algorithm_get_output_data_object(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_output_data_object(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::vtkDataObject const **return$) noexcept {
   ::vtkDataObject const &(*vtk_algorithm_get_output_data_object$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_output_data_object;
-  return &vtk_algorithm_get_output_data_object$(algorithm, port);
+  new (return$) ::vtkDataObject const *(&vtk_algorithm_get_output_data_object$(algorithm, port));
 }
 
-::vtkDataObject const *cxxbridge1$vtk_algorithm_get_input_data_object(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t connection) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_data_object(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t connection, ::vtkDataObject const **return$) noexcept {
   ::vtkDataObject const &(*vtk_algorithm_get_input_data_object$)(::vtkAlgorithm const &, ::std::int64_t, ::std::int64_t) = ::vtk_algorithm_get_input_data_object;
-  return &vtk_algorithm_get_input_data_object$(algorithm, port, connection);
+  new (return$) ::vtkDataObject const *(&vtk_algorithm_get_input_data_object$(algorithm, port, connection));
 }
 
-void cxxbridge1$vtk_algorithm_remove_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
+void cxxbridge1$190$vtk_algorithm_remove_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
   void (*vtk_algorithm_remove_input_connection$)(::vtkAlgorithm &, ::std::int64_t, ::vtkAlgorithmOutput const &) = ::vtk_algorithm_remove_input_connection;
   vtk_algorithm_remove_input_connection$(algorithm, port, input);
 }
 
-void cxxbridge1$vtk_algorithm_remove_input_connection_by_idx(::vtkAlgorithm &algorithm, ::std::int64_t port, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_remove_input_connection_by_idx(::vtkAlgorithm &algorithm, ::std::int64_t port, ::std::int64_t idx) noexcept {
   void (*vtk_algorithm_remove_input_connection_by_idx$)(::vtkAlgorithm &, ::std::int64_t, ::std::int64_t) = ::vtk_algorithm_remove_input_connection_by_idx;
   vtk_algorithm_remove_input_connection_by_idx$(algorithm, port, idx);
 }
 
-void cxxbridge1$vtk_algorithm_remove_all_input_connections(::vtkAlgorithm &algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_algorithm_remove_all_input_connections(::vtkAlgorithm &algorithm, ::std::int64_t port) noexcept {
   void (*vtk_algorithm_remove_all_input_connections$)(::vtkAlgorithm &, ::std::int64_t) = ::vtk_algorithm_remove_all_input_connections;
   vtk_algorithm_remove_all_input_connections$(algorithm, port);
 }
 
-void cxxbridge1$vtk_algorithm_set_input_data_object(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkDataObject const &data) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_input_data_object(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkDataObject const &data) noexcept {
   void (*vtk_algorithm_set_input_data_object$)(::vtkAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_algorithm_set_input_data_object;
   vtk_algorithm_set_input_data_object$(algorithm, port, data);
 }
 
-void cxxbridge1$vtk_algorithm_add_input_data_object(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkDataObject const &data) noexcept {
+void cxxbridge1$190$vtk_algorithm_add_input_data_object(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkDataObject const &data) noexcept {
   void (*vtk_algorithm_add_input_data_object$)(::vtkAlgorithm &, ::std::int64_t, ::vtkDataObject const &) = ::vtk_algorithm_add_input_data_object;
   vtk_algorithm_add_input_data_object$(algorithm, port, data);
 }
 
-::vtkAlgorithmOutput const *cxxbridge1$vtk_algorithm_get_output_port(::vtkAlgorithm const &algorithm, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_output_port(::vtkAlgorithm const &algorithm, ::std::int64_t idx, ::vtkAlgorithmOutput const **return$) noexcept {
   ::vtkAlgorithmOutput const &(*vtk_algorithm_get_output_port$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_output_port;
-  return &vtk_algorithm_get_output_port$(algorithm, idx);
+  new (return$) ::vtkAlgorithmOutput const *(&vtk_algorithm_get_output_port$(algorithm, idx));
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_get_number_of_input_connections(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_get_number_of_input_connections(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
   ::std::int64_t (*vtk_algorithm_get_number_of_input_connections$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_number_of_input_connections;
   return vtk_algorithm_get_number_of_input_connections$(algorithm, port);
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_get_total_number_of_input_connections(::vtkAlgorithm const &algorithm) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_get_total_number_of_input_connections(::vtkAlgorithm const &algorithm) noexcept {
   ::std::int64_t (*vtk_algorithm_get_total_number_of_input_connections$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_total_number_of_input_connections;
   return vtk_algorithm_get_total_number_of_input_connections$(algorithm);
 }
 
-::vtkAlgorithmOutput const *cxxbridge1$vtk_algorithm_get_input_connection(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_connection(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx, ::vtkAlgorithmOutput const **return$) noexcept {
   ::vtkAlgorithmOutput const &(*vtk_algorithm_get_input_connection$)(::vtkAlgorithm const &, ::std::int64_t, ::std::int64_t) = ::vtk_algorithm_get_input_connection;
-  return &vtk_algorithm_get_input_connection$(algorithm, port, idx);
+  new (return$) ::vtkAlgorithmOutput const *(&vtk_algorithm_get_input_connection$(algorithm, port, idx));
 }
 
-::vtkAlgorithm const *cxxbridge1$vtk_algorithm_get_input_algorithm(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx, ::std::int64_t &alg_port) noexcept {
+::vtkAlgorithm const *cxxbridge1$190$vtk_algorithm_get_input_algorithm(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx, ::std::int64_t &alg_port) noexcept {
   ::vtkAlgorithm const &(*vtk_algorithm_get_input_algorithm$)(::vtkAlgorithm const &, ::std::int64_t, ::std::int64_t, ::std::int64_t &) = ::vtk_algorithm_get_input_algorithm;
   return &vtk_algorithm_get_input_algorithm$(algorithm, port, idx, alg_port);
 }
 
-::vtkExecutive const *cxxbridge1$vtk_algorithm_get_input_executive(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_executive(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx, ::vtkExecutive const **return$) noexcept {
   ::vtkExecutive const &(*vtk_algorithm_get_input_executive$)(::vtkAlgorithm const &, ::std::int64_t, ::std::int64_t) = ::vtk_algorithm_get_input_executive;
-  return &vtk_algorithm_get_input_executive$(algorithm, port, idx);
+  new (return$) ::vtkExecutive const *(&vtk_algorithm_get_input_executive$(algorithm, port, idx));
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_input_information(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_input_information(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::std::int64_t idx, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_input_information$)(::vtkAlgorithm const &, ::std::int64_t, ::std::int64_t) = ::vtk_algorithm_get_input_information;
-  return &vtk_algorithm_get_input_information$(algorithm, port, idx);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_input_information$(algorithm, port, idx));
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_output_information(::vtkAlgorithm const &algorithm, ::std::int64_t port) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_output_information(::vtkAlgorithm const &algorithm, ::std::int64_t port, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_output_information$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_get_output_information;
-  return &vtk_algorithm_get_output_information$(algorithm, port);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_output_information$(algorithm, port));
 }
 
-bool cxxbridge1$vtk_algorithm_update(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkInformationVector const &requests) noexcept {
+bool cxxbridge1$190$vtk_algorithm_update(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkInformationVector const &requests) noexcept {
   bool (*vtk_algorithm_update$)(::vtkAlgorithm &, ::std::int64_t, ::vtkInformationVector const &) = ::vtk_algorithm_update;
   return vtk_algorithm_update$(algorithm, port, requests);
 }
 
-void cxxbridge1$vtk_algorithm_update_information(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_update_information(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_update_information$)(::vtkAlgorithm &) = ::vtk_algorithm_update_information;
   vtk_algorithm_update_information$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_update_data_object(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_update_data_object(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_update_data_object$)(::vtkAlgorithm &) = ::vtk_algorithm_update_data_object;
   vtk_algorithm_update_data_object$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_propagate_update_extent(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_propagate_update_extent(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_propagate_update_extent$)(::vtkAlgorithm &) = ::vtk_algorithm_propagate_update_extent;
   vtk_algorithm_propagate_update_extent$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_update_whole_extent(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_update_whole_extent(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_update_whole_extent$)(::vtkAlgorithm &) = ::vtk_algorithm_update_whole_extent;
   vtk_algorithm_update_whole_extent$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_convert_total_input_to_port_connection(::vtkAlgorithm const &algorithm, ::std::int64_t ind, ::std::array<::std::int64_t, 2> *return$) noexcept {
+void cxxbridge1$190$vtk_algorithm_convert_total_input_to_port_connection(::vtkAlgorithm const &algorithm, ::std::int64_t ind, ::std::array<::std::int64_t, 2> *return$) noexcept {
   ::std::array<::std::int64_t, 2> (*vtk_algorithm_convert_total_input_to_port_connection$)(::vtkAlgorithm const &, ::std::int64_t) = ::vtk_algorithm_convert_total_input_to_port_connection;
   new (return$) ::std::array<::std::int64_t, 2>(vtk_algorithm_convert_total_input_to_port_connection$(algorithm, ind));
 }
 
-void cxxbridge1$vtk_algorithm_remove_no_prior_temporal_access_information_key(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_remove_no_prior_temporal_access_information_key(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_remove_no_prior_temporal_access_information_key$)(::vtkAlgorithm &) = ::vtk_algorithm_remove_no_prior_temporal_access_information_key;
   vtk_algorithm_remove_no_prior_temporal_access_information_key$(algorithm);
 }
 
-::vtkInformation const *cxxbridge1$vtk_algorithm_get_information(::vtkAlgorithm const &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_information(::vtkAlgorithm const &algorithm, ::vtkInformation const **return$) noexcept {
   ::vtkInformation const &(*vtk_algorithm_get_information$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_information;
-  return &vtk_algorithm_get_information$(algorithm);
+  new (return$) ::vtkInformation const *(&vtk_algorithm_get_information$(algorithm));
 }
 
-void cxxbridge1$vtk_algorithm_set_information(::vtkAlgorithm &algorithm, ::vtkInformation const &information) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_information(::vtkAlgorithm &algorithm, ::vtkInformation const &information) noexcept {
   void (*vtk_algorithm_set_information$)(::vtkAlgorithm &, ::vtkInformation const &) = ::vtk_algorithm_set_information;
   vtk_algorithm_set_information$(algorithm, information);
 }
 
-bool cxxbridge1$vtk_algorithm_get_abort_execute(::vtkAlgorithm const &algorithm) noexcept {
+bool cxxbridge1$190$vtk_algorithm_get_abort_execute(::vtkAlgorithm const &algorithm) noexcept {
   bool (*vtk_algorithm_get_abort_execute$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_abort_execute;
   return vtk_algorithm_get_abort_execute$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_abort_execute_on(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_abort_execute_on(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_abort_execute_on$)(::vtkAlgorithm &) = ::vtk_algorithm_abort_execute_on;
   vtk_algorithm_abort_execute_on$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_abort_execute_off(::vtkAlgorithm &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_abort_execute_off(::vtkAlgorithm &algorithm) noexcept {
   void (*vtk_algorithm_abort_execute_off$)(::vtkAlgorithm &) = ::vtk_algorithm_abort_execute_off;
   vtk_algorithm_abort_execute_off$(algorithm);
 }
 
-double cxxbridge1$vtk_algorithm_get_progress(::vtkAlgorithm const &algorithm) noexcept {
+double cxxbridge1$190$vtk_algorithm_get_progress(::vtkAlgorithm const &algorithm) noexcept {
   double (*vtk_algorithm_get_progress$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_progress;
   return vtk_algorithm_get_progress$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_set_container_algorithm(::vtkAlgorithm &algorithm, ::vtkAlgorithm const &container_algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_container_algorithm(::vtkAlgorithm &algorithm, ::vtkAlgorithm const &container_algorithm) noexcept {
   void (*vtk_algorithm_set_container_algorithm$)(::vtkAlgorithm &, ::vtkAlgorithm const &) = ::vtk_algorithm_set_container_algorithm;
   vtk_algorithm_set_container_algorithm$(algorithm, container_algorithm);
 }
 
-::vtkAlgorithm const *cxxbridge1$vtk_algorithm_get_container_algorithm(::vtkAlgorithm const &algorithm) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_container_algorithm(::vtkAlgorithm const &algorithm, ::vtkAlgorithm const **return$) noexcept {
   ::vtkAlgorithm const &(*vtk_algorithm_get_container_algorithm$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_container_algorithm;
-  return &vtk_algorithm_get_container_algorithm$(algorithm);
+  new (return$) ::vtkAlgorithm const *(&vtk_algorithm_get_container_algorithm$(algorithm));
 }
 
-void cxxbridge1$vtk_algorithm_set_abort_output(::vtkAlgorithm &algorithm, bool flag) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_abort_output(::vtkAlgorithm &algorithm, bool flag) noexcept {
   void (*vtk_algorithm_set_abort_output$)(::vtkAlgorithm &, bool) = ::vtk_algorithm_set_abort_output;
   vtk_algorithm_set_abort_output$(algorithm, flag);
 }
 
-bool cxxbridge1$vtk_algorithm_get_abort_output(::vtkAlgorithm const &algorithm) noexcept {
+bool cxxbridge1$190$vtk_algorithm_get_abort_output(::vtkAlgorithm const &algorithm) noexcept {
   bool (*vtk_algorithm_get_abort_output$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_abort_output;
   return vtk_algorithm_get_abort_output$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_set_progress_shift_scale(::vtkAlgorithm &algorithm, double shift, double scale) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_progress_shift_scale(::vtkAlgorithm &algorithm, double shift, double scale) noexcept {
   void (*vtk_algorithm_set_progress_shift_scale$)(::vtkAlgorithm &, double, double) = ::vtk_algorithm_set_progress_shift_scale;
   vtk_algorithm_set_progress_shift_scale$(algorithm, shift, scale);
 }
 
-double cxxbridge1$vtk_algorithm_get_progress_shift(::vtkAlgorithm const &algorithm) noexcept {
+double cxxbridge1$190$vtk_algorithm_get_progress_shift(::vtkAlgorithm const &algorithm) noexcept {
   double (*vtk_algorithm_get_progress_shift$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_progress_shift;
   return vtk_algorithm_get_progress_shift$(algorithm);
 }
 
-double cxxbridge1$vtk_algorithm_get_progress_scale(::vtkAlgorithm const &algorithm) noexcept {
+double cxxbridge1$190$vtk_algorithm_get_progress_scale(::vtkAlgorithm const &algorithm) noexcept {
   double (*vtk_algorithm_get_progress_scale$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_progress_scale;
   return vtk_algorithm_get_progress_scale$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_set_progress_text(::vtkAlgorithm &algorithm, ::rust::Str ptext) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_progress_text(::vtkAlgorithm &algorithm, ::rust::Str ptext) noexcept {
   void (*vtk_algorithm_set_progress_text$)(::vtkAlgorithm &, ::rust::Str) = ::vtk_algorithm_set_progress_text;
   vtk_algorithm_set_progress_text$(algorithm, ptext);
 }
 
-void cxxbridge1$vtk_algorithm_get_progress_text(::vtkAlgorithm const &algorithm, ::rust::String *return$) noexcept {
+void cxxbridge1$190$vtk_algorithm_get_progress_text(::vtkAlgorithm const &algorithm, ::rust::String *return$) noexcept {
   ::rust::String (*vtk_algorithm_get_progress_text$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_progress_text;
   new (return$) ::rust::String(vtk_algorithm_get_progress_text$(algorithm));
 }
 
-::std::uint64_t cxxbridge1$vtk_algorithm_get_error_code(::vtkAlgorithm const &algorithm) noexcept {
+::std::uint64_t cxxbridge1$190$vtk_algorithm_get_error_code(::vtkAlgorithm const &algorithm) noexcept {
   ::std::uint64_t (*vtk_algorithm_get_error_code$)(::vtkAlgorithm const &) = ::vtk_algorithm_get_error_code;
   return vtk_algorithm_get_error_code$(algorithm);
 }
 
-void cxxbridge1$vtk_algorithm_set_input_array_to_process(::vtkAlgorithm &algorithm, ::std::int64_t idx, ::std::int64_t port, ::std::int64_t connection, ::rust::Str field_association, ::rust::Str attribute_type_or_name) noexcept {
+void cxxbridge1$190$vtk_algorithm_set_input_array_to_process(::vtkAlgorithm &algorithm, ::std::int64_t idx, ::std::int64_t port, ::std::int64_t connection, ::rust::Str field_association, ::rust::Str attribute_type_or_name) noexcept {
   void (*vtk_algorithm_set_input_array_to_process$)(::vtkAlgorithm &, ::std::int64_t, ::std::int64_t, ::std::int64_t, ::rust::Str, ::rust::Str) = ::vtk_algorithm_set_input_array_to_process;
   vtk_algorithm_set_input_array_to_process$(algorithm, idx, port, connection, field_association, attribute_type_or_name);
 }
 
-void cxxbridge1$vtk_algorithm_add_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
+void cxxbridge1$190$vtk_algorithm_add_input_connection(::vtkAlgorithm &algorithm, ::std::int64_t port, ::vtkAlgorithmOutput const &input) noexcept {
   void (*vtk_algorithm_add_input_connection$)(::vtkAlgorithm &, ::std::int64_t, ::vtkAlgorithmOutput const &) = ::vtk_algorithm_add_input_connection;
   vtk_algorithm_add_input_connection$(algorithm, port, input);
 }

@@ -5,35 +5,42 @@
 #include <new>
 #include <utility>
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
+
 using vtkSphere = ::vtkSphere;
 
 extern "C" {
-::vtkSphere *cxxbridge1$sphere_new() noexcept {
+::vtkSphere *cxxbridge1$190$sphere_new() noexcept {
   ::vtkSphere *(*sphere_new$)() = ::sphere_new;
   return sphere_new$();
 }
 
-void cxxbridge1$sphere_delete(::vtkSphere &sphere) noexcept {
+void cxxbridge1$190$sphere_delete(::vtkSphere &sphere) noexcept {
   void (*sphere_delete$)(::vtkSphere &) = ::sphere_delete;
   sphere_delete$(sphere);
 }
 
-void cxxbridge1$sphere_set_radius(::vtkSphere &sphere, double radius) noexcept {
+void cxxbridge1$190$sphere_set_radius(::vtkSphere &sphere, double radius) noexcept {
   void (*sphere_set_radius$)(::vtkSphere &, double) = ::sphere_set_radius;
   sphere_set_radius$(sphere, radius);
 }
 
-double cxxbridge1$sphere_get_radius(::vtkSphere const &sphere) noexcept {
+double cxxbridge1$190$sphere_get_radius(::vtkSphere const &sphere) noexcept {
   double (*sphere_get_radius$)(::vtkSphere const &) = ::sphere_get_radius;
   return sphere_get_radius$(sphere);
 }
 
-void cxxbridge1$sphere_set_center(::vtkSphere &spherr, ::std::array<double, 3> *center) noexcept {
+void cxxbridge1$190$sphere_set_center(::vtkSphere &spherr, ::std::array<double, 3> *center) noexcept {
   void (*sphere_set_center$)(::vtkSphere &, ::std::array<double, 3>) = ::sphere_set_center;
   sphere_set_center$(spherr, ::std::move(*center));
 }
 
-void cxxbridge1$sphere_get_center(::vtkSphere const &sphere, ::std::array<double, 3> *return$) noexcept {
+void cxxbridge1$190$sphere_get_center(::vtkSphere const &sphere, ::std::array<double, 3> *return$) noexcept {
   ::std::array<double, 3> (*sphere_get_center$)(::vtkSphere const &) = ::sphere_get_center;
   new (return$) ::std::array<double, 3>(sphere_get_center$(sphere));
 }

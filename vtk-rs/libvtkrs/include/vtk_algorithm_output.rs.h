@@ -2,37 +2,45 @@
 
 #include "vtk_algorithm_output.h"
 #include <cstdint>
+#include <new>
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+#endif // __clang__
+#endif // __GNUC__
 
 using vtkAlgorithm = ::vtkAlgorithm;
 using vtkAlgorithmOutput = ::vtkAlgorithmOutput;
 
 extern "C" {
-::vtkAlgorithmOutput *cxxbridge1$vtk_algorithm_output_new() noexcept {
+::vtkAlgorithmOutput *cxxbridge1$190$vtk_algorithm_output_new() noexcept {
   ::vtkAlgorithmOutput *(*vtk_algorithm_output_new$)() = ::vtk_algorithm_output_new;
   return vtk_algorithm_output_new$();
 }
 
-void cxxbridge1$vtk_algorithm_output_delete(::vtkAlgorithmOutput &algorithm_output) noexcept {
+void cxxbridge1$190$vtk_algorithm_output_delete(::vtkAlgorithmOutput &algorithm_output) noexcept {
   void (*vtk_algorithm_output_delete$)(::vtkAlgorithmOutput &) = ::vtk_algorithm_output_delete;
   vtk_algorithm_output_delete$(algorithm_output);
 }
 
-void cxxbridge1$vtk_algorithm_output_set_index(::vtkAlgorithmOutput &algorithm_output, ::std::int64_t index) noexcept {
+void cxxbridge1$190$vtk_algorithm_output_set_index(::vtkAlgorithmOutput &algorithm_output, ::std::int64_t index) noexcept {
   void (*vtk_algorithm_output_set_index$)(::vtkAlgorithmOutput &, ::std::int64_t) = ::vtk_algorithm_output_set_index;
   vtk_algorithm_output_set_index$(algorithm_output, index);
 }
 
-::std::int64_t cxxbridge1$vtk_algorithm_output_get_index(::vtkAlgorithmOutput const &algorithm_output) noexcept {
+::std::int64_t cxxbridge1$190$vtk_algorithm_output_get_index(::vtkAlgorithmOutput const &algorithm_output) noexcept {
   ::std::int64_t (*vtk_algorithm_output_get_index$)(::vtkAlgorithmOutput const &) = ::vtk_algorithm_output_get_index;
   return vtk_algorithm_output_get_index$(algorithm_output);
 }
 
-::vtkAlgorithm const *cxxbridge1$vtk_algorithm_output_get_producer(::vtkAlgorithmOutput const &algorithm_output) noexcept {
+void cxxbridge1$190$vtk_algorithm_output_get_producer(::vtkAlgorithmOutput const &algorithm_output, ::vtkAlgorithm const **return$) noexcept {
   ::vtkAlgorithm const &(*vtk_algorithm_output_get_producer$)(::vtkAlgorithmOutput const &) = ::vtk_algorithm_output_get_producer;
-  return &vtk_algorithm_output_get_producer$(algorithm_output);
+  new (return$) ::vtkAlgorithm const *(&vtk_algorithm_output_get_producer$(algorithm_output));
 }
 
-void cxxbridge1$vtk_algorithm_output_set_producer(::vtkAlgorithmOutput &algorithm_output, ::vtkAlgorithm const &producer) noexcept {
+void cxxbridge1$190$vtk_algorithm_output_set_producer(::vtkAlgorithmOutput &algorithm_output, ::vtkAlgorithm const &producer) noexcept {
   void (*vtk_algorithm_output_set_producer$)(::vtkAlgorithmOutput &, ::vtkAlgorithm const &) = ::vtk_algorithm_output_set_producer;
   vtk_algorithm_output_set_producer$(algorithm_output, producer);
 }
