@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.98"
-convert_case = "0.8.0"
+convert_case = "0.10.0"
 glob = "0.3.2"
 log = "0.4.27"
 pretty_env_logger = "0.5.0"
