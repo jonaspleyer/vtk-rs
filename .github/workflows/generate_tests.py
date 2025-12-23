@@ -1,4 +1,4 @@
-oss = ["ubuntu-24.04", "ubuntu-22.04", "macos-13", "macos-14", "macos-15"]
+oss = ["ubuntu-24.04", "ubuntu-22.04", "macos-14", "macos-15", "macos-16"]
 toolchains = ["stable"]
 
 
@@ -16,6 +16,9 @@ def os_to_envs_packages(os):
         environment_vars = ""
         packages = "vtk"
     elif os == "macos-15":
+        environment_vars = ""
+        packages = "vtk"
+    elif os == "macos-16":
         environment_vars = ""
         packages = "vtk"
     else:
