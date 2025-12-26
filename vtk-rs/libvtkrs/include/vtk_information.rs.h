@@ -13,12 +13,12 @@ using vtkInformation = ::vtkInformation;
 using vtkInformationKey = ::vtkInformationKey;
 
 extern "C" {
-::vtkInformation *cxxbridge1$190$vtk_information_new() noexcept {
+::vtkInformation *cxxbridge1$192$vtk_information_new() noexcept {
   ::vtkInformation *(*vtk_information_new$)() = ::vtk_information_new;
   return vtk_information_new$();
 }
 
-void cxxbridge1$190$vtk_information_delete(::vtkInformation &information) noexcept {
+void cxxbridge1$192$vtk_information_delete(::vtkInformation &information) noexcept {
   void (*vtk_information_delete$)(::vtkInformation &) = ::vtk_information_delete;
   vtk_information_delete$(information);
 }

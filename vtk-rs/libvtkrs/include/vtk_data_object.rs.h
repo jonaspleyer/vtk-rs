@@ -12,22 +12,22 @@
 using vtkDataObject = ::vtkDataObject;
 
 extern "C" {
-::vtkDataObject *cxxbridge1$190$vtk_data_object_new() noexcept {
+::vtkDataObject *cxxbridge1$192$vtk_data_object_new() noexcept {
   ::vtkDataObject *(*vtk_data_object_new$)() = ::vtk_data_object_new;
   return vtk_data_object_new$();
 }
 
-void cxxbridge1$190$vtk_data_object_delete(::vtkDataObject &data_object) noexcept {
+void cxxbridge1$192$vtk_data_object_delete(::vtkDataObject &data_object) noexcept {
   void (*vtk_data_object_delete$)(::vtkDataObject &) = ::vtk_data_object_delete;
   vtk_data_object_delete$(data_object);
 }
 
-void cxxbridge1$190$vtk_data_object_initialize(::vtkDataObject &data_object) noexcept {
+void cxxbridge1$192$vtk_data_object_initialize(::vtkDataObject &data_object) noexcept {
   void (*vtk_data_object_initialize$)(::vtkDataObject &) = ::vtk_data_object_initialize;
   vtk_data_object_initialize$(data_object);
 }
 
-void cxxbridge1$190$vtk_data_object_release_data(::vtkDataObject &data_object) noexcept {
+void cxxbridge1$192$vtk_data_object_release_data(::vtkDataObject &data_object) noexcept {
   void (*vtk_data_object_release_data$)(::vtkDataObject &) = ::vtk_data_object_release_data;
   vtk_data_object_release_data$(data_object);
 }

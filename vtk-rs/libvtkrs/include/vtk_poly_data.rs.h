@@ -12,12 +12,12 @@
 using vtkPolyData = ::vtkPolyData;
 
 extern "C" {
-::vtkPolyData *cxxbridge1$190$poly_data_new() noexcept {
+::vtkPolyData *cxxbridge1$192$poly_data_new() noexcept {
   ::vtkPolyData *(*poly_data_new$)() = ::poly_data_new;
   return poly_data_new$();
 }
 
-void cxxbridge1$190$poly_data_delete(::vtkPolyData &ptr) noexcept {
+void cxxbridge1$192$poly_data_delete(::vtkPolyData &ptr) noexcept {
   void (*poly_data_delete$)(::vtkPolyData &) = ::poly_data_delete;
   poly_data_delete$(ptr);
 }
