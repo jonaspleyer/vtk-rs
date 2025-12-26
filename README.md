@@ -28,7 +28,7 @@ In its current state, the crate will probably remain unusable for now.
 | `ubuntu-22.04` | [![stable-ubuntu-22_04](https://img.shields.io/github/actions/workflow/status/jonaspleyer/vtk-rs/test_stable_ubuntu-22_04.yml?style=flat-square&label=CI)](https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_stable_ubuntu-22_04.yml) |`cargo test` |
 | `macos-14` | [![stable-macos-14](https://img.shields.io/github/actions/workflow/status/jonaspleyer/vtk-rs/test_stable_macos-14.yml?style=flat-square&label=CI)](https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_stable_macos-14.yml) |`cargo test` |
 | `macos-15` | [![stable-macos-15](https://img.shields.io/github/actions/workflow/status/jonaspleyer/vtk-rs/test_stable_macos-15.yml?style=flat-square&label=CI)](https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_stable_macos-15.yml) |`cargo test` |
-| `macos-16` | [![stable-macos-16](https://img.shields.io/github/actions/workflow/status/jonaspleyer/vtk-rs/test_stable_macos-16.yml?style=flat-square&label=CI)](https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_stable_macos-16.yml) |`cargo test` |
+| `macos-26` | [![stable-macos-26](https://img.shields.io/github/actions/workflow/status/jonaspleyer/vtk-rs/test_stable_macos-26.yml?style=flat-square&label=CI)](https://github.com/jonaspleyer/vtk-rs/actions/workflows/test_stable_macos-26.yml) |`cargo test` |
 
 ## Dependencies
 

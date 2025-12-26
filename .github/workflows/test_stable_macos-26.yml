@@ -1,12 +1,12 @@
 on: [push, pull_request]
 
-name: Test-Suite stable macos-16
+name: Test-Suite stable macos-26
 
 jobs:
-  CI-stable-macos-16:
+  CI-stable-macos-26:
     uses: ./.github/workflows/reuse.yml
     with:
       toolchain: stable
-      os: macos-16
+      os: macos-26
       packages: vtk
       environment_vars: 
