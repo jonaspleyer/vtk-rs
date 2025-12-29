@@ -1,21 +1,117 @@
 use std::collections::HashMap;
+use std::ops::Deref;
 
 use crate::Result;
 use crate::inheritance_hierarchy::{ClassHierarchy, ClassName};
 use crate::parse_cpp::CppType;
 use crate::parse_wrap_vtk_xml::Module;
 
-pub struct RustMethod {
-    pub name: String,
-    pub return_type: CppType,
-    pub args: Vec<(crate::parse_cpp::Ident, CppType)>,
+#[allow(non_camel_case_types)]
+pub enum IRType {
+    /// Type `()` or `void` in C++
+    Unit,
+    c_char,
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_uchar,
+    c_ushort,
+    c_uint,
+    c_ulong,
+    c_ulonglong,
+    bool,
+    float,
+    double,
+    usize,
+    File,
+    FileMode,
+    Ref(Box<IRType>),
+    Pointer(Box<IRType>),
+    Const(Box<IRType>),
+    String,
+    Array(Box<IRType>, usize),
+    Vec(Box<IRType>),
+    Map(Box<IRType>, Box<IRType>),
+    LinkedList(Box<IRType>),
+    Path(crate::parse_cpp::Path),
 }
 
-impl RustMethod {
-    fn convert_from_class(class: &crate::Class, value: crate::Method) -> Result<Self> {
+impl TryFrom<&CppType> for IRType {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &CppType) -> std::result::Result<Self, Self::Error> {
+        use CppType::*;
+        use IRType::*;
+        let res = match value {
+            Void => Unit,
+            SignedChar => c_char,
+            UnsignedChar => c_uchar,
+            ShortInt => c_short,
+            UnsignedShortInt => c_ushort,
+            Int => c_int,
+            UnsignedInt => c_uint,
+            LongInt => c_long,
+            UnsignedLongInt => c_ulong,
+            LongLongInt => c_longlong,
+            UnsignedLongLongInt => c_ulonglong,
+            LongDouble => anyhow::bail!("Long Double not supported yet"),
+            Double => double,
+            Float => float,
+            Bool => bool,
+            Ostream => anyhow::bail!("Ostream not supported yet"),
+            SizeT => usize,
+            CppType::File => IRType::File,
+            CppType::FileMode => IRType::FileMode, // anyhow::bail!("Filemode not supported yet"),
+            Function(_) => anyhow::bail!("Function not supported yet"),
+            CppType::Ref(cpp_box) => IRType::Ref(Box::new(IRType::try_from(cpp_box.as_ref())?)),
+            CppType::Pointer(cpp_box) => {
+                IRType::Pointer(Box::new(IRType::try_from(cpp_box.as_ref())?))
+            }
+            CppType::Const(cpp_box) => IRType::Const(Box::new(IRType::try_from(cpp_box.as_ref())?)),
+            CppType::String => IRType::String,
+            CppType::Array(cpp_box, size) => {
+                IRType::Array(Box::new(IRType::try_from(cpp_box.as_ref())?), *size)
+            }
+            CppType::Vec(cpp_box) => IRType::Vec(Box::new(IRType::try_from(cpp_box.as_ref())?)),
+            CppType::Map(cpp_box1, cpp_box2) => IRType::Map(
+                Box::new(IRType::try_from(cpp_box1.as_ref())?),
+                Box::new(IRType::try_from(cpp_box2.as_ref())?),
+            ),
+            CppType::Path(p) => IRType::Path(crate::parse_cpp::Path(p.0.clone())),
+            CppType::LinkedList(cpp_box) => {
+                IRType::LinkedList(Box::new(IRType::try_from(cpp_box.as_ref())?))
+            }
+            CppType::Generic { pre: _, args: _ } => anyhow::bail!("Generics not supported yet"),
+            CppType::TypeInfo => anyhow::bail!("TypeInfo not supported yet"),
+        };
+        Ok(res)
+    }
+}
+
+pub struct IRIdent {
+    pub ident: String,
+}
+
+impl From<crate::parse_cpp::Ident> for IRIdent {
+    fn from(value: crate::parse_cpp::Ident) -> Self {
+        Self { ident: value.0 }
+    }
+}
+
+pub struct IRMethod {
+    pub name: String,
+    pub return_type: IRType,
+    // pub args: Vec<(crate::parse_cpp::Ident, CppType)>,
+    pub args: Vec<(IRIdent, IRType)>,
+}
+
+impl IRMethod {
+    fn convert_from_class(class: &crate::Class, value: &crate::Method) -> Result<Self> {
         use crate::parse_cpp::Parse;
-        let return_type = if let Some(crate::ReturnType { ret_type, pointer }) = value.return_type {
-            let inner_ty = CppType::parse(&ret_type)?;
+        let return_type = if let Some(crate::ReturnType { ret_type, pointer }) = &value.return_type
+        {
+            let inner_ty = CppType::parse(ret_type)?;
             match pointer {
                 Some(crate::Pointer::Ref) => CppType::Ref(Box::new(inner_ty)),
                 Some(crate::Pointer::Star) => CppType::Pointer(Box::new(inner_ty)),
@@ -27,24 +123,27 @@ impl RustMethod {
         } else {
             CppType::Void
         };
+        let return_type = IRType::try_from(&return_type)?;
 
         let args = value
             .parameters
-            .into_iter()
+            .iter()
             .enumerate()
             .map(|(n, param)| {
-                let name = match param.name {
-                    Some(name) => name,
+                let name = match &param.name {
+                    Some(name) => name.clone(),
                     // TODO make this better
                     None => format!("p{n}"),
                 };
                 let name = crate::parse_cpp::Ident::parse(&name)?;
-                CppType::parse(&param.r#type).map(|x| (name, x))
+                let name = IRIdent::from(name);
+                let cpp_ty = CppType::parse(&param.r#type)?;
+                Ok((name, IRType::try_from(&cpp_ty)?))
             })
             .collect::<Result<Vec<_>>>()?;
 
         use convert_case::*;
-        Ok(RustMethod {
+        Ok(IRMethod {
             name: format!("{}_{}", class.name, value.name).to_case(Case::Snake),
             return_type,
             args,
@@ -52,19 +151,19 @@ impl RustMethod {
     }
 }
 
-pub struct RustStruct {
+pub struct IRStruct {
     pub name: String,
     pub parents: Vec<ClassName>,
-    pub exposable_methods: Vec<RustMethod>,
+    pub exposable_methods: Vec<IRMethod>,
 }
 
-pub struct RustModule {
+pub struct IRModule {
     pub name: String,
-    pub classes: HashMap<ClassName, RustStruct>,
+    pub classes: HashMap<ClassName, IRStruct>,
 }
 
-impl RustModule {
-    pub fn new(class_hierarchy: &ClassHierarchy, module: Module) -> Result<Self> {
+impl IRModule {
+    pub fn new(module: Module, class_hierarchy: &ClassHierarchy) -> Result<Self> {
         let name = module.name;
         let internal_objects = module
             .files
@@ -73,7 +172,7 @@ impl RustModule {
             .map(|class| {
                 Ok((
                     class.name.clone(),
-                    RustStruct {
+                    IRStruct {
                         name: class.name.clone(),
                         parents: class_hierarchy
                             .get_parent_names(&class.name)
@@ -83,14 +182,27 @@ impl RustModule {
                         exposable_methods: class_hierarchy
                             .get_exposable_methods(&class.name)?
                             .into_iter()
-                            .map(|method| RustMethod::convert_from_class(&class, method))
-                            .collect::<Result<Vec<_>>>()?,
+                            .filter_map(|method| {
+                                match IRMethod::convert_from_class(&class, &method) {
+                                    Ok(x) => Some(x),
+                                    Err(e) => {
+                                        log::warn!(
+                                            "[IR] Skipping method \"{}\" with signature \"{}\" of class \"{}\" due to error: \"{e}\"",
+                                            method.name,
+                                            method.signature,
+                                            class.name,
+                                        );
+                                        None
+                                    }
+                                }
+                            })
+                            .collect::<Vec<_>>(),
                     },
                 ))
             })
             .collect::<Result<HashMap<_, _>>>()?;
 
-        Ok(RustModule {
+        Ok(IRModule {
             name,
             classes: internal_objects,
         })
