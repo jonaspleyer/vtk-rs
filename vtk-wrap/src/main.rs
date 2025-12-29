@@ -3,12 +3,12 @@ use anyhow::Result;
 mod code_gen_cpp;
 mod code_gen_rust;
 mod inheritance_hierarchy;
-mod intermediate;
+mod intermediate_representation;
 mod parse_cpp;
 mod parse_wrap_vtk_xml;
 
 use inheritance_hierarchy::*;
-use intermediate::*;
+use intermediate_representation::*;
 use parse_wrap_vtk_xml::*;
 
 fn main() -> Result<()> {
