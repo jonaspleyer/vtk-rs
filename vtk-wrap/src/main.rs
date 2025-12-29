@@ -7,6 +7,8 @@ mod intermediate_representation;
 mod parse_cpp;
 mod parse_wrap_vtk_xml;
 
+use code_gen_cpp::*;
+use code_gen_rust::*;
 use inheritance_hierarchy::*;
 use intermediate_representation::*;
 use parse_wrap_vtk_xml::*;
