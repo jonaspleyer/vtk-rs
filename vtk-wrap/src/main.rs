@@ -1,6 +1,7 @@
 use anyhow::Result;
 
-mod code_gen;
+mod code_gen_cpp;
+mod code_gen_rust;
 mod inheritance_hierarchy;
 mod intermediate;
 mod parse_cpp;
