@@ -1,6 +1,5 @@
-use std::ops::Deref;
-
-use quote::{ToTokens, TokenStreamExt};
+use proc_macro2::TokenStream;
+use quote::ToTokens;
 
 use crate::intermediate_representation::IRIdent;
 
@@ -10,10 +9,10 @@ impl ToTokens for crate::IRType {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         use crate::IRType::*;
         use quote::quote;
-        match self {
-            Const(_) => (),
-            _ => tokens.extend(quote!(mut)),
-        }
+        // match self {
+        //     Const(_) => (),
+        //     _ => tokens.extend(quote!(mut)),
+        // }
 
         let ty = match self {
             Unit => quote::quote!(()),
@@ -67,7 +66,7 @@ impl ToTokens for crate::IRType {
 
 impl ToTokens for IRIdent {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let id = quote::format_ident!("{}", self.ident);
+        let id = quote::format_ident!("{}", self.0);
         tokens.extend(quote::quote!(#id))
     }
 }
@@ -88,9 +87,67 @@ impl ToTokens for crate::IRMethod {
     }
 }
 
+impl crate::IRModule {
+    fn identify_traits(&self) -> TokenStream {
+        let mut out = TokenStream::new();
+
+        out
+    }
+
+    fn implement_own_traits(&self) -> TokenStream {
+        TokenStream::new()
+    }
+
+    fn create_bindings(&self) -> TokenStream {
+        let ir_struct = self.classes.values().next().unwrap();
+        // ir_struct.exposable_methods.into_iter().map(|method| method);
+        // Build constructor
+
+        let defs = self.classes.values().map(|c| {
+            let name = quote::format_ident!("{}", c.name);
+            let description = c.description.iter().map(|x| format!(" {x}"));
+            let constructor = quote::format_ident!("{}", c.constructor_name());
+            let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
+
+            quote::quote!(
+                #(#[doc = #description])*
+                #[allow(non_camel_case_types)]
+                pub struct #name(*mut core::ffi::c_void);
+
+                extern "C" {
+                    fn #constructor() -> *mut core::ffi::c_void;
+                }
+
+                impl #name {
+                    #[doc = #constructor_comment]
+                    pub fn new() -> Self {
+                        Self(#constructor())
+                    }
+                }
+            )
+        });
+
+        quote::quote!(#(#defs)*)
+    }
+}
+
 impl quote::ToTokens for crate::IRModule {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let modname = syn::Ident::new(&self.name, proc_macro2::Span::call_site());
+
+        // Identify traits as exposable methods of parent classes and provide default
+        // implementations.
+        let traits = self.identify_traits();
+        tokens.extend(quote::quote!(#traits));
+
+        // Implement traits for classes exposed in this module.
+        let implement_self = self.implement_own_traits();
+        tokens.extend(quote::quote!(#implement_self));
+
+        // Implement existing traits from other modules for classes exposed in this module
+
+        let bindings = self.create_bindings();
+
         let mut output = quote::quote!();
         for class in self.classes.values().take(2) {
             let mut methods = quote::quote!();
@@ -105,10 +162,11 @@ impl quote::ToTokens for crate::IRModule {
             ));
         }
         tokens.extend(quote::quote!(
-            #[allow(non_camel_case_types)]
-            pub mod #modname {
-                #output
-            }
+            // #[allow(non_camel_case_types)]
+            // pub mod #modname {
+            //     #output
+            // }
+            #bindings
         ));
     }
 }
