@@ -1,5 +1,5 @@
 use crate::Result;
-use crate::intermediate_representation::{IRMethod, IRModule, IRType};
+use crate::intermediate_representation::{IRMethod, IRModule, IRStruct, IRType};
 
 pub trait FormatCppStr {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>>;
@@ -44,32 +44,106 @@ impl FormatCppStr for IRType {
     }
 }
 
-impl FormatCpp for IRModule {
-    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
+impl IRModule {
+    pub(crate) fn to_cpp_src(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        // Include vtk libraries required
+        writeln!(writer, "#include<vtkNew>;")?;
+        writeln!(writer, "#include<{}.h>;", self.name)?;
+        writeln!(writer)?;
+
+        // Include other cpp libraries required
+
+        // Include header file
+        writeln!(writer, "#include<{}.h>;", self.name_snake_case())?;
+        writeln!(writer)?;
+
         for (_, ir_struct) in self.classes.iter() {
-            for method in ir_struct.exposable_methods.iter() {
-                match method.to_cpp(writer) {
+            ir_struct.build_constructor(writer)?;
+            /* for method in ir_struct.exposable_methods.iter() {
+                match ir_struct.method_to_cpp(method, writer) {
                     Ok(_) => (),
                     Err(e) => log::warn!(
                         "[Cpp] skipping method \"{}\" due to error: \"{e}\"",
                         method.name
                     ),
                 }
-            }
+            }*/
+        }
+        Ok(())
+    }
+
+    pub(crate) fn to_cpp_header(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        for (_, ir_struct) in self.classes.iter() {
+            ir_struct.build_constructor_headers(writer)?;
         }
         Ok(())
     }
 }
 
-impl FormatCpp for IRMethod {
-    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
+impl IRModule {
+    pub(crate) fn name_snake_case(&self) -> String {
+        convert_case::ccase!(snake, &self.name)
+    }
+
+    pub(crate) fn vtk_module_name(&self) -> Option<String> {
+        // TODO this is probably incorrect and needs to be addressed somehow differently
+        self.name.split("vtk").next().map(|x| x.to_string())
+    }
+}
+
+impl IRStruct {
+    fn method_to_cpp(&self, method: &IRMethod, writer: &mut impl std::io::Write) -> Result<()> {
+        let mut params = String::new();
+        for (n, (ident, ty)) in method.args.iter().enumerate() {
+            params.push_str(ty.to_cpp_str()?.as_ref());
+            params.push(' ');
+            params.push_str(&ident.0);
+            if n + 1 < method.args.len() {
+                params.push_str(", ");
+            }
+        }
+
+        let spointer = if params.is_empty() {
+            "void* self"
+        } else {
+            "void* self, "
+        };
         writeln!(
             writer,
-            "{} {}() {{",
-            self.return_type.to_cpp_str()?.as_ref(),
+            "{} {}({spointer}{params}) {{",
+            method.return_type.to_cpp_str()?.as_ref(),
+            method.name
+        )?;
+        writeln!(
+            writer,
+            "    return dynamic_cast<{}*>(self)->MethodName(args);",
             self.name
         )?;
         writeln!(writer, "}}")?;
+        Ok(())
+    }
+
+    fn build_constructor(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        let ty = &self.name;
+        let constructor = self.constructor_name();
+        writeln!(writer, "void* {}() {{", constructor)?;
+        writeln!(writer, "    return vtkNew<{ty}>();")?;
+        writeln!(writer, "}}")?;
+
+        /* let copy_constructor = self.copy_constructor();
+        writeln!(writer)?;
+        writeln!(writer, "void* {}(void* sself) {{", copy_constructor)?;
+        writeln!(
+            writer,
+            "    {ty}* ptr = dynamic_cast<vtkNew<{ty}>>(sself)->GetPointer();"
+        )?;
+        writeln!(writer, "    {ty}")
+        writeln!(writer, "    return vtkNew<{ty}>({ptr}(sself)", self.name)?;
+        writeln!(writer, "}}")?;*/
+        Ok(())
+    }
+
+    fn build_constructor_headers(&self, writer: &mut impl std::io::Write) -> Result<()> {
         Ok(())
     }
 }
