@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::ops::Deref;
 
 use crate::Result;
 use crate::inheritance_hierarchy::{ClassHierarchy, ClassName};
@@ -89,20 +88,17 @@ impl TryFrom<&CppType> for IRType {
     }
 }
 
-pub struct IRIdent {
-    pub ident: String,
-}
+pub struct IRIdent(pub String);
 
 impl From<crate::parse_cpp::Ident> for IRIdent {
     fn from(value: crate::parse_cpp::Ident) -> Self {
-        Self { ident: value.0 }
+        Self(value.0)
     }
 }
 
 pub struct IRMethod {
     pub name: String,
     pub return_type: IRType,
-    // pub args: Vec<(crate::parse_cpp::Ident, CppType)>,
     pub args: Vec<(IRIdent, IRType)>,
 }
 
