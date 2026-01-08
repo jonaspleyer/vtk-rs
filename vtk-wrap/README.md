@@ -2,6 +2,16 @@
 In order to correctly determine which methods and types to expose, `vtk-wrap` converts the
 information obtained by `WrapVTK` between multiple layers until the desired code can be generated.
 
+1. Parse WrapVTK
+2. Parse Cpp
+3. Construct IR
+4. Build Hierarchy
+5. Generate Code
+    1. Generate Rust Code
+    2. Generate Cpp Code
+
+## TODO
+
 1. [x] Generate xml data using WrapVTK
 2. [x] Parse xml data into custom Rust structs (module `parse_wrap_vtk_xml.rs`)
 3. [x] Parse C++ types (module `parse_cpp.rs`)
