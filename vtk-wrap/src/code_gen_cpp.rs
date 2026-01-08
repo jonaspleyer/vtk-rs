@@ -6,14 +6,14 @@ pub trait FormatCppStr {
 }
 
 pub trait FormatCpp {
-    fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()>;
+    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()>;
 }
 
 impl<T> FormatCpp for T
 where
     T: FormatCppStr,
 {
-    fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()> {
+    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
         write!(writer, "{}", self.to_cpp_str()?.as_ref())?;
         Ok(())
     }
@@ -45,7 +45,7 @@ impl FormatCppStr for IRType {
 }
 
 impl FormatCpp for IRModule {
-    fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()> {
+    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
         for (_, ir_struct) in self.classes.iter() {
             for method in ir_struct.exposable_methods.iter() {
                 match method.to_cpp(writer) {
@@ -62,7 +62,7 @@ impl FormatCpp for IRModule {
 }
 
 impl FormatCpp for IRMethod {
-    fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()> {
+    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
         writeln!(
             writer,
             "{} {}() {{",
