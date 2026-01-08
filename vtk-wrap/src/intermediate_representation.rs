@@ -154,6 +154,16 @@ pub struct IRStruct {
     pub exposable_methods: Vec<IRMethod>,
 }
 
+impl IRStruct {
+    pub fn constructor_name(&self) -> String {
+        format!("{}_new", self.name)
+    }
+
+    pub fn copy_constructor(&self) -> String {
+        format!("{}_copy", self.name)
+    }
+}
+
 pub struct IRModule {
     pub name: String,
     pub classes: HashMap<ClassName, IRStruct>,
