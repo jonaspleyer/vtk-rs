@@ -149,6 +149,7 @@ impl IRMethod {
 
 pub struct IRStruct {
     pub name: String,
+    pub description: Vec<String>,
     pub parents: Vec<ClassName>,
     pub exposable_methods: Vec<IRMethod>,
 }
@@ -170,6 +171,7 @@ impl IRModule {
                     class.name.clone(),
                     IRStruct {
                         name: class.name.clone(),
+                        description: class.comment.as_ref().map(|x| x.lines().into_iter().map(|x| x.trim().to_string()).collect::<Vec<String>>()).unwrap_or(vec![]),
                         parents: class_hierarchy
                             .get_parent_names(&class.name)
                             .into_iter()
