@@ -150,43 +150,35 @@ impl IRStruct {
             }
         }
 
+        let ty = &self.name;
         let spointer = if params.is_empty() {
-            "void* self"
+            cpp!(vtkNew<#ty> self)?
         } else {
-            "void* self, "
+            cpp!(vtkNew<#ty> self)?
         };
-        writeln!(
-            writer,
-            "{} {}({spointer}{params}) {{",
-            method.return_type.to_cpp_str()?.as_ref(),
-            method.name
-        )?;
-        writeln!(
-            writer,
-            "    return dynamic_cast<{}*>(self)->MethodName(args);",
-            self.name
-        )?;
-        writeln!(writer, "}}")?;
+
+        let ret = &method.return_type;
+        let vtk_name = &method.name;
+        let binding = format!("{}_{}", self.name, method.name);
+        let method = cpp!(#ret #binding (#spointer, #(#params),*) {
+            return self->#vtk_name(#(params),*);
+        })?;
+        writeln!(writer, "{}", method)?;
+
         Ok(())
     }
 
     fn build_constructor(&self, writer: &mut impl std::io::Write) -> Result<()> {
         let ty = &self.name;
         let constructor = self.constructor_name();
-        writeln!(writer, "void* {}() {{", constructor)?;
-        writeln!(writer, "    return vtkNew<{ty}>();")?;
-        writeln!(writer, "}}")?;
+        let func1 = cpp!(extern "C" vtkNew<#ty> #constructor() {return vtkNew<#ty>();})?;
 
-        /* let copy_constructor = self.copy_constructor();
+        let destructor = self.destructor();
+        let func2 = cpp!(extern "C" void #destructor(vtkNew<#ty> sself) {return;})?;
+
+        writeln!(writer, "{func1}")?;
         writeln!(writer)?;
-        writeln!(writer, "void* {}(void* sself) {{", copy_constructor)?;
-        writeln!(
-            writer,
-            "    {ty}* ptr = dynamic_cast<vtkNew<{ty}>>(sself)->GetPointer();"
-        )?;
-        writeln!(writer, "    {ty}")
-        writeln!(writer, "    return vtkNew<{ty}>({ptr}(sself)", self.name)?;
-        writeln!(writer, "}}")?;*/
+        writeln!(writer, "{func2}")?;
         Ok(())
     }
 
