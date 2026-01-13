@@ -104,25 +104,54 @@ impl crate::IRModule {
         // Build constructor
 
         let defs = self.classes.values().map(|c| {
+            let struct_name = &c.name;
             let name = quote::format_ident!("{}", c.name);
             let description = c.description.iter().map(|x| format!(" {x}"));
             let constructor = quote::format_ident!("{}", c.constructor_name());
             let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
+            let destructor = quote::format_ident!("{}", c.destructor());
+
+            let testname = quote::format_ident!("test_{}_create_drop", c.name);
 
             quote::quote!(
                 #(#[doc = #description])*
                 #[allow(non_camel_case_types)]
                 pub struct #name(*mut core::ffi::c_void);
 
-                extern "C" {
-                    fn #constructor() -> *mut core::ffi::c_void;
-                }
-
                 impl #name {
                     #[doc = #constructor_comment]
+                    #[doc(alias = #struct_name)]
                     pub fn new() -> Self {
-                        Self(#constructor())
+                        unsafe extern "C" {
+                            fn #constructor() -> *mut core::ffi::c_void;
+                        }
+                        Self(unsafe { &mut *#constructor() })
                     }
+
+                    unsafe fn _to_ptr(&self) -> *mut core::ffi::c_void {
+                        self.0 as *const core::ffi::c_void as *mut core::ffi::c_void
+                    }
+                }
+
+                impl std::default::Default for #name {
+                    fn default() -> Self {
+                        Self::new()
+                    }
+                }
+
+                impl Drop for #name {
+                    fn drop(&mut self) {
+                        unsafe extern "C" {
+                            fn #destructor(sself: *mut core::ffi::c_void);
+                        }
+                        unsafe { #destructor(self.0) }
+                    }
+                }
+
+                #[test]
+                fn #testname () {
+                    let obj = #name :: new();
+                    drop(obj);
                 }
             )
         });

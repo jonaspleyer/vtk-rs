@@ -159,8 +159,8 @@ impl IRStruct {
         format!("{}_new", self.name)
     }
 
-    pub fn copy_constructor(&self) -> String {
-        format!("{}_copy", self.name)
+    pub fn destructor(&self) -> String {
+        format!("{}_destructor", self.name)
     }
 }
 
