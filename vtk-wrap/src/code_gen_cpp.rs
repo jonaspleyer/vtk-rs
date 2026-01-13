@@ -134,7 +134,7 @@ impl IRModule {
 
     pub(crate) fn vtk_module_name(&self) -> Option<String> {
         // TODO this is probably incorrect and needs to be addressed somehow differently
-        self.name.split("vtk").next().map(|x| x.to_string())
+        self.name.split("vtk").nth(1).map(|x| x.to_string())
     }
 }
 
