@@ -1,6 +1,38 @@
 use crate::Result;
 use crate::intermediate_representation::{IRMethod, IRModule, IRStruct, IRType};
 
+macro_rules! _cpp(
+    (#(#$to:ident,)*) => {{
+        let mut out = String::new();
+        for _item in $to {
+            if out.is_empty() {
+                out = format!("{}", cpp!(#_item)?.trim());
+            } else {
+                out = format!("{out}, {}", cpp!(#_item)?.trim());
+            }
+        }
+        out
+    }};
+    (#$id:ident $($tk:tt)*) => {format!("{} {}", ($id).to_cpp_str()?.as_ref(), _cpp!($($tk)*))};
+    (#$id:ident) => {format!("{}", ($id).to_cpp_str()?.as_ref())};
+    ({$($gr:tt)+}) => {format!("{{{}}}", _cpp!($($gr)+))};
+    ({$($gr:tt)+} $($tk:tt)*) => {format!("{{{}}} {}", _cpp!($($gr)+), _cpp!($($tk)*))};
+    ($tk:tt) => {format!("{}", stringify!($tk))};
+    (($($gr:tt)+) $($tk:tt)*) => {format!("({}) {}", _cpp!($($gr)+), _cpp!($($tk)*))};
+    ($tk1:tt $($tk:tt)*) => {format!("{} {}", _cpp!($tk1), _cpp!($($tk)*))};
+    () => {"".to_string()};
+);
+
+macro_rules! cpp(
+    ($($tk:tt)*) => {{
+        let __internal_doer = || -> crate::Result<String> {
+            let out: String = _cpp!($($tk)*);
+            Ok(out)
+        };
+        __internal_doer()
+    }}
+);
+
 pub trait FormatCppStr {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>>;
 }
