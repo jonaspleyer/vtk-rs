@@ -106,7 +106,14 @@ impl crate::IRModule {
         let defs = self.classes.values().map(|c| {
             let struct_name = &c.name;
             let name = quote::format_ident!("{}", c.name);
-            let description = c.description.iter().map(|x| format!(" {x}"));
+
+            let pre = c
+                .description
+                .iter()
+                .take_while(|x| x.contains("@brief"))
+                .map(|x| x.replace("@brief ", ""));
+            let post = c.description.iter().skip_while(|x| x.contains("@brief"));
+
             let constructor = quote::format_ident!("{}", c.constructor_name());
             let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
             let destructor = quote::format_ident!("{}", c.destructor());
@@ -114,7 +121,9 @@ impl crate::IRModule {
             let testname = quote::format_ident!("test_{}_create_drop", c.name);
 
             quote::quote!(
-                #(#[doc = #description])*
+                #(#[doc = #pre])*
+                #[doc = ""]
+                #(#[doc = #post])*
                 #[allow(non_camel_case_types)]
                 pub struct #name(*mut core::ffi::c_void);
 
