@@ -131,14 +131,10 @@ fn write_cpp_header(
     Ok(())
 }
 
-/// Generate Rust code from IR Modules
-fn write_rust_module(
-    class_hierarchy: &ClassHierarchy,
-    module: &IRModule,
+fn format_quote_and_write(
+    tokenstream: proc_macro2::TokenStream,
     writer: &mut impl std::io::Write,
 ) -> Result<()> {
-    let rust_module = quote::quote!(#module);
-    let tokenstream = quote::quote!(#rust_module);
     let file: Result<syn::File, _> = syn::parse_file(&tokenstream.to_string());
     match file {
         Ok(res) => write!(writer, "{}", prettyplease::unparse(&res))?,
@@ -147,6 +143,42 @@ fn write_rust_module(
             write!(writer, "{}", tokenstream)?;
         }
     }
+    Ok(())
+}
+
+/// Generate Rust code from IR Modules
+fn write_rust_module(
+    class_hierarchy: &ClassHierarchy,
+    module: &IRModule,
+    writer: &mut impl std::io::Write,
+) -> Result<()> {
+    let rust_module = quote::quote!(#module);
+    let tokenstream = quote::quote!(#rust_module);
+    format_quote_and_write(tokenstream, writer)?;
+    Ok(())
+}
+
+fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Result<()> {
+    let mut o1 = quote::quote!(
+        #![allow(non_camel_case_types)]
+        #![allow(non_snake_case)]
+    );
+    let mut o2 = quote::quote!();
+    for m in modules {
+        let modname = &m.name;
+        let name = quote::format_ident!("{}", m.name);
+        o1.extend(quote::quote!(
+            // #[cfg(feature = #modname)]
+            pub mod #name;
+        ));
+        o2.extend(quote::quote!(
+            // #[cfg(feature = #modname)]
+            pub use #name::*;
+        ));
+    }
+
+    o1.extend(o2);
+    format_quote_and_write(o1, writer)?;
     Ok(())
 }
 
@@ -170,23 +202,33 @@ fn main() -> Result<()> {
         .find(|x| x.name.contains("vtkCommonColor"))
         .unwrap();
 
+    let opath = std::path::PathBuf::from("test");
+
     // Build directory where results will be generated into
-    create_folders("test")?;
+    create_folders(&opath)?;
     create_cmake_lists_txt(&[&module], "test/libvtkrs")?;
 
-    let mut cpp_file = std::fs::File::create(format!(
-        "test/libvtkrs/src/{}.cpp",
-        &module.name_snake_case()
-    ))?;
+    let mut cpp_file = std::fs::File::create(
+        opath
+            .join("libvtkrs")
+            .join("src")
+            .join(format!("{}.cpp", &module.name_snake_case())),
+    )?;
     write_cpp_module(&class_hierarchy, &module, &mut cpp_file)?;
-    let mut header_file = std::fs::File::create(format!(
-        "test/libvtkrs/include/{}.h",
-        &module.name_snake_case()
-    ))?;
+    let mut header_file = std::fs::File::create(
+        opath
+            .join("libvtkrs")
+            .join("include")
+            .join(format!("{}.h", &module.name_snake_case())),
+    )?;
     write_cpp_header(&class_hierarchy, &module, &mut header_file)?;
 
     let mut rust_file = std::fs::File::create(format!("test/src/{}.rs", module.name))?;
     write_rust_module(&class_hierarchy, &module, &mut rust_file)?;
+
+    let ir_modules = vec![module];
+    let mut rust_lib = std::fs::File::create("test/src/lib.rs")?;
+    write_rust_main(&ir_modules, &mut rust_lib)?;
 
     /* for method in class.1.methods.public.iter() {
         if method.is_virtual {
