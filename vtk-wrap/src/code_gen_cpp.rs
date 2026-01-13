@@ -51,6 +51,18 @@ where
     }
 }
 
+impl FormatCppStr for String {
+    fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
+        Ok(self.as_str())
+    }
+}
+
+impl FormatCppStr for &str {
+    fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
+        Ok(self)
+    }
+}
+
 impl FormatCppStr for IRType {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
         use IRType::*;
