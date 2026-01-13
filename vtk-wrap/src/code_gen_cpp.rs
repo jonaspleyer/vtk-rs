@@ -91,14 +91,17 @@ impl FormatCppStr for IRType {
 impl IRModule {
     pub(crate) fn to_cpp_src(&self, writer: &mut impl std::io::Write) -> Result<()> {
         // Include vtk libraries required
-        writeln!(writer, "#include<vtkNew>;")?;
-        writeln!(writer, "#include<{}.h>;", self.name)?;
+        writeln!(writer, "#include<vtkNew.h>")?;
         writeln!(writer)?;
 
-        // Include other cpp libraries required
+        writeln!(writer, "// Include header file")?;
+        writeln!(writer, "#include<{}.h>", self.name_snake_case())?;
+        writeln!(writer)?;
 
-        // Include header file
-        writeln!(writer, "#include<{}.h>;", self.name_snake_case())?;
+        writeln!(writer, "// Include objects of this module")?;
+        for (_, ir_struct) in self.classes.iter() {
+            writeln!(writer, "#include<{}.h>", ir_struct.name)?;
+        }
         writeln!(writer)?;
 
         for (_, ir_struct) in self.classes.iter() {
