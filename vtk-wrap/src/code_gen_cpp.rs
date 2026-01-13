@@ -187,6 +187,22 @@ impl IRStruct {
     }
 }
 
+#[test]
+fn test_cpp_macro() {
+    let out = cpp!(extern "C" void use_this(void* ptr) {return;}).unwrap();
+    assert_eq!(out, "extern \"C\" void use_this (void * ptr) {return ;}");
+}
+
+#[test]
+fn test_cpp_macro_repitition() {
+    let args = vec!["int indent", "char* stream", "bool flag"];
+    let out = cpp!(void do_stuff(#(#args,)*) { return; }).unwrap();
+    assert_eq!(
+        out,
+        "void do_stuff (int indent, char* stream, bool flag) {return ;}"
+    );
+}
+
 /* impl FormatCpp for Option<ReturnType> {
     fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()> {
         match self {
