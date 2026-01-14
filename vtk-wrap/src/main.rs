@@ -164,17 +164,13 @@ fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Re
         #![allow(non_camel_case_types)]
         #![allow(non_snake_case)]
     );
-    let mut o2 = quote::quote!();
     for m in modules {
-        let modname = &m.name;
         let name = quote::format_ident!("{}", m.name);
         o1.extend(quote::quote!(
-            // #[cfg(feature = #modname)]
             pub mod #name;
         ));
     }
 
-    o1.extend(o2);
     format_quote_and_write(o1, writer)?;
     Ok(())
 }
