@@ -128,6 +128,7 @@ impl crate::IRModule {
             let constructor = quote::format_ident!("{}", c.constructor_binding_name());
             let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
             let destructor = quote::format_ident!("{}", c.destructor_binding_name());
+            let get_ptr = quote::format_ident!("{}", c.get_ptr_binding_name());
 
             let testname = quote::format_ident!("test_{}_create_drop", c.name);
 
@@ -148,8 +149,13 @@ impl crate::IRModule {
                         Self(unsafe { &mut *#constructor() })
                     }
 
-                    unsafe fn _to_ptr(&self) -> *mut core::ffi::c_void {
-                        self.0 as *const core::ffi::c_void as *mut core::ffi::c_void
+                    // This method is supposed to be used for testing only
+                    #[cfg(test)]
+                    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+                        unsafe extern "C" {
+                            fn #get_ptr(sself: *mut core::ffi::c_void) -> *mut core::ffi::c_void;
+                        }
+                        unsafe { #get_ptr( self.0 ) }
                     }
                 }
 
@@ -165,13 +171,26 @@ impl crate::IRModule {
                             fn #destructor(sself: *mut core::ffi::c_void);
                         }
                         unsafe { #destructor(self.0) }
+                        self.0 = core::ptr::null_mut();
                     }
                 }
 
                 #[test]
                 fn #testname () {
+                    // Create a new heap-allocated object behind vtkNew<..>
                     let obj = #name :: new();
+                    // Store the internal pointer which now contains the vtkNew<..> pointer
+                    let ptr = obj.0;
+                    // Ensure that the vtkNew<..> pointer and its content are not null
+                    assert!(!ptr.is_null());
+                    assert!(unsafe { !obj._get_ptr().is_null() });
+                    // Manually drop the object, freeing the memory and nulling the pointer
                     drop(obj);
+                    // Wrap the previous pointer in new object without explicitly calling
+                    // constructor. This allows us to access its contents with the defined API.
+                    let new_obj = #name(ptr);
+                    // Ensure that the previously created object is null
+                    assert!(unsafe { new_obj._get_ptr().is_null() });
                 }
             ));
         }
