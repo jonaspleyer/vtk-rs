@@ -172,10 +172,6 @@ fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Re
             // #[cfg(feature = #modname)]
             pub mod #name;
         ));
-        o2.extend(quote::quote!(
-            // #[cfg(feature = #modname)]
-            pub use #name::*;
-        ));
     }
 
     o1.extend(o2);
