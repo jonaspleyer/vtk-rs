@@ -125,9 +125,9 @@ impl crate::IRModule {
                 }
             });
 
-            let constructor = quote::format_ident!("{}", c.constructor_name());
+            let constructor = quote::format_ident!("{}", c.constructor_binding_name());
             let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
-            let destructor = quote::format_ident!("{}", c.destructor());
+            let destructor = quote::format_ident!("{}", c.destructor_binding_name());
 
             let testname = quote::format_ident!("test_{}_create_drop", c.name);
 

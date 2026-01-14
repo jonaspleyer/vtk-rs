@@ -170,11 +170,14 @@ impl IRStruct {
 
     fn build_constructor(&self, writer: &mut impl std::io::Write) -> Result<()> {
         let ty = &self.name;
-        let constructor = self.constructor_name();
+        let constructor = self.constructor_binding_name();
         let func1 = cpp!(extern "C" vtkNew<#ty> #constructor() {return vtkNew<#ty>();})?;
 
-        let destructor = self.destructor();
-        let func2 = cpp!(extern "C" void #destructor(vtkNew<#ty> sself) {return;})?;
+        let destructor = self.destructor_binding_name();
+        let func2 = cpp!(extern "C" void #destructor(vtkNew<#ty> sself) {
+            sself.Reset();
+            return;
+        })?;
 
         writeln!(writer, "{func1}")?;
         writeln!(writer)?;
@@ -183,6 +186,15 @@ impl IRStruct {
     }
 
     fn build_constructor_headers(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        let ty = &self.name;
+        let constructor = self.constructor_binding_name();
+        let func1 = cpp!(extern "C" vtkNew<#ty> #constructor();)?;
+
+        let destructor = self.destructor_binding_name();
+        let func2 = cpp!(extern "C" void #destructor(vtkNew<#ty> sself);)?;
+
+        writeln!(writer, "{func1}")?;
+        writeln!(writer, "{func2}")?;
         Ok(())
     }
 }

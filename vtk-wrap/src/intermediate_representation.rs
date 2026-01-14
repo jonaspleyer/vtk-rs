@@ -160,11 +160,11 @@ pub struct IRStruct {
 }
 
 impl IRStruct {
-    pub fn constructor_name(&self) -> String {
+    pub fn constructor_binding_name(&self) -> String {
         format!("{}_new", self.name)
     }
 
-    pub fn destructor(&self) -> String {
+    pub fn destructor_binding_name(&self) -> String {
         format!("{}_destructor", self.name)
     }
 
