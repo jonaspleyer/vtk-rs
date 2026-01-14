@@ -184,6 +184,55 @@ fn write_cargo_toml(writer: &mut impl std::io::Write) -> Result<()> {
     Ok(())
 }
 
+fn write_build_rs(writer: &mut impl std::io::Write, ir_modules: &[IRModule]) -> Result<()> {
+    let module_names = ir_modules.iter().map(|m| &m.name);
+
+    let tokenstream = quote::quote!(
+        use cmake::Config;
+
+        use vtk_rs_link::{log, Result, WARN};
+
+        // Handle building of cmake project
+        fn build_cmake() {
+            println!("cargo:rerun-if-changed=libvtkrs");
+            let mut config = Config::new("libvtkrs");
+
+            let dst = config.build();
+            println!("cargo:rustc-link-search=native={}", dst.display());
+            println!("cargo:rustc-link-lib=static=vtkrs");
+        }
+
+        fn main() -> Result<()> {
+            // Exit early without doing anything if we are building for docsrs
+            if std::env::var("DOCS_RS").is_ok() {
+                return Ok(());
+            }
+
+            if let Ok(val) = std::env::var("VERBOSE") {
+                if val == "1" || val.to_lowercase() == "true" {
+                    WARN.store(true, std::sync::atomic::Ordering::Relaxed);
+                    log!("-- Verbose Logging Enabled");
+                }
+            }
+
+            // Build cpp project
+            build_cmake();
+
+            // Link to VTK
+            let modules = vec![
+                "vtksys",
+                "vtktoken",
+                #(#module_names),*
+            ];
+            vtk_rs_link::link_cmake_project(modules)?;
+
+            Ok(())
+        }
+    );
+
+    format_quote_and_write(tokenstream, writer)
+}
+
 fn main() -> Result<()> {
     pretty_env_logger::init();
 
@@ -230,6 +279,9 @@ fn main() -> Result<()> {
 
     let mut cargo_toml = std::fs::File::create("test/Cargo.toml")?;
     write_cargo_toml(&mut cargo_toml)?;
+
+    let mut build_rs = std::fs::File::create("test/build.rs")?;
+    write_build_rs(&mut build_rs, &ir_modules)?;
 
     Ok(())
 }
