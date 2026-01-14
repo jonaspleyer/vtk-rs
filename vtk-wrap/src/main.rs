@@ -225,6 +225,8 @@ fn write_build_rs(writer: &mut impl std::io::Write, ir_modules: &[IRModule]) -> 
 struct Args {
     #[arg(short, long)]
     opath: std::path::PathBuf,
+    #[arg(short, long, default_value = "WrapVTK")]
+    wrap_vtk: std::path::PathBuf,
 }
 
 fn main() -> Result<()> {
@@ -232,7 +234,7 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     // Obtain all modules
-    let modules = get_modules("WrapVTK/build/xml/vtkCommon*")?;
+    let modules = get_modules(args.wrap_vtk.join("build/xml/vtkCommon*"))?;
 
     let class_hierarchy = ClassHierarchy::new(&modules)?;
 
