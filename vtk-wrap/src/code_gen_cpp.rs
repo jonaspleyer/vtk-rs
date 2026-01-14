@@ -89,21 +89,30 @@ impl FormatCppStr for IRType {
 }
 
 impl IRModule {
-    pub(crate) fn to_cpp_src(&self, writer: &mut impl std::io::Write) -> Result<()> {
-        // Include vtk libraries required
+    fn write_includes(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        writeln!(writer, "// Default include in all modules")?;
         writeln!(writer, "#include<vtkNew.h>")?;
-        writeln!(writer)?;
-
-        writeln!(writer, "// Include header file")?;
-        writeln!(writer, "#include<{}.h>", self.name_snake_case())?;
+        writeln!(writer, "#include<vtkObjectBase.h>")?;
         writeln!(writer)?;
 
         writeln!(writer, "// Include objects of this module")?;
         for (_, ir_struct) in self.classes.iter() {
-            writeln!(writer, "#include<{}.h>", ir_struct.name)?;
+            // if ir_struct.is_constructable() {
+            writeln!(writer, "#include<{}>", ir_struct.filename)?;
+            // }
         }
-        writeln!(writer)?;
+        Ok(())
+    }
 
+    pub(crate) fn to_cpp_src(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        writeln!(writer, "// Include header file")?;
+        writeln!(writer, "#include<{}.h>", self.name_snake_case())?;
+        writeln!(writer)?;
+        self.write_includes(writer)?;
+        writeln!(writer)?;
+        writeln!(writer, "// Implement declared functions")?;
+
+        // Include vtk libraries required
         for (_, ir_struct) in self.classes.iter() {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor(writer)?;
@@ -122,6 +131,10 @@ impl IRModule {
     }
 
     pub(crate) fn to_cpp_header(&self, writer: &mut impl std::io::Write) -> Result<()> {
+        self.write_includes(writer)?;
+        writeln!(writer)?;
+
+        writeln!(writer, "// Declare exported functions")?;
         for (_, ir_struct) in self.classes.iter() {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor_headers(writer)?;
