@@ -108,11 +108,11 @@ impl crate::IRModule {
                 .description
                 .iter()
                 .take_while(|x| x.contains("@brief"))
-                .map(|x| x.replace("@brief ", ""));
+                .map(|x| format!(" {}", x.replace("@brief ", "").trim()));
             let post = c.description.iter().skip_while(|x| x.contains("@brief"));
             let mut inside = false;
             let post = post.map(|x| {
-                if x.contains("```") {
+                let x = if x.contains("```") {
                     if !inside {
                         inside = true;
                         x.replace("```", "```cpp,ignore")
@@ -122,7 +122,8 @@ impl crate::IRModule {
                     }
                 } else {
                     x.clone()
-                }
+                };
+                format!(" {}", x.trim())
             });
 
             let constructor = quote::format_ident!("{}", c.constructor_binding_name());
