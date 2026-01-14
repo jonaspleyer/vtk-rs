@@ -167,6 +167,19 @@ impl IRStruct {
     pub fn destructor(&self) -> String {
         format!("{}_destructor", self.name)
     }
+
+    pub(crate) fn is_constructable(&self) -> bool {
+        self.constructors
+            .iter()
+            .any(|c| c.access != Access::Private)
+            && self.destructors.iter().any(|d| d.access != Access::Private)
+            && !self.is_abstract
+            && !self.is_template
+            && !self.exposable_methods.is_empty()
+            // This could be lifted in the future when considering objects which can be constructed
+            // not via vtkNew<..>()
+            && self.parents.iter().any(|c| c == "vtkObjectBase")
+    }
 }
 
 pub struct IRModule {
@@ -175,6 +188,10 @@ pub struct IRModule {
 }
 
 impl IRModule {
+    pub(crate) fn contains_exposable_content(&self) -> bool {
+        self.classes.iter().any(|x| x.1.is_constructable())
+    }
+
     pub fn new(module: Module, class_hierarchy: &ClassHierarchy) -> Result<Self> {
         let name = module.name;
         let internal_objects = module
