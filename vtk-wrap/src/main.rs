@@ -22,10 +22,7 @@ fn create_folders(path: impl Into<std::path::PathBuf>) -> Result<()> {
     Ok(())
 }
 
-fn create_cmake_lists_txt(
-    modules: &[&IRModule],
-    path: impl Into<std::path::PathBuf>,
-) -> Result<()> {
+fn create_cmake_lists_txt(modules: &[IRModule], path: impl Into<std::path::PathBuf>) -> Result<()> {
     // Change this into something possibly user-definable
     let cmake_version = "3.12";
     let project_name = "vtkrs";
