@@ -175,6 +175,15 @@ fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Re
     Ok(())
 }
 
+fn write_cargo_toml(writer: &mut impl std::io::Write) -> Result<()> {
+    let input = include_str!("../Default/Cargo.toml");
+    let manifest = cargo_toml::Manifest::from_str(input)?;
+
+    let toml_string = toml::to_string_pretty(&manifest)?;
+    write!(writer, "{}", toml_string)?;
+    Ok(())
+}
+
 fn main() -> Result<()> {
     pretty_env_logger::init();
 
@@ -218,6 +227,9 @@ fn main() -> Result<()> {
 
     let mut rust_lib = std::fs::File::create("test/src/lib.rs")?;
     write_rust_main(&ir_modules, &mut rust_lib)?;
+
+    let mut cargo_toml = std::fs::File::create("test/Cargo.toml")?;
+    write_cargo_toml(&mut cargo_toml)?;
 
     Ok(())
 }

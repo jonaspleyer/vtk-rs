@@ -1,0 +1,18 @@
+[package]
+name = "vtk-rs-test"
+version = "0.2.0"
+edition = "2024"
+build = "build.rs"
+license = "MIT"
+description = "Rust bindings for the Visualization Toolkit (VTK)"
+repository = "https://github.com/jonaspleyer/vtk-rs"
+
+[dependencies]
+cxx = "1.0.190"
+
+[build-dependencies]
+cmake = "0.1.54"
+vtk-rs-link = "0.3.1"
+
+[dev-dependencies]
+approx = { package = "approxim", version = "0.6.4", features = ["array_impl"]}

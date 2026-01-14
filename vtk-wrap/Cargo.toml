@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.98"
+cargo_toml = "0.22.3"
 convert_case = "0.10.0"
 glob = "0.3.2"
 log = "0.4.27"
@@ -17,3 +18,4 @@ regex = "1.11.1"
 serde = { version = "1.0.219", features = ["derive"] }
 serde-xml-rs = "0.8.1"
 syn = "2.0.101"
+toml = "0.9.11"
