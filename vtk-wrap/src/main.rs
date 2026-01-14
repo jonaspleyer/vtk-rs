@@ -194,51 +194,34 @@ fn main() -> Result<()> {
         .collect::<Result<Vec<_>>>()?;
 
     // For testing purposes; filter for just one module
-    let module = ir_modules
-        .into_iter()
-        .find(|x| x.name.contains("vtkCommonColor"))
-        .unwrap();
-
     let opath = std::path::PathBuf::from("test");
 
     // Build directory where results will be generated into
     create_folders(&opath)?;
-    create_cmake_lists_txt(&[&module], "test/libvtkrs")?;
+    create_cmake_lists_txt(&ir_modules, "test/libvtkrs")?;
 
-    let mut cpp_file = std::fs::File::create(
-        opath
-            .join("libvtkrs")
-            .join("src")
-            .join(format!("{}.cpp", &module.name_snake_case())),
-    )?;
-    write_cpp_module(&class_hierarchy, &module, &mut cpp_file)?;
-    let mut header_file = std::fs::File::create(
-        opath
-            .join("libvtkrs")
-            .join("include")
-            .join(format!("{}.h", &module.name_snake_case())),
-    )?;
-    write_cpp_header(&class_hierarchy, &module, &mut header_file)?;
+    for module in ir_modules.iter() {
+        let mut cpp_file = std::fs::File::create(
+            opath
+                .join("libvtkrs")
+                .join("src")
+                .join(format!("{}.cpp", &module.name_snake_case())),
+        )?;
+        write_cpp_module(&class_hierarchy, module, &mut cpp_file)?;
+        let mut header_file = std::fs::File::create(
+            opath
+                .join("libvtkrs")
+                .join("include")
+                .join(format!("{}.h", &module.name_snake_case())),
+        )?;
+        write_cpp_header(&class_hierarchy, module, &mut header_file)?;
 
-    let mut rust_file = std::fs::File::create(format!("test/src/{}.rs", module.name))?;
-    write_rust_module(&class_hierarchy, &module, &mut rust_file)?;
+        let mut rust_file = std::fs::File::create(format!("test/src/{}.rs", module.name))?;
+        write_rust_module(&class_hierarchy, module, &mut rust_file)?;
+    }
 
-    let ir_modules = vec![module];
     let mut rust_lib = std::fs::File::create("test/src/lib.rs")?;
     write_rust_main(&ir_modules, &mut rust_lib)?;
-
-    /* for method in class.1.methods.public.iter() {
-        if method.is_virtual {
-            let mut out = String::new();
-            method.to_cpp(&mut out)?;
-            println!("{out}");
-        }
-    }*/
-
-    /* let rust_modules: Vec<_> = modules
-    .into_iter()
-    .map(|module| RustModule::new(&class_hierarchy, module))
-    .collect::<Result<Vec<_>>>()?;*/
 
     Ok(())
 }
