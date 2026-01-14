@@ -152,6 +152,11 @@ pub struct IRStruct {
     pub description: Vec<String>,
     pub parents: Vec<ClassName>,
     pub exposable_methods: Vec<IRMethod>,
+    pub is_abstract: bool,
+    pub is_template: bool,
+    pub filename: String,
+    constructors: Vec<crate::parse_wrap_vtk_xml::Constructor>,
+    destructors: Vec<crate::parse_wrap_vtk_xml::Destructor>,
 }
 
 impl IRStruct {
@@ -175,13 +180,21 @@ impl IRModule {
         let internal_objects = module
             .files
             .into_iter()
-            .flat_map(|(_, file)| file.classes)
-            .map(|class| {
+            .flat_map(|(_, file)| file.classes.into_iter().map(move |x| (file.name.clone(), x)))
+            .map(|(filename, class)| {
                 Ok((
                     class.name.clone(),
                     IRStruct {
                         name: class.name.clone(),
-                        description: class.comment.as_ref().map(|x| x.lines().map(|x| x.trim().to_string()).collect::<Vec<String>>()).unwrap_or(vec![]),
+                        description: class.comment.as_ref()
+                            .map(|x| x
+                                .lines()
+                                .map(|x| x
+                                    .trim()
+                                    .to_string()
+                                ).collect::<Vec<String>>()
+                            )
+                            .unwrap_or(vec![]),
                         parents: class_hierarchy
                             .get_parent_names(&class.name)
                             .into_iter()
@@ -205,6 +218,11 @@ impl IRModule {
                                 }
                             })
                             .collect::<Vec<_>>(),
+                        is_abstract: class.is_abstract,
+                        is_template: class.is_template,
+                        filename: filename.clone(),
+                        constructors: class.constructors,
+                        destructors: class.destructors,
                     },
                 ))
             })
