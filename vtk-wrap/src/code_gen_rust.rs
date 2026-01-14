@@ -110,6 +110,20 @@ impl crate::IRModule {
                 .take_while(|x| x.contains("@brief"))
                 .map(|x| x.replace("@brief ", ""));
             let post = c.description.iter().skip_while(|x| x.contains("@brief"));
+            let mut inside = false;
+            let post = post.map(|x| {
+                if x.contains("```") {
+                    if !inside {
+                        inside = true;
+                        x.replace("```", "```cpp,ignore")
+                    } else {
+                        inside = false;
+                        x.clone()
+                    }
+                } else {
+                    x.clone()
+                }
+            });
 
             let constructor = quote::format_ident!("{}", c.constructor_name());
             let constructor_comment = format!(" Creates a new [{name}] wrapped inside `vtkNew`");
