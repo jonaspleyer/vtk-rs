@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::Result;
 use crate::inheritance_hierarchy::{ClassHierarchy, ClassName};
 use crate::parse_cpp::CppType;
-use crate::parse_wrap_vtk_xml::Module;
+use crate::parse_wrap_vtk_xml::{Access, Module};
 
 #[allow(non_camel_case_types)]
 pub enum IRType {

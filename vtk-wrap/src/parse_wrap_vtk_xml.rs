@@ -140,6 +140,22 @@ pub struct Method {
     pub return_type: Option<ReturnType>,
 }
 
+#[derive(Deserialize, PartialEq, Debug, Clone)]
+#[serde(rename = "constructor")]
+pub struct Constructor {
+    #[serde(rename = "@access")]
+    pub access: Access,
+    pub signature: String,
+}
+
+#[derive(Deserialize, PartialEq, Debug, Clone)]
+#[serde(rename = "destructor")]
+pub struct Destructor {
+    #[serde(rename = "@access")]
+    pub access: Access,
+    pub signature: String,
+}
+
 #[derive(PartialEq, Debug, Clone, Default)]
 pub struct Methods {
     pub private: Vec<Method>,
@@ -306,6 +322,10 @@ pub struct Class {
     #[serde(default = "Default::default")]
     #[serde(deserialize_with = "option_one_to_bool")]
     pub is_abstract: bool,
+    #[serde(rename = "@template")]
+    #[serde(default = "Default::default")]
+    #[serde(deserialize_with = "option_one_to_bool")]
+    pub is_template: bool,
     pub comment: Option<String>,
     #[serde(default = "Vec::new")]
     pub base: Vec<Base>,
@@ -323,6 +343,12 @@ pub struct Class {
     pub properties: Vec<Property>,
     #[serde(default = "Vec::new")]
     pub members: Vec<Member>,
+    #[serde(rename = "constructor")]
+    #[serde(default = "Vec::new")]
+    pub constructors: Vec<Constructor>,
+    #[serde(rename = "destructor")]
+    #[serde(default = "Vec::new")]
+    pub destructors: Vec<Destructor>,
 }
 
 impl Class {
@@ -330,6 +356,7 @@ impl Class {
         let Class {
             name,
             is_abstract,
+            is_template,
             comment,
             base,
             inheritance,
@@ -337,6 +364,8 @@ impl Class {
             typedefs,
             properties,
             members,
+            constructors: constructor,
+            destructors: destructor,
         } = self;
 
         let cmp_inheritence = match (inheritance, &other.inheritance) {
@@ -344,11 +373,15 @@ impl Class {
             (None, Some(_)) | (Some(_), None) => false,
             (None, None) => true,
         };
-        if *name != other.name
+        if true
+            || *name != other.name
             || *is_abstract != other.is_abstract
+            || *is_template != other.is_template
             || base.iter().any(|b| !other.base.contains(b))
             || *comment != other.comment
             || cmp_inheritence
+            || *constructor != other.constructors
+            || *destructor != other.destructors
         {
             return Err(anyhow::anyhow!(
                 "Properties of Classes which should be combined are not matching"
@@ -623,6 +656,7 @@ mod test_parsing {
         let Class {
             name,
             is_abstract,
+            is_template,
             comment,
             base,
             inheritance,
@@ -630,6 +664,8 @@ mod test_parsing {
             typedefs,
             properties,
             members,
+            constructors,
+            destructors,
         } = serde_xml_rs::SerdeXml::new()
             .overlapping_sequences(true)
             .from_str(CLASS)?;
