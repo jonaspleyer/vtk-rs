@@ -1,14 +1,13 @@
+[workspace]
+
 [package]
-name = "vtk-rs-test"
+name = "vtk-rs"
 version = "0.2.0"
 edition = "2024"
 build = "build.rs"
 license = "MIT"
 description = "Rust bindings for the Visualization Toolkit (VTK)"
 repository = "https://github.com/jonaspleyer/vtk-rs"
-
-[dependencies]
-cxx = "1.0.190"
 
 [build-dependencies]
 cmake = "0.1.54"
