@@ -99,11 +99,8 @@ impl crate::IRModule {
     }
 
     fn create_bindings(&self) -> TokenStream {
-        let ir_struct = self.classes.values().next().unwrap();
-        // ir_struct.exposable_methods.into_iter().map(|method| method);
-        // Build constructor
-
-        let defs = self.classes.values().map(|c| {
+        let mut output = TokenStream::new();
+        for c in self.classes.values().filter(|c| c.is_constructable()) {
             let struct_name = &c.name;
             let name = quote::format_ident!("{}", c.name);
 
@@ -120,7 +117,7 @@ impl crate::IRModule {
 
             let testname = quote::format_ident!("test_{}_create_drop", c.name);
 
-            quote::quote!(
+            output.extend(quote::quote!(
                 #(#[doc = #pre])*
                 #[doc = ""]
                 #(#[doc = #post])*
@@ -162,10 +159,10 @@ impl crate::IRModule {
                     let obj = #name :: new();
                     drop(obj);
                 }
-            )
-        });
+            ));
+        }
 
-        quote::quote!(#(#defs)*)
+        output
     }
 }
 
@@ -187,17 +184,19 @@ impl quote::ToTokens for crate::IRModule {
         let bindings = self.create_bindings();
 
         let mut output = quote::quote!();
-        for class in self.classes.values().take(2) {
-            let mut methods = quote::quote!();
-            for method in class.exposable_methods.iter().take(2) {
-                methods.extend(quote::quote!(#method));
-            }
-            let class_name = syn::Ident::new(&class.name, proc_macro2::Span::call_site());
-            output.extend(quote::quote!(
-                impl #class_name {
-                    #methods
+        for class in self.classes.values() {
+            if class.is_constructable() {
+                let mut methods = quote::quote!();
+                for method in class.exposable_methods.iter().take(2) {
+                    methods.extend(quote::quote!(#method));
                 }
-            ));
+                let class_name = syn::Ident::new(&class.name, proc_macro2::Span::call_site());
+                output.extend(quote::quote!(
+                    impl #class_name {
+                        #methods
+                    }
+                ));
+            }
         }
         tokens.extend(quote::quote!(
             // #[allow(non_camel_case_types)]
