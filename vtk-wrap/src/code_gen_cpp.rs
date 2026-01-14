@@ -105,7 +105,9 @@ impl IRModule {
         writeln!(writer)?;
 
         for (_, ir_struct) in self.classes.iter() {
-            ir_struct.build_constructor(writer)?;
+            if ir_struct.is_constructable() {
+                ir_struct.build_constructor(writer)?;
+            }
             /* for method in ir_struct.exposable_methods.iter() {
                 match ir_struct.method_to_cpp(method, writer) {
                     Ok(_) => (),
@@ -121,7 +123,9 @@ impl IRModule {
 
     pub(crate) fn to_cpp_header(&self, writer: &mut impl std::io::Write) -> Result<()> {
         for (_, ir_struct) in self.classes.iter() {
-            ir_struct.build_constructor_headers(writer)?;
+            if ir_struct.is_constructable() {
+                ir_struct.build_constructor_headers(writer)?;
+            }
         }
         Ok(())
     }
