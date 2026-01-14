@@ -264,17 +264,17 @@ fn main() -> Result<()> {
         )?;
         write_cpp_header(module, &mut header_file)?;
 
-        let mut rust_file = std::fs::File::create(format!("test/src/{}.rs", module.name))?;
+        let mut rust_file = std::fs::File::create(opath.join(format!("src/{}.rs", module.name)))?;
         write_rust_module(module, &mut rust_file)?;
     }
 
-    let mut rust_lib = std::fs::File::create("test/src/lib.rs")?;
+    let mut rust_lib = std::fs::File::create(opath.join("src/lib.rs"))?;
     write_rust_main(&ir_modules, &mut rust_lib)?;
 
-    let mut cargo_toml = std::fs::File::create("test/Cargo.toml")?;
+    let mut cargo_toml = std::fs::File::create(opath.join("Cargo.toml"))?;
     write_cargo_toml(&mut cargo_toml)?;
 
-    let mut build_rs = std::fs::File::create("test/build.rs")?;
+    let mut build_rs = std::fs::File::create(opath.join("build.rs"))?;
     write_build_rs(&mut build_rs, &ir_modules)?;
 
     Ok(())
