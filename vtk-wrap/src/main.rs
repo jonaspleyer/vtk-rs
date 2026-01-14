@@ -1,4 +1,5 @@
 use anyhow::Result;
+use clap::Parser;
 
 mod code_gen_cpp;
 mod code_gen_rust;
@@ -219,8 +220,16 @@ fn write_build_rs(writer: &mut impl std::io::Write, ir_modules: &[IRModule]) -> 
     format_quote_and_write(tokenstream, writer)
 }
 
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    opath: std::path::PathBuf,
+}
+
 fn main() -> Result<()> {
     pretty_env_logger::init();
+    let args = Args::parse();
 
     // Obtain all modules
     let modules = get_modules("WrapVTK/build/xml/vtkCommon*")?;
@@ -233,8 +242,7 @@ fn main() -> Result<()> {
         .map(|m| IRModule::new(m, &class_hierarchy))
         .collect::<Result<Vec<_>>>()?;
 
-    // For testing purposes; filter for just one module
-    let opath = std::path::PathBuf::from("test");
+    let opath = args.opath;
 
     // Build directory where results will be generated into
     create_folders(&opath)?;
