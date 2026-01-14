@@ -168,6 +168,10 @@ impl IRStruct {
         format!("{}_destructor", self.name)
     }
 
+    pub fn get_ptr_binding_name(&self) -> String {
+        format!("{}_get_ptr", self.name)
+    }
+
     pub(crate) fn is_constructable(&self) -> bool {
         self.constructors
             .iter()
