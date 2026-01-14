@@ -118,7 +118,9 @@ fn write_cpp_module(
     module: &IRModule,
     writer: &mut impl std::io::Write,
 ) -> Result<()> {
-    module.to_cpp_src(writer)?;
+    if module.contains_exposable_content() {
+        module.to_cpp_src(writer)?;
+    }
     Ok(())
 }
 
@@ -127,7 +129,9 @@ fn write_cpp_header(
     module: &IRModule,
     writer: &mut impl std::io::Write,
 ) -> Result<()> {
-    module.to_cpp_header(writer)?;
+    if module.contains_exposable_content() {
+        module.to_cpp_header(writer)?;
+    }
     Ok(())
 }
 
@@ -152,9 +156,9 @@ fn write_rust_module(
     module: &IRModule,
     writer: &mut impl std::io::Write,
 ) -> Result<()> {
-    let rust_module = quote::quote!(#module);
-    let tokenstream = quote::quote!(#rust_module);
-    format_quote_and_write(tokenstream, writer)?;
+    if module.contains_exposable_content() {
+        format_quote_and_write(quote::quote!(#module), writer)?;
+    }
     Ok(())
 }
 
