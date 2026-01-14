@@ -7,8 +7,6 @@ mod intermediate_representation;
 mod parse_cpp;
 mod parse_wrap_vtk_xml;
 
-use code_gen_cpp::*;
-use code_gen_rust::*;
 use inheritance_hierarchy::*;
 use intermediate_representation::*;
 use parse_wrap_vtk_xml::*;
@@ -110,22 +108,14 @@ vtk_module_autoinit(
 }
 
 /// Generate C++ Code from IR Modules
-fn write_cpp_module(
-    class_hierarchy: &ClassHierarchy,
-    module: &IRModule,
-    writer: &mut impl std::io::Write,
-) -> Result<()> {
+fn write_cpp_module(module: &IRModule, writer: &mut impl std::io::Write) -> Result<()> {
     if module.contains_exposable_content() {
         module.to_cpp_src(writer)?;
     }
     Ok(())
 }
 
-fn write_cpp_header(
-    class_hierarchy: &ClassHierarchy,
-    module: &IRModule,
-    writer: &mut impl std::io::Write,
-) -> Result<()> {
+fn write_cpp_header(module: &IRModule, writer: &mut impl std::io::Write) -> Result<()> {
     if module.contains_exposable_content() {
         module.to_cpp_header(writer)?;
     }
@@ -148,11 +138,7 @@ fn format_quote_and_write(
 }
 
 /// Generate Rust code from IR Modules
-fn write_rust_module(
-    class_hierarchy: &ClassHierarchy,
-    module: &IRModule,
-    writer: &mut impl std::io::Write,
-) -> Result<()> {
+fn write_rust_module(module: &IRModule, writer: &mut impl std::io::Write) -> Result<()> {
     if module.contains_exposable_content() {
         format_quote_and_write(quote::quote!(#module), writer)?;
     }
@@ -252,7 +238,7 @@ fn main() -> Result<()> {
 
     // Build directory where results will be generated into
     create_folders(&opath)?;
-    create_cmake_lists_txt(&ir_modules, "test/libvtkrs")?;
+    create_cmake_lists_txt(&ir_modules, opath.join("libvtkrs"))?;
 
     for module in ir_modules.iter() {
         let mut cpp_file = std::fs::File::create(
@@ -261,17 +247,17 @@ fn main() -> Result<()> {
                 .join("src")
                 .join(format!("{}.cpp", &module.name_snake_case())),
         )?;
-        write_cpp_module(&class_hierarchy, module, &mut cpp_file)?;
+        write_cpp_module(module, &mut cpp_file)?;
         let mut header_file = std::fs::File::create(
             opath
                 .join("libvtkrs")
                 .join("include")
                 .join(format!("{}.h", &module.name_snake_case())),
         )?;
-        write_cpp_header(&class_hierarchy, module, &mut header_file)?;
+        write_cpp_header(module, &mut header_file)?;
 
         let mut rust_file = std::fs::File::create(format!("test/src/{}.rs", module.name))?;
-        write_rust_module(&class_hierarchy, module, &mut rust_file)?;
+        write_rust_module(module, &mut rust_file)?;
     }
 
     let mut rust_lib = std::fs::File::create("test/src/lib.rs")?;
