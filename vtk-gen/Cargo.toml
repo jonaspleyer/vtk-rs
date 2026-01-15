@@ -2,6 +2,10 @@
 name = "vtk-gen"
 version = "0.1.0"
 edition = "2024"
+description = "Generates the vtk-rs package via WrapVTK"
+license = "MIT"
+repository = "https://github.com/jonaspleyer/vtk-rs"
+include = ["src/*.rs", "/Default/*"]
 
 [dependencies]
 anyhow = "1.0.98"
