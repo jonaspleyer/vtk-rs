@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "vtk-rs",
-    "vtk-wrap",
+    "vtk-gen",
     "vtk-rs-link",
 ]

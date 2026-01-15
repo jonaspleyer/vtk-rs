@@ -1,5 +1,5 @@
 [package]
-name = "vtk-wrap"
+name = "vtk-gen"
 version = "0.1.0"
 edition = "2024"
 
