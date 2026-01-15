@@ -89,9 +89,7 @@ impl ToTokens for crate::IRMethod {
 
 impl crate::IRModule {
     fn identify_traits(&self) -> TokenStream {
-        let mut out = TokenStream::new();
-
-        out
+        TokenStream::new()
     }
 
     fn implement_own_traits(&self) -> TokenStream {
