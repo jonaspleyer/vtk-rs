@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::{
     Result,
@@ -9,9 +9,9 @@ pub type ClassName = String;
 
 pub struct ClassHierarchy {
     /// Contains (class_name, (module_name, class))
-    pub classes: HashMap<ClassName, Class>,
-    pub tree: HashMap<ClassName, (Class, Vec<ClassName>)>,
-    pub dependents: HashMap<ClassName, Vec<ClassName>>,
+    pub classes: BTreeMap<ClassName, Class>,
+    pub tree: BTreeMap<ClassName, (Class, Vec<ClassName>)>,
+    pub dependents: BTreeMap<ClassName, Vec<ClassName>>,
 }
 
 pub fn type_regex() -> regex::Regex {
@@ -21,10 +21,10 @@ pub fn type_regex() -> regex::Regex {
 impl ClassHierarchy {
     pub fn new(modules: &[Module]) -> Result<Self> {
         let mut errors = vec![];
-        let classes: HashMap<String, Class> = modules
+        let classes: BTreeMap<String, Class> = modules
             .iter()
             .flat_map(|m| m.files.iter().flat_map(|file| file.1.classes.iter()))
-            .fold(HashMap::new(), |mut acc, class| {
+            .fold(BTreeMap::new(), |mut acc, class| {
                 acc.entry(class.name.clone())
                     .and_modify(|entry| {
                         if let Err(e) = entry.combine(class) {
@@ -40,8 +40,8 @@ impl ClassHierarchy {
             Err(e)?;
         }
 
-        let mut dependents = HashMap::<ClassName, Vec<ClassName>>::new();
-        let tree: HashMap<_, _> = classes
+        let mut dependents = BTreeMap::<ClassName, Vec<ClassName>>::new();
+        let tree: BTreeMap<_, _> = classes
             .iter()
             .map(|(class_name, class)| {
                 // Obtain all classes from which the currently selected class inherits

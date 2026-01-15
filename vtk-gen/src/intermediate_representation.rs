@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::Result;
 use crate::inheritance_hierarchy::{ClassHierarchy, ClassName};
@@ -188,7 +188,7 @@ impl IRStruct {
 
 pub struct IRModule {
     pub name: String,
-    pub classes: HashMap<ClassName, IRStruct>,
+    pub classes: BTreeMap<ClassName, IRStruct>,
 }
 
 impl IRModule {
@@ -247,7 +247,7 @@ impl IRModule {
                     },
                 ))
             })
-            .collect::<Result<HashMap<_, _>>>()?;
+            .collect::<Result<BTreeMap<_, _>>>()?;
 
         Ok(IRModule {
             name,
