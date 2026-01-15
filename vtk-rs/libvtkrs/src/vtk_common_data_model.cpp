@@ -107,6 +107,7 @@
 #include<vtkExtractStructuredGridHelper.h>
 #include<vtkFieldData.h>
 #include<vtkFindCellStrategy.h>
+#include<vtkFrustum.h>
 #include<vtkGenericAdaptorCell.h>
 #include<vtkGenericAttribute.h>
 #include<vtkGenericAttributeCollection.h>
@@ -499,6 +500,9 @@ extern "C" void * vtkExtractStructuredGridHelper_get_ptr (vtkNew < vtkExtractStr
 extern "C" vtkNew < vtkFieldData > vtkFieldData_new () {return vtkNew < vtkFieldData > () ;}
 extern "C" void vtkFieldData_destructor (vtkNew < vtkFieldData > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkFieldData_get_ptr (vtkNew < vtkFieldData > sself) {return sself . GetPointer () ;}
+extern "C" vtkNew < vtkFrustum > vtkFrustum_new () {return vtkNew < vtkFrustum > () ;}
+extern "C" void vtkFrustum_destructor (vtkNew < vtkFrustum > sself) {sself . Reset () ; return ;}
+extern "C" void * vtkFrustum_get_ptr (vtkNew < vtkFrustum > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkGenericAttributeCollection > vtkGenericAttributeCollection_new () {return vtkNew < vtkGenericAttributeCollection > () ;}
 extern "C" void vtkGenericAttributeCollection_destructor (vtkNew < vtkGenericAttributeCollection > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkGenericAttributeCollection_get_ptr (vtkNew < vtkGenericAttributeCollection > sself) {return sself . GetPointer () ;}

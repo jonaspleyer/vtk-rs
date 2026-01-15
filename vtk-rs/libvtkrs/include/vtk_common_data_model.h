@@ -104,6 +104,7 @@
 #include<vtkExtractStructuredGridHelper.h>
 #include<vtkFieldData.h>
 #include<vtkFindCellStrategy.h>
+#include<vtkFrustum.h>
 #include<vtkGenericAdaptorCell.h>
 #include<vtkGenericAttribute.h>
 #include<vtkGenericAttributeCollection.h>
@@ -496,6 +497,9 @@ extern "C" void * vtkExtractStructuredGridHelper_get_ptr (vtkNew < vtkExtractStr
 extern "C" vtkNew < vtkFieldData > vtkFieldData_new () ;
 extern "C" void vtkFieldData_destructor (vtkNew < vtkFieldData > sself) ;
 extern "C" void * vtkFieldData_get_ptr (vtkNew < vtkFieldData > sself) ;
+extern "C" vtkNew < vtkFrustum > vtkFrustum_new () ;
+extern "C" void vtkFrustum_destructor (vtkNew < vtkFrustum > sself) ;
+extern "C" void * vtkFrustum_get_ptr (vtkNew < vtkFrustum > sself) ;
 extern "C" vtkNew < vtkGenericAttributeCollection > vtkGenericAttributeCollection_new () ;
 extern "C" void vtkGenericAttributeCollection_destructor (vtkNew < vtkGenericAttributeCollection > sself) ;
 extern "C" void * vtkGenericAttributeCollection_get_ptr (vtkNew < vtkGenericAttributeCollection > sself) ;

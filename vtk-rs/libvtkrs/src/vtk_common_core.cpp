@@ -142,6 +142,7 @@
 #include<vtkInformationVariantVectorKey.h>
 #include<vtkInformationVector.h>
 #include<vtkIntArray.h>
+#include<vtkInvoker.h>
 #include<vtkLargeInteger.h>
 #include<vtkLogger.h>
 #include<vtkLongArray.h>
@@ -162,7 +163,6 @@
 #include<vtkObjectFactoryCollection.h>
 #include<vtkObjectFactory.h>
 #include<vtkOldStyleCallbackCommand.h>
-#include<vtkOutputWindow.h>
 #include<vtkOutputWindow.h>
 #include<vtkOverrideInformation.h>
 #include<vtkOverrideInformationCollection.h>
@@ -481,6 +481,9 @@ extern "C" void * vtkInformationVector_get_ptr (vtkNew < vtkInformationVector > 
 extern "C" vtkNew < vtkIntArray > vtkIntArray_new () {return vtkNew < vtkIntArray > () ;}
 extern "C" void vtkIntArray_destructor (vtkNew < vtkIntArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkIntArray_get_ptr (vtkNew < vtkIntArray > sself) {return sself . GetPointer () ;}
+extern "C" vtkNew < vtkInvoker > vtkInvoker_new () {return vtkNew < vtkInvoker > () ;}
+extern "C" void vtkInvoker_destructor (vtkNew < vtkInvoker > sself) {sself . Reset () ; return ;}
+extern "C" void * vtkInvoker_get_ptr (vtkNew < vtkInvoker > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkLongArray > vtkLongArray_new () {return vtkNew < vtkLongArray > () ;}
 extern "C" void vtkLongArray_destructor (vtkNew < vtkLongArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkLongArray_get_ptr (vtkNew < vtkLongArray > sself) {return sself . GetPointer () ;}

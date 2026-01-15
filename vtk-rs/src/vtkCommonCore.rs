@@ -4638,6 +4638,53 @@ fn test_vtkIntArray_create_drop() {
     let new_obj = vtkIntArray(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
+/// Deserialize VTK objects from JSON.
+///
+#[allow(non_camel_case_types)]
+pub struct vtkInvoker(*mut core::ffi::c_void);
+impl vtkInvoker {
+    /// Creates a new [vtkInvoker] wrapped inside `vtkNew`
+    #[doc(alias = "vtkInvoker")]
+    pub fn new() -> Self {
+        unsafe extern "C" {
+            fn vtkInvoker_new() -> *mut core::ffi::c_void;
+        }
+        Self(unsafe { &mut *vtkInvoker_new() })
+    }
+    #[cfg(test)]
+    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+        unsafe extern "C" {
+            fn vtkInvoker_get_ptr(
+                sself: *mut core::ffi::c_void,
+            ) -> *mut core::ffi::c_void;
+        }
+        unsafe { vtkInvoker_get_ptr(self.0) }
+    }
+}
+impl std::default::Default for vtkInvoker {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl Drop for vtkInvoker {
+    fn drop(&mut self) {
+        unsafe extern "C" {
+            fn vtkInvoker_destructor(sself: *mut core::ffi::c_void);
+        }
+        unsafe { vtkInvoker_destructor(self.0) }
+        self.0 = core::ptr::null_mut();
+    }
+}
+#[test]
+fn test_vtkInvoker_create_drop() {
+    let obj = vtkInvoker::new();
+    let ptr = obj.0;
+    assert!(!ptr.is_null());
+    assert!(unsafe { !obj._get_ptr().is_null() });
+    drop(obj);
+    let new_obj = vtkInvoker(ptr);
+    assert!(unsafe { new_obj._get_ptr().is_null() });
+}
 /// dynamic, self-adjusting array of long
 ///
 ///

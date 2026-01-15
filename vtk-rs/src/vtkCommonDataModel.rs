@@ -2238,7 +2238,7 @@ fn test_vtkCellGridResponders_create_drop() {
 /// to details on the cells that claim the corresponding side.
 ///
 /// This class is created by filters such as vtkCellGridComputeSides and
-/// vtkCellGridExtractCrinkle; it can be re-used by the same filter and
+/// vtkCellGridExtractCrinkle; it can be reused by the same filter and
 /// any others that process the same input (since it is stored in a
 /// cache available to them).
 #[allow(non_camel_case_types)]
@@ -4173,6 +4173,63 @@ fn test_vtkFieldData_create_drop() {
     let new_obj = vtkFieldData(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
+/// implicit function for a frustum
+///
+///
+/// vtkFrustum represents a 4-sided frustum, with a near plane but infinite on the far side. It is
+/// defined by the two angles between its forward axis and its horizontal and vertical planes, and
+/// the distance between its origin and near plane. vtkFrustum is a concrete implementation of
+/// vtkImplicitFunction. The frustum is oriented toward the Y Axis; its top face facing
+/// toward the Z Axis and its "right" face facing the X Axis.
+///
+/// @warning
+/// The frustum is infinite in extent towards its far plane. To truncate the frustum in modeling
+/// operations use the vtkImplicitBoolean in combination with clipping planes.
+#[allow(non_camel_case_types)]
+pub struct vtkFrustum(*mut core::ffi::c_void);
+impl vtkFrustum {
+    /// Creates a new [vtkFrustum] wrapped inside `vtkNew`
+    #[doc(alias = "vtkFrustum")]
+    pub fn new() -> Self {
+        unsafe extern "C" {
+            fn vtkFrustum_new() -> *mut core::ffi::c_void;
+        }
+        Self(unsafe { &mut *vtkFrustum_new() })
+    }
+    #[cfg(test)]
+    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+        unsafe extern "C" {
+            fn vtkFrustum_get_ptr(
+                sself: *mut core::ffi::c_void,
+            ) -> *mut core::ffi::c_void;
+        }
+        unsafe { vtkFrustum_get_ptr(self.0) }
+    }
+}
+impl std::default::Default for vtkFrustum {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl Drop for vtkFrustum {
+    fn drop(&mut self) {
+        unsafe extern "C" {
+            fn vtkFrustum_destructor(sself: *mut core::ffi::c_void);
+        }
+        unsafe { vtkFrustum_destructor(self.0) }
+        self.0 = core::ptr::null_mut();
+    }
+}
+#[test]
+fn test_vtkFrustum_create_drop() {
+    let obj = vtkFrustum::new();
+    let ptr = obj.0;
+    assert!(!ptr.is_null());
+    assert!(unsafe { !obj._get_ptr().is_null() });
+    drop(obj);
+    let new_obj = vtkFrustum(ptr);
+    assert!(unsafe { new_obj._get_ptr().is_null() });
+}
 /// a collection of attributes
 ///
 ///
@@ -4766,6 +4823,16 @@ fn test_vtkHierarchicalBoxDataSet_create_drop() {
 /// Dimensions : number of points by direction of rectilinear grid
 /// CellDims : number of cells by directions of rectilinear grid
 /// (1 for each dimensions 1)
+///
+/// Interface : plane that cuts a HTG cell.
+/// It is defined (for each cell) by a normal and the distance between the origin and the plane along
+/// that normal (i.e. the orthogonal distance). The name of the arrays containing each information is
+/// specified in `InterfaceInterceptsName` and `InterfaceNormalsName` The normals array is a 3D array
+/// that contains the 3D normal for each cell's interface (for lower dimensions, some values are
+/// ignored). The intercepts (or distances) array is also a 3D array containing:
+/// - the distance to the first plane (if exists, otherwise ignored)
+/// - the distance to the second plane (if exists, otherwise ignored)
+/// - the type of cell (mixed/pure, cf. vtkHyperTreeGridGeometryImpl.h:CellInterfaceType)
 ///
 /// @warning
 /// It is not a spatial search object. If you are looking for this kind of
@@ -7380,7 +7447,7 @@ fn test_vtkMultiBlockDataSet_create_drop() {
 /// In this case, these 4 pieces can be collected together using a
 /// vtkMultiPieceDataSet.
 /// Note that vtkMultiPieceDataSet is intended to be included in other composite
-/// datasets eg. vtkMultiBlockDataSet, vtkHierarchicalBoxDataSet. Hence the lack
+/// datasets eg. vtkMultiBlockDataSet. Hence the lack
 /// of algorithms producing vtkMultiPieceDataSet.
 #[allow(non_camel_case_types)]
 pub struct vtkMultiPieceDataSet(*mut core::ffi::c_void);
@@ -7939,16 +8006,26 @@ fn test_vtkOutEdgeIterator_create_drop() {
     let new_obj = vtkOutEdgeIterator(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// hierarchical dataset of vtkUniformGrids
+/// a multi-resolution dataset based on vtkUniformGrid allowing overlaps
 ///
 ///
+/// vtkOverlappingAMR groups vtkUniformGrid into level of different refinement
+/// (AMR stands for Adaptive Mesh Refinement). See SetDataSet to add a new grid.
 ///
-/// vtkOverlappingAMR extends vtkUniformGridAMR by exposing access to the
-/// amr meta data, which stores all structural information represented
-/// by an vtkAMRInformation object
+/// The grids of a level are expected to have the same spacing and refinement ratio.
+/// The refinement ratio represent the spacing factor between a level and the
+/// previous one. This class does not ensure the link between spacing and refinement
+/// ratio: please set them carefully.
+///
+/// Associated to each grid, a vtkAMRBox object describes the main information
+/// of the grid: origin, extent, spacing. When creating a vtkOverlappingAMR,
+/// you should call SetAMRBox for each block of each level.
+///
+/// In a distributed environement, the structure should be shared across all rank:
+/// the vtkAMRInformation and vtkAMRBox should be duplicated as needed.
 ///
 /// @sa
-/// vtkAMRInformation
+/// vtkAMRInformation, vtkNonOverlappingAMR, vtkUniformGridAMR, vtkAMRBox
 #[allow(non_camel_case_types)]
 pub struct vtkOverlappingAMR(*mut core::ffi::c_void);
 impl vtkOverlappingAMR {
@@ -8523,7 +8600,7 @@ fn test_vtkPlaneCollection_create_drop() {
 /// to supply an instance of vtkPoints and an instance of vtkDataArray. (The
 /// points define a point on the plane, and the normals corresponding plane
 /// normals.) Two other specialized ways are to 1) supply six planes defining
-/// the view frustrum of a camera, and 2) provide a bounding box.
+/// the view frustum of a camera, and 2) provide a bounding box.
 ///
 /// @sa
 /// vtkImplicitBoolean vtkSpheres vtkFrustrumSource vtkCamera
@@ -12714,13 +12791,16 @@ fn test_vtkUniformGrid_create_drop() {
     let new_obj = vtkUniformGrid(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// a concrete implementation of vtkCompositeDataSet
+/// a multi-resolution dataset based on vtkUniformGrid
 ///
 ///
-/// vtkUniformGridAMR is an AMR (hierarchical) composite dataset that holds vtkUniformGrids.
+/// vtkUniformGridAMR (AMR stands for Adaptive Mesh Refinement)
+/// is a container for vtkUniformGrid. Each grid is added as a block of a given level.
+///
+/// The structure of the container is described in a vtkAMRInformation object.
 ///
 /// @sa
-/// vtkUniformGridAMRDataIterator
+/// vtkOverlappingAMR, vtkNonOverlappingAMR, vtkAMRInformation, vtkUniformGridAMRDataIterator
 #[allow(non_camel_case_types)]
 pub struct vtkUniformGridAMR(*mut core::ffi::c_void);
 impl vtkUniformGridAMR {
