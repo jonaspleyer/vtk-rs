@@ -20,7 +20,7 @@ pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
     let n_mods = modules.len();
     let n = std::sync::atomic::AtomicUsize::new(0);
     info!("Reading Modules");
-    modules
+    let mut modules: Vec<_> = modules
         .into_par_iter()
         .map(|path| {
             let name = path
@@ -57,7 +57,10 @@ pub fn get_modules(path: impl Into<std::path::PathBuf>) -> Result<Vec<Module>> {
 
             Ok(Module { name, path, files })
         })
-        .collect::<Result<_>>()
+        .collect::<Result<_>>()?;
+
+    modules.sort_by_key(|x| x.name.clone());
+    Ok(modules)
 }
 
 #[derive(Deserialize, PartialEq, Debug, Clone)]
