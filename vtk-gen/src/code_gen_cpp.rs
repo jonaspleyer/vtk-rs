@@ -97,9 +97,7 @@ impl IRModule {
 
         writeln!(writer, "// Include objects of this module")?;
         for (_, ir_struct) in self.classes.iter() {
-            // if ir_struct.is_constructable() {
             writeln!(writer, "#include<{}>", ir_struct.filename)?;
-            // }
         }
         Ok(())
     }
