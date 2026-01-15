@@ -270,68 +270,6 @@ fn test_vtkAnnotationLayers_create_drop() {
     let new_obj = vtkAnnotationLayers(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// implicit function for a annulus
-///
-///
-/// vtkAnnulus computes the implicit function and function gradient
-/// for an annulus composed of two co-axial cylinders. vtkAnnulus is a concrete
-/// implementation of vtkImplicitFunction. By default the Annulus is
-/// centered at the origin and the axis of rotation is along the
-/// y-axis. You can redefine the center and axis of rotation by setting
-/// the Center and Axis data members. (Note that it is also possible to
-/// use the superclass' vtkImplicitFunction transformation matrix if
-/// necessary to reposition by using FunctionValue() and
-/// FunctionGradient().)
-///
-/// @warning
-/// The annulus is infinite in extent. To truncate the annulus in
-/// modeling operations use the vtkImplicitBoolean in combination with
-/// clipping planes.
-#[allow(non_camel_case_types)]
-pub struct vtkAnnulus(*mut core::ffi::c_void);
-impl vtkAnnulus {
-    /// Creates a new [vtkAnnulus] wrapped inside `vtkNew`
-    #[doc(alias = "vtkAnnulus")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkAnnulus_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkAnnulus_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkAnnulus_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkAnnulus_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkAnnulus {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkAnnulus {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkAnnulus_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkAnnulus_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkAnnulus_create_drop() {
-    let obj = vtkAnnulus::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkAnnulus(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
 /// Pipeline data object that contains multiple vtkArray objects.
 ///
 ///
@@ -1179,6 +1117,7 @@ fn test_vtkBiQuadraticQuadraticWedge_create_drop() {
 /// @par Thanks:
 /// @verbatim
 /// This file has been developed by Oxalya - www.oxalya.com
+/// Copyright (c) EDF - www.edf.fr
 /// @endverbatim
 #[allow(non_camel_case_types)]
 pub struct vtkBiQuadraticTriangle(*mut core::ffi::c_void);
@@ -1305,7 +1244,7 @@ fn test_vtkBox_create_drop() {
 /// Cell 0: Triangle | point ids: {0, 1, 2}
 /// Cell 1: Triangle | point ids: {5, 7, 2}
 /// Cell 2: Quad     | point ids: {3, 4, 6, 7}
-/// Cell 3: Line     | point ids: {5, 8}
+/// Cell 4: Line     | point ids: {5, 8}
 ///
 /// vtkCellArray (current):
 /// -----------------------
@@ -1397,7 +1336,7 @@ fn test_vtkBox_create_drop() {
 /// version of the vtkCellArray API, the VTK_CELL_ARRAY_V2 preprocessor
 /// definition may be used to detect which API is being compiled against.
 ///
-/// @sa vtkAbstractCellArray vtkStructuredCellArray vtkCellTypes vtkCellLinks
+/// @sa vtkCellTypes vtkCellLinks
 #[allow(non_camel_case_types)]
 pub struct vtkCellArray(*mut core::ffi::c_void);
 impl vtkCellArray {
@@ -1534,119 +1473,6 @@ fn test_vtkCellArrayIterator_create_drop() {
     let new_obj = vtkCellArrayIterator(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// A function defined over the physical domain of a vtkCellGrid.
-///
-///
-/// This is a base class for attributes (functions) defined on the space
-/// discretized by a vtkCellGrid. A vtkCellAttribute class must handle
-/// cells of all types present in the grid.
-///
-/// @sa vtkCellGrid
-#[allow(non_camel_case_types)]
-pub struct vtkCellAttribute(*mut core::ffi::c_void);
-impl vtkCellAttribute {
-    /// Creates a new [vtkCellAttribute] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellAttribute")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellAttribute_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellAttribute_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellAttribute_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellAttribute_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellAttribute {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellAttribute {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellAttribute_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellAttribute_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellAttribute_create_drop() {
-    let obj = vtkCellAttribute::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellAttribute(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Perform a per-cell calculation on a vtkCellAttribute.
-///
-///
-/// This empty class serves as a common base class for calculators that
-/// compute quantities based on cell-attribute data.
-///
-/// Examples of calculators include
-/// + computing interpolated values;
-/// + computing spatial derivatives (such as the Jacobian or Hessian matrices); or
-/// + computing integrals over an entire cell.
-///
-/// Each type of calculator provides its own abstract subclass with virtual methods
-/// and then per-cell-type, per-attribute-type concrete implementations.
-///
-/// @sa vtkCellGridAttribute
-#[allow(non_camel_case_types)]
-pub struct vtkCellAttributeCalculator(*mut core::ffi::c_void);
-impl vtkCellAttributeCalculator {
-    /// Creates a new [vtkCellAttributeCalculator] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellAttributeCalculator")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellAttributeCalculator_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellAttributeCalculator_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellAttributeCalculator_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellAttributeCalculator_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellAttributeCalculator {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellAttributeCalculator {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellAttributeCalculator_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellAttributeCalculator_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellAttributeCalculator_create_drop() {
-    let obj = vtkCellAttributeCalculator::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellAttributeCalculator(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
 /// represent and manipulate cell attribute data
 ///
 ///
@@ -1701,650 +1527,6 @@ fn test_vtkCellData_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkCellData(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Visualization data composed of cells of arbitrary type.
-///
-///
-/// vtkCellGrid inherits vtkDataObject in order to introduce the concept
-/// of cells that, instead of relying on spatial points to specify their
-/// shape, rely on degrees of freedom (which may or may not be embedded
-/// in a world coordinate system).
-///
-/// The degrees of freedom that define cells and the functions using those
-/// cells as their domain are provided in data arrays.
-/// The arrays are partitioned into groups (vtkDataSetAttributes) by the
-/// registered cell types. Each array in a group has the same number of tuples.
-///
-/// @sa vtkDataObject vtkDataSetAttributes
-#[allow(non_camel_case_types)]
-pub struct vtkCellGrid(*mut core::ffi::c_void);
-impl vtkCellGrid {
-    /// Creates a new [vtkCellGrid] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGrid")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGrid_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGrid_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGrid_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGrid_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGrid {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGrid {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGrid_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGrid_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGrid_create_drop() {
-    let obj = vtkCellGrid::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGrid(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Compute the geometric bounds of a cell-grid.
-///
-///
-/// If no cells are present, invalid bounds will be returned
-/// (i.e., bds[1] < bds[0] after calling `GetBounds(bds)`).
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridBoundsQuery(*mut core::ffi::c_void);
-impl vtkCellGridBoundsQuery {
-    /// Creates a new [vtkCellGridBoundsQuery] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridBoundsQuery")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridBoundsQuery_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridBoundsQuery_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridBoundsQuery_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridBoundsQuery_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridBoundsQuery {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridBoundsQuery {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridBoundsQuery_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridBoundsQuery_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridBoundsQuery_create_drop() {
-    let obj = vtkCellGridBoundsQuery::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridBoundsQuery(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Copy the cell metadata and attribute(s) of one cell-grid into another.
-///
-///
-/// Note that this query is run by vtkCellGrid::ShallowCopy(), vtkCellGrid::DeepCOpy(),
-/// and vtkCellGrid::CopyStructure().
-///
-/// In general, there are five types of information in cell grids that may
-/// be transferred from the source cell-grid to the target. Here are
-/// the types of information and the options which control how that
-/// information is copied. Exactly how these flags on the query are used is
-/// up to each responder.
-///
-/// + **Cell metadata records.** These records are always copied.
-/// In the future, there may be an option to omit cells of specific types.
-///
-/// + **Individual cells.** If subclasses of vtkCellMetadata contain
-/// further information, you may use SetCopyCells() to control
-/// whether that is copied or whether the new vtkCellMetadata
-/// instance is left uninitialized.
-/// When GetCopyCells() is enabled, the cell topology should be copied
-/// (though not necessarily the shape attribute's arrays);
-/// CopyCells overrides the copying of topological arrays even if
-/// CopyArrays is turned off.
-/// This way, if CopyCells is on, you should expect the source and
-/// target to report the same number of cells.
-///
-/// + **Cell attributes.** You may request that only the shape attribute
-/// is copied from the source to the target with CopyOnlyShapeOn()
-/// or control which attributes are copied by calling
-/// AddSourceCellAttributeId() with the ID of each source attribute
-/// you wish copied.
-///
-/// + **Cell-attribute arrays.** For each cell-attribute that is copied,
-/// zero or more arrays may be associated the attribute. You can
-/// control how the arrays are copied like so:
-///
-/// + SetCopyArrays() controls whether arrays should be created or not.
-/// How the arrays are copied depends on whether CopyArrayValues and
-/// DeepCopyArrays are enabled. Note that this setting should be
-/// ignored when copying cell topology (as opposed to attribute) arrays
-/// as CopyCells should control whether cells are present in the output.
-/// If cell-topology arrays are referenced by a cell attribute, be aware
-/// that disabling CopyArrays may still produce some entries for topology
-/// arrays.
-/// + SetCopyArrayValues() controls whether arrays should be (a) created
-/// but left empty or (b) created and populated with the source-array's
-/// values. This is useful for creating an empty copy that has all
-/// the necessary arrays prepared but no tuples so that further
-/// processing can insert new cells and attribute data.
-/// + SetDeepCopyArrays() controls whether to create deep copies of
-/// arrays or shallow copies, but only when GetCopyArrayValues()
-/// returns true.
-///
-/// + **Schema and content version.** A cell-grid may advertise that its
-/// data adheres to a formal specification (which is indicated by a
-/// name and version number). If you wish to copy this information,
-/// ensure CopySchemaOn() has been called.
-/// If GetCopySchema() is true and the source has a content version
-/// number, the target cell-grid will have its content version
-/// incremented past the source's content version.
-/// Incrementing the content version even when the grids are otherwise
-/// identical improves track-ability, since the version number informs
-/// which grid preceded the other.
-///
-/// ## For Callers
-///
-/// You **must** execute this query on the source cell-grid, not the target.
-/// Only the source is guaranteed to have cells of the proper types present;
-/// the query iterates over each cell-type, so they must be present.
-///
-/// Executing this query will overwrite the target cell-grid with the source,
-/// erasing all of its cell metadata.
-/// In the future, this class may offer more control over which types of
-/// cells to copy from the source to the target.
-///
-/// ## For Responders
-///
-/// Responders to this query may call the helper methods provided
-/// to copy a cell-attribute's arrays and create/update a cell-attribute.
-/// These calls update maps from source to target arrays and attributes,
-/// which you can inspect by calling GetArrayMap() and GetAttributeMap(),
-/// respectively.
-/// The latter is important since distinct attributes may have identical
-/// names (though this is not advised).
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridCopyQuery(*mut core::ffi::c_void);
-impl vtkCellGridCopyQuery {
-    /// Creates a new [vtkCellGridCopyQuery] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridCopyQuery")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridCopyQuery_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridCopyQuery_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridCopyQuery_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridCopyQuery_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridCopyQuery {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridCopyQuery {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridCopyQuery_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridCopyQuery_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridCopyQuery_create_drop() {
-    let obj = vtkCellGridCopyQuery::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridCopyQuery(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Evaluate a field (vtkCellAttribute) at some points inside cells.
-///
-///
-/// This class is a cell-grid query whose purpose is to determine the
-/// value a vtkCellAttribute takes on at one or more points inside
-/// the domain of a vtkCellGrid.
-///
-/// This class performs its work in two phases:
-/// + Classification. Input points are classified by the type and index
-/// of cell in the grid in which they lie.
-/// + Attribute/field interpolation. Each cell is asked to interpolate
-/// the value of a cell-attribute at each point classified to it.
-///
-/// As an example, consider a cell-grid holding 10 triangles and 20 quads
-/// and a query that is provided 5 points. The first phase will identify
-/// which of the 5 points are insides triangles, which lie in quadrilaterals,
-/// and which lie in neither. Say that 2 lie inside triangles, 2 inside
-/// quadrilaterals, and 1 is outside the domain.
-/// Furthermore, the first phase will identify which particular triangles
-/// or quadrilaterals contain the input points. The two points which
-/// lie in triangles will report a number in [0,10[ while the two points
-/// which lie in quadrilaterals will report a number in [0, 20[.
-/// Finally, for cells which have a reference element, the parametric
-/// coordinates of each input point are computed.
-///
-/// The second phase additionally interpolates a cell-attribute (let's
-/// say "Velocity" in our example) at each input point.
-///
-/// You may configure the query to skip either phase (classification or
-/// interpolation). If you skip classification, you must provide the
-/// the classification information for the input points.
-/// The method you call (ClassifyPoints, InterpolatePoints, or
-/// InterpolateCellParameters) determines which phase(s) are applied
-/// during evaluation.
-///
-/// When running in InterpolatePoints mode (both classification and
-/// interpolation phases are performed), the output from our example
-/// is reported like so:
-///
-/// + `GetClassifierCellTypes()` – returns an array with a cell-type hash
-/// for each type of cell containing an input point. The hash value can
-/// be used to construct a vtkStringToken.
-/// Our example would return an array with 3 values which might be
-/// ordered: "vtkDGTri"_hash, "vtkDGQuad"_hash, and 0 (an "invalid" hash).
-/// + `GetClassifierCellOffsets()` – returns an array with the same number
-/// of values as the call above. Each value specifies the start of
-/// reporting for points contained in the corresponding cell type.
-/// Our example would return [0, 2, 4] to match the values above.
-/// + `GetClassifierPointIDs()` – returns an array whose length matches
-/// the number of input points. Each value is the index of an input
-/// point. Input points do not have their order preserved so that
-/// all the points contained in a single cell can be reported together.
-/// Our example might return [4, 2, 1, 0, 3]. This will always be a
-/// permutation of the counting integers and, for our example, always
-/// hold integers in [0, 5[.
-/// + `GetClassifierCellIndices()` – returns an array whose length matches
-/// the number of input points. Each value is the index into cells
-/// of the corresponding type, indicating which cell contains
-/// the input point.
-/// For our example, the first two numbers will be in [0, 10[, the second
-/// two will be in [0, 20[, and the last will be -1. (This is because
-/// we have two points inside 10 triangles, two points inside 20 quads,
-/// and one un-classifiable input point.)
-/// + `GetClassifierPointParameters()` – returns an array whose length
-/// matches the number of input points. Each value is a 3-tuple of
-/// reference-cell coordinates (or indeterminate if the cell type does
-/// not provide a reference cell).
-/// + `GetInterpolatedValues()` – returns an array whose number of tuples
-/// matches the number of input points and whose number of components
-/// matches the number of components of the requested cell-attribute.
-/// For our example, an array with 5 tuples of 3 components each would be
-/// returned; it would be named "Velocity" (matching the cell-attribute's
-/// name).
-///
-/// Note that because you can pass in the arrays above (except the interpolated
-/// values) to short-circuit classification, it is possible to evaluate
-/// multiple cell-attributes without duplicating the classification work.
-///
-/// In InterpolateCellParameters mode, calling the methods above which begin
-/// with `GetClassifier…` will simply return the input arrays you passed to
-/// configure the query.
-///
-/// ## Warnings
-///
-/// The output arrays above generally match the number of input points, but
-/// will sometimes exceed the number of input points. This will occur when
-/// multiple cells contain an input point (either on a shared boundary or
-/// because the cells overlap).
-///
-/// Note that the output should never have fewer points than the input as
-/// even points outside the cells will be classified as such.
-///
-/// Currently, this class is limited to evaluating numeric attributes;
-/// string or variant arrays are not supported.
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridEvaluator(*mut core::ffi::c_void);
-impl vtkCellGridEvaluator {
-    /// Creates a new [vtkCellGridEvaluator] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridEvaluator")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridEvaluator_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridEvaluator_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridEvaluator_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridEvaluator_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridEvaluator {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridEvaluator {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridEvaluator_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridEvaluator_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridEvaluator_create_drop() {
-    let obj = vtkCellGridEvaluator::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridEvaluator(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Compute the range of a component of some vtkCellAttribute.
-///
-///
-/// If \a FiniteRange is true, then the range will omit any NaN or ±Inf
-/// values present in the data. Otherwise (the default), the range may
-/// contain these exceptional values.
-///
-/// If \a Component is
-/// + -2 (the default), the range of L₂-norms is computed.
-/// + -1, the range of L₁-norms is computed.
-/// + out of bounds, then an invalid range will be returned ([1, 0]).
-///
-/// Note that this query is intended to be run by vtkCellGrid::GetRange()
-/// since the cell-grid holds a cache of ranges. You may run it outside
-/// of this method, but that may cause unnecessary re-computation of ranges.
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridRangeQuery(*mut core::ffi::c_void);
-impl vtkCellGridRangeQuery {
-    /// Creates a new [vtkCellGridRangeQuery] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridRangeQuery")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridRangeQuery_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridRangeQuery_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridRangeQuery_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridRangeQuery_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridRangeQuery {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridRangeQuery {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridRangeQuery_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridRangeQuery_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridRangeQuery_create_drop() {
-    let obj = vtkCellGridRangeQuery::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridRangeQuery(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// A container that holds objects able to respond to queries
-///
-/// specialized for particular vtkCellMetadata types.
-///
-/// This class holds sets of responders for vtkCellGridQuery and for
-/// vtkCellAttributeQuery.
-///
-/// ## Cell-grid query responders
-///
-/// vtkCellGridResponders holds a list of objects statically registered to
-/// the vtkCellMetadata subclass. These objects respond to
-/// queries for information (e.g., a bounding box) or processing
-/// (e.g., rendering, picking, generating isocontours) for one cell
-/// type (and subclasses of that cell type if no more specific
-/// responder is registered).
-///
-/// Application code (such as a plugin) can register subclasses of
-/// vtkCellGridResponse which accept the API of a particular
-/// vtkCellGridQuery for that cell type.
-/// Then, when a query is passed to the cell, this collection will
-/// identify matching responders for the query and invoke them until
-/// one returns true (indicating success).
-/// Multiple matches can exist as a responder can be registered to a
-/// common base cell class and/or to handle common base query classes.
-///
-/// If a given cell type cannot respond to a query, its superclasses
-/// are asked to respond. If no superclass can respond to the query,
-/// then query's superclasses are searched for responders.
-///
-/// Because queries can be registered to cell types at any time,
-/// existing cell types can be extended to support new features
-/// by additional libraries.
-///
-/// ## Cell-attribute calculators
-///
-/// In order to support the evaluation of vtkCellAttribute data
-/// on any vtkCellMetadata (cell type), this class also holds
-/// "calculators" grouped by both attribute and cell type.
-/// This API is different that vtkCellGridQuery because
-/// vtkCellAttribute is not subclassed by attribute type but
-/// rather uses vtkStringToken data to determine the nature of the
-/// attribute (e.g., Lagrange; Nedelec; Raviart-Thomas; etc.).
-///
-/// It is also different in that these objects are expected to be
-/// used inside vtkCellGridQuery to evaluate a single cell at a
-/// time rather than longer-running queries across all cells.
-///
-/// @sa vtkCellMetadata vtkCellGrid vtkCellAttribute
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridResponders(*mut core::ffi::c_void);
-impl vtkCellGridResponders {
-    /// Creates a new [vtkCellGridResponders] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridResponders")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridResponders_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridResponders_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridResponders_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridResponders_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridResponders {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridResponders {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridResponders_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridResponders_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridResponders_create_drop() {
-    let obj = vtkCellGridResponders::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridResponders(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Hold a map from hash-ids (representing sides of cells of multiple types)
-///
-/// to details on the cells that claim the corresponding side.
-///
-/// This class is created by filters such as vtkCellGridComputeSides and
-/// vtkCellGridExtractCrinkle; it can be reused by the same filter and
-/// any others that process the same input (since it is stored in a
-/// cache available to them).
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridSidesCache(*mut core::ffi::c_void);
-impl vtkCellGridSidesCache {
-    /// Creates a new [vtkCellGridSidesCache] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridSidesCache")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridSidesCache_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridSidesCache_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridSidesCache_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridSidesCache_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridSidesCache {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridSidesCache {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridSidesCache_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridSidesCache_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridSidesCache_create_drop() {
-    let obj = vtkCellGridSidesCache::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridSidesCache(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-///
-/// \brief A cell-grid query for enumerating sides of cells.
-///
-/// This query runs in 3 passes (see vtkCellGridSidesQuery::PassWork):
-///
-/// + In the first pass, responders invoke the AddSides() method on
-/// this query, entries are added to this->Hashes storage indicating
-/// the cells which are bounded by a given shape + connectivity.
-/// + In the second pass, responders mark the entries created above and
-/// add entries in this->Sides. This reorganizes the hashes into groups
-/// more amenable to output as side arrays. This pass is called
-/// "Summarization," since not every input side identified will be
-/// output.
-/// + In the third and final pass, responders create new cells in
-/// the output cell-grid that correspond to the selected sides of
-/// the input.
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridSidesQuery(*mut core::ffi::c_void);
-impl vtkCellGridSidesQuery {
-    /// Creates a new [vtkCellGridSidesQuery] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridSidesQuery")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridSidesQuery_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridSidesQuery_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridSidesQuery_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridSidesQuery_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridSidesQuery {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridSidesQuery {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridSidesQuery_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridSidesQuery_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridSidesQuery_create_drop() {
-    let obj = vtkCellGridSidesQuery::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridSidesQuery(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// object represents upward pointers from points to list of cells using each point
@@ -2797,16 +1979,15 @@ fn test_vtkClosestPointStrategy_create_drop() {
 ///
 ///
 /// vtkCone computes the implicit function and function gradient for a cone.
-/// vtkCone is a concrete implementation of vtkImplicitFunction. By default, the cone vertex
-/// is located at the origin with axis of rotation coincident with x-axis. You can use
-/// the superclass' vtkImplicitFunction transformation matrix to reposition. You can alternatively
-/// use the accessors provided by this class, which will cause the transform to be recomputed. to
-/// reposition/orient the cone. The angle specifies the angle between the axis of rotation and the
-/// side of the cone.
+/// vtkCone is a concrete implementation of vtkImplicitFunction. The cone vertex
+/// is located at the origin with axis of rotation coincident with x-axis. (Use
+/// the superclass' vtkImplicitFunction transformation matrix if necessary to
+/// reposition.) The angle specifies the angle between the axis of rotation
+/// and the side of the cone.
 ///
 /// @warning
-/// The cone is infinite in extent (on both sides if IsDoubleCone is set to true). To truncate the
-/// cone use the vtkImplicitBoolean in combination with clipping planes.
+/// The cone is infinite in extent. To truncate the cone use the
+/// vtkImplicitBoolean in combination with clipping planes.
 #[allow(non_camel_case_types)]
 pub struct vtkCone(*mut core::ffi::c_void);
 impl vtkCone {
@@ -2983,6 +2164,7 @@ fn test_vtkCoordinateFrame_create_drop() {
 /// @par Thanks:
 /// \verbatim
 /// This file has been developed by Oxalya - www.oxalya.com
+/// Copyright (c) EDF - www.edf.fr
 /// \endverbatim
 #[allow(non_camel_case_types)]
 pub struct vtkCubicLine(*mut core::ffi::c_void);
@@ -4122,7 +3304,7 @@ fn test_vtkExtractStructuredGridHelper_create_drop() {
 /// exchange, or you can do it by grabbing the arrays and manipulating them
 /// directly. The former is simpler but performs type conversion, which is bad
 /// if your data has non-castable types like (void) pointers, or you lose
-/// information as a result of the cast. The more efficient method means
+/// information as a result of the cast. The, more efficient method means
 /// managing each array in the field.  Using this method you can create
 /// faster, more efficient algorithms that do not lose information.
 ///
@@ -4171,63 +3353,6 @@ fn test_vtkFieldData_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkFieldData(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// implicit function for a frustum
-///
-///
-/// vtkFrustum represents a 4-sided frustum, with a near plane but infinite on the far side. It is
-/// defined by the two angles between its forward axis and its horizontal and vertical planes, and
-/// the distance between its origin and near plane. vtkFrustum is a concrete implementation of
-/// vtkImplicitFunction. The frustum is oriented toward the Y Axis; its top face facing
-/// toward the Z Axis and its "right" face facing the X Axis.
-///
-/// @warning
-/// The frustum is infinite in extent towards its far plane. To truncate the frustum in modeling
-/// operations use the vtkImplicitBoolean in combination with clipping planes.
-#[allow(non_camel_case_types)]
-pub struct vtkFrustum(*mut core::ffi::c_void);
-impl vtkFrustum {
-    /// Creates a new [vtkFrustum] wrapped inside `vtkNew`
-    #[doc(alias = "vtkFrustum")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkFrustum_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkFrustum_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkFrustum_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkFrustum_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkFrustum {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkFrustum {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkFrustum_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkFrustum_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkFrustum_create_drop() {
-    let obj = vtkFrustum::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkFrustum(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// a collection of attributes
@@ -4746,6 +3871,56 @@ fn test_vtkHexahedron_create_drop() {
     let new_obj = vtkHexahedron(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
+/// Empty class for backwards compatibility.
+///
+///
+/// @deprecated vtkHierarchicalBoxDataIterator is deprecated in VTK 9.2 and will be removed.
+/// Use `vtkUniformGridAMRDataIterator` instead of `vtkHierarchicalBoxDataIterator`.
+#[allow(non_camel_case_types)]
+pub struct vtkHierarchicalBoxDataIterator(*mut core::ffi::c_void);
+impl vtkHierarchicalBoxDataIterator {
+    /// Creates a new [vtkHierarchicalBoxDataIterator] wrapped inside `vtkNew`
+    #[doc(alias = "vtkHierarchicalBoxDataIterator")]
+    pub fn new() -> Self {
+        unsafe extern "C" {
+            fn vtkHierarchicalBoxDataIterator_new() -> *mut core::ffi::c_void;
+        }
+        Self(unsafe { &mut *vtkHierarchicalBoxDataIterator_new() })
+    }
+    #[cfg(test)]
+    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+        unsafe extern "C" {
+            fn vtkHierarchicalBoxDataIterator_get_ptr(
+                sself: *mut core::ffi::c_void,
+            ) -> *mut core::ffi::c_void;
+        }
+        unsafe { vtkHierarchicalBoxDataIterator_get_ptr(self.0) }
+    }
+}
+impl std::default::Default for vtkHierarchicalBoxDataIterator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl Drop for vtkHierarchicalBoxDataIterator {
+    fn drop(&mut self) {
+        unsafe extern "C" {
+            fn vtkHierarchicalBoxDataIterator_destructor(sself: *mut core::ffi::c_void);
+        }
+        unsafe { vtkHierarchicalBoxDataIterator_destructor(self.0) }
+        self.0 = core::ptr::null_mut();
+    }
+}
+#[test]
+fn test_vtkHierarchicalBoxDataIterator_create_drop() {
+    let obj = vtkHierarchicalBoxDataIterator::new();
+    let ptr = obj.0;
+    assert!(!ptr.is_null());
+    assert!(unsafe { !obj._get_ptr().is_null() });
+    drop(obj);
+    let new_obj = vtkHierarchicalBoxDataIterator(ptr);
+    assert!(unsafe { new_obj._get_ptr().is_null() });
+}
 /// Backwards compatibility class
 ///
 ///
@@ -4810,6 +3985,7 @@ fn test_vtkHierarchicalBoxDataSet_create_drop() {
 /// uniform geometry.
 /// Some filters can be applied on this dataset: contour, outline, geometry.
 ///
+/// JB A valider la suite
 /// The order and number of points must match that specified by the dimensions
 /// of the grid. The point order increases in i fastest (from 0<=i<dims[0]),
 /// then j (0<=j<dims[1]), then k (0<=k<dims[2]) where dims[] are the
@@ -4819,20 +3995,10 @@ fn test_vtkHierarchicalBoxDataSet_create_drop() {
 /// dimensions of the grid. The cell order increases in i fastest (from
 /// 0<=i<(dims[0]-1)), then j (0<=j<(dims[1]-1)), then k (0<=k<(dims[2]-1))
 /// The number of cells is (dims[0]-1)*(dims[1]-1)*(dims[2]-1).
-///
+/// JB
 /// Dimensions : number of points by direction of rectilinear grid
 /// CellDims : number of cells by directions of rectilinear grid
 /// (1 for each dimensions 1)
-///
-/// Interface : plane that cuts a HTG cell.
-/// It is defined (for each cell) by a normal and the distance between the origin and the plane along
-/// that normal (i.e. the orthogonal distance). The name of the arrays containing each information is
-/// specified in `InterfaceInterceptsName` and `InterfaceNormalsName` The normals array is a 3D array
-/// that contains the 3D normal for each cell's interface (for lower dimensions, some values are
-/// ignored). The intercepts (or distances) array is also a 3D array containing:
-/// - the distance to the first plane (if exists, otherwise ignored)
-/// - the distance to the second plane (if exists, otherwise ignored)
-/// - the type of cell (mixed/pure, cf. vtkHyperTreeGridGeometryImpl.h:CellInterfaceType)
 ///
 /// @warning
 /// It is not a spatial search object. If you are looking for this kind of
@@ -4894,89 +4060,23 @@ fn test_vtkHyperTreeGrid_create_drop() {
     let new_obj = vtkHyperTreeGrid(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// class that implements accelerated searches through HyperTree Grids (HTGs) using geometric
-///
-/// information
-///
-/// The goal of this class is to implement a geometric locator search through the HTG structure. Its
-/// main feature should be to expose a generic interface to finding the HTG cells that contain a
-/// given geometric object. The search through the HTG is implemented using a
-/// vtkHyperTreeGridNonOrientedGeometricCursor. The arborescent structure of the HTG should be
-/// sufficient to accelerate the search and achieve good performance in general.
-///
-/// All methods in this class should be thread safe since it is meant to be used in a multi-threaded
-/// environment out of the box (except SetHTG which should be called outside any multi-threaded
-/// setting).
-///
-/// @sa
-/// vtkHyperTreeGridLocator, vtkHyperTreeGrid, vtkHyperTree, vtkHyperTreeGridOrientedCursor,
-/// vtkHyperTreeGridNonOrientedCursor
-#[allow(non_camel_case_types)]
-pub struct vtkHyperTreeGridGeometricLocator(*mut core::ffi::c_void);
-impl vtkHyperTreeGridGeometricLocator {
-    /// Creates a new [vtkHyperTreeGridGeometricLocator] wrapped inside `vtkNew`
-    #[doc(alias = "vtkHyperTreeGridGeometricLocator")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridGeometricLocator_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkHyperTreeGridGeometricLocator_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridGeometricLocator_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkHyperTreeGridGeometricLocator_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkHyperTreeGridGeometricLocator {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkHyperTreeGridGeometricLocator {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridGeometricLocator_destructor(
-                sself: *mut core::ffi::c_void,
-            );
-        }
-        unsafe { vtkHyperTreeGridGeometricLocator_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkHyperTreeGridGeometricLocator_create_drop() {
-    let obj = vtkHyperTreeGridGeometricLocator::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkHyperTreeGridGeometricLocator(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
 /// This is an abstract class.
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
-/// Non-oriented cursors have the ability to come back to their parents
-/// and to go to the root.
-///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
 /// This class was re-written by Philippe Pebay, 2016.
-/// This class was re-written for more optimisation by Jacques-Bernard Lekien,
+/// JB This class was re-written for more optimisation by Jacques-Bernard Lekien,
 /// Guenole Harel and Jerome Dubois, 2018.
 /// This work was supported by Commissariat a l'Energie Atomique
 /// CEA, DAM, DIF, F-91297 Arpajon, France.
@@ -5030,6 +4130,7 @@ fn test_vtkHyperTreeGridNonOrientedCursor_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// NonOriented ne peut pas remonter plus haut qu'a sa creation.
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
@@ -5037,16 +4138,13 @@ fn test_vtkHyperTreeGridNonOrientedCursor_create_drop() {
 /// This is an abstract class.
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
-/// Geometry cursors allow to retrieve origin, size, bounds
-/// and central points
-///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
 /// This class was re-written by Philippe Pebay, 2016.
-/// This class was re-written for more optimisation by Jacques-Bernard Lekien,
+/// JB This class was re-written for more optimisation by Jacques-Bernard Lekien,
 /// Guenole Harel and Jerome Dubois, 2018.
 /// This work was supported by Commissariat a l'Energie Atomique
 /// CEA, DAM, DIF, F-91297 Arpajon, France.
@@ -5100,6 +4198,7 @@ fn test_vtkHyperTreeGridNonOrientedGeometryCursor_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
@@ -5107,9 +4206,7 @@ fn test_vtkHyperTreeGridNonOrientedGeometryCursor_create_drop() {
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
-///
-/// This supercursor allows to visit all neighbors including diagonal ones.
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
@@ -5168,6 +4265,7 @@ fn test_vtkHyperTreeGridNonOrientedMooreSuperCursor_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
@@ -5175,7 +4273,7 @@ fn test_vtkHyperTreeGridNonOrientedMooreSuperCursor_create_drop() {
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
@@ -5234,134 +4332,7 @@ fn test_vtkHyperTreeGridNonOrientedMooreSuperCursorLight_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
-/// NonOriented ne peut pas remonter plus haut qu'a sa creation.
-/// Objects that can perform depth traversal of a hyper tree grid,
-/// take into account more parameters (related to the grid structure) than
-/// the compact hyper tree cursor implemented in vtkHyperTree can.
-/// This is an abstract class.
-/// Cursors are created by the HyperTreeGrid implementation.
-///
-/// Geometry cursors allow to retrieve origin, size, bounds
-/// and central points
-///
-/// @sa
-/// vtkHyperTree vtkHyperTreeGrid
-///
-/// @par Thanks:
-/// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
-/// This class was re-written by Philippe Pebay, 2016.
-/// This class was re-written for more optimisation by Jacques-Bernard Lekien,
-/// Guenole Harel and Jerome Dubois, 2018.
-/// This work was supported by Commissariat a l'Energie Atomique
-/// CEA, DAM, DIF, F-91297 Arpajon, France.
-#[allow(non_camel_case_types)]
-pub struct vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor(*mut core::ffi::c_void);
-impl vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor {
-    /// Creates a new [vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor] wrapped inside `vtkNew`
-    #[doc(alias = "vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_destructor(
-                sself: *mut core::ffi::c_void,
-            );
-        }
-        unsafe { vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_create_drop() {
-    let obj = vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Specific Moore super cursor that can subdivied neighborhood
-///
-///
-/// This supercursor behave like the Moore supercursor but relies on the
-/// vtkHyperTreeGridNonOrientedUnlimitedSuperCursor so the neighborhood
-/// can be refined to reach the level of the current cell in any case.
-///
-/// @sa
-/// vtkHyperTree vtkHyperTreeGrid vtkHyperTreeGridNonOrientedMooreSuperCursor
-#[allow(non_camel_case_types)]
-pub struct vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor(*mut core::ffi::c_void);
-impl vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor {
-    /// Creates a new [vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor] wrapped inside `vtkNew`
-    #[doc(alias = "vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_destructor(
-                sself: *mut core::ffi::c_void,
-            );
-        }
-        unsafe {
-            vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_destructor(self.0)
-        }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_create_drop() {
-    let obj = vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Objects for traversal a HyperTreeGrid.
-///
-///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
@@ -5369,10 +4340,7 @@ fn test_vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_create_drop() {
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
-///
-/// This supercursor allows to traverse neighbors attached to coface of
-/// the current position.
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
@@ -5431,6 +4399,7 @@ fn test_vtkHyperTreeGridNonOrientedVonNeumannSuperCursor_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
@@ -5438,7 +4407,7 @@ fn test_vtkHyperTreeGridNonOrientedVonNeumannSuperCursor_create_drop() {
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
@@ -5501,22 +4470,20 @@ fn test_vtkHyperTreeGridNonOrientedVonNeumannSuperCursorLight_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
 /// the compact hyper tree cursor implemented in vtkHyperTree can.
 /// This is an abstract class.
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
-/// oriented cursors are used for simple recursive DFS. A cursor has no
-/// knowledge of its parent, only its children.
-///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
 /// This class was re-written by Philippe Pebay, 2016.
-/// This class was re-written for more optimisation by Jacques-Bernard Lekien,
+/// JB This class was re-written for more optimisation by Jacques-Bernard Lekien,
 /// Guenole Harel and Jerome Dubois, 2018.
 /// This work was supported by Commissariat a l'Energie Atomique
 /// CEA, DAM, DIF, F-91297 Arpajon, France.
@@ -5568,6 +4535,7 @@ fn test_vtkHyperTreeGridOrientedCursor_create_drop() {
 /// Objects for traversal a HyperTreeGrid.
 ///
 ///
+/// JB A REVOIR
 /// NonOriented ne peut pas remonter plus haut qu'a sa creation.
 /// Objects that can perform depth traversal of a hyper tree grid,
 /// take into account more parameters (related to the grid structure) than
@@ -5576,12 +4544,12 @@ fn test_vtkHyperTreeGridOrientedCursor_create_drop() {
 /// Cursors are created by the HyperTreeGrid implementation.
 ///
 /// @sa
-/// vtkHyperTree vtkHyperTreeGrid
+/// vtkHyperTreeCursor vtkHyperTree vtkHyperTreeGrid
 ///
 /// @par Thanks:
 /// This class was written by Guenole Harel and Jacques-Bernard Lekien, 2014.
 /// This class was re-written by Philippe Pebay, 2016.
-/// This class was re-written for more optimisation by Jacques-Bernard Lekien,
+/// JB This class was re-written for more optimisation by Jacques-Bernard Lekien,
 /// Guenole Harel and Jerome Dubois, 2018.
 /// This work was supported by Commissariat a l'Energie Atomique
 /// CEA, DAM, DIF, F-91297 Arpajon, France.
@@ -5701,19 +4669,14 @@ fn test_vtkImageData_create_drop() {
 ///
 /// Typically in application the single method TransformPointSet() is
 /// invoked to transform the output of an image algorithm (assuming
-/// that the image's direction/orientation matrix is non-identity).
-/// Note that vtkPointSets encompass vtkPolyData as well
+/// that the image's direction/orientation matrix is
+/// non-identity). Note that vtkPointSets encompass vtkPolyData as well
 /// as vtkUnstructuredGrids. In the future other output types may be
 /// added. Note that specific methods for transforming points, normals,
 /// and vectors is also provided by this class in case additional
 /// output data arrays need to be transformed (since
 /// TransformPointSet() only processes data arrays labeled as points,
 /// normals, and vectors).
-///
-/// @warning
-/// This class assumes that any vectors are gradients, and vector arrays
-/// will therefore be transformed by first dividing by the spacing and
-/// then applying the inverse transpose of the direction matrix.
 ///
 /// @warning
 /// This class has been threaded with vtkSMPTools. Using TBB or other
@@ -7447,7 +6410,7 @@ fn test_vtkMultiBlockDataSet_create_drop() {
 /// In this case, these 4 pieces can be collected together using a
 /// vtkMultiPieceDataSet.
 /// Note that vtkMultiPieceDataSet is intended to be included in other composite
-/// datasets eg. vtkMultiBlockDataSet. Hence the lack
+/// datasets eg. vtkMultiBlockDataSet, vtkHierarchicalBoxDataSet. Hence the lack
 /// of algorithms producing vtkMultiPieceDataSet.
 #[allow(non_camel_case_types)]
 pub struct vtkMultiPieceDataSet(*mut core::ffi::c_void);
@@ -8006,26 +6969,16 @@ fn test_vtkOutEdgeIterator_create_drop() {
     let new_obj = vtkOutEdgeIterator(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// a multi-resolution dataset based on vtkUniformGrid allowing overlaps
+/// hierarchical dataset of vtkUniformGrids
 ///
 ///
-/// vtkOverlappingAMR groups vtkUniformGrid into level of different refinement
-/// (AMR stands for Adaptive Mesh Refinement). See SetDataSet to add a new grid.
 ///
-/// The grids of a level are expected to have the same spacing and refinement ratio.
-/// The refinement ratio represent the spacing factor between a level and the
-/// previous one. This class does not ensure the link between spacing and refinement
-/// ratio: please set them carefully.
-///
-/// Associated to each grid, a vtkAMRBox object describes the main information
-/// of the grid: origin, extent, spacing. When creating a vtkOverlappingAMR,
-/// you should call SetAMRBox for each block of each level.
-///
-/// In a distributed environement, the structure should be shared across all rank:
-/// the vtkAMRInformation and vtkAMRBox should be duplicated as needed.
+/// vtkOverlappingAMR extends vtkUniformGridAMR by exposing access to the
+/// amr meta data, which stores all structural information represented
+/// by an vtkAMRInformation object
 ///
 /// @sa
-/// vtkAMRInformation, vtkNonOverlappingAMR, vtkUniformGridAMR, vtkAMRBox
+/// vtkAMRInformation
 #[allow(non_camel_case_types)]
 pub struct vtkOverlappingAMR(*mut core::ffi::c_void);
 impl vtkOverlappingAMR {
@@ -8600,7 +7553,7 @@ fn test_vtkPlaneCollection_create_drop() {
 /// to supply an instance of vtkPoints and an instance of vtkDataArray. (The
 /// points define a point on the plane, and the normals corresponding plane
 /// normals.) Two other specialized ways are to 1) supply six planes defining
-/// the view frustum of a camera, and 2) provide a bounding box.
+/// the view frustrum of a camera, and 2) provide a bounding box.
 ///
 /// @sa
 /// vtkImplicitBoolean vtkSpheres vtkFrustrumSource vtkCamera
@@ -8657,7 +7610,7 @@ fn test_vtkPlanes_create_drop() {
 ///
 /// A subclass of vtkPlanes, this class determines whether it
 /// intersects an axis aligned box.   This is motivated by the
-/// need to intersect the axis aligned region of a spatial
+/// need to intersect the axis aligned region of a spacial
 /// decomposition of volume data with various other regions.
 /// It uses the algorithm from Graphics Gems IV, page 81.
 ///
@@ -9371,120 +8324,23 @@ fn test_vtkPolygon_create_drop() {
     let new_obj = vtkPolygon(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// A 3D cell defined by a set of polygonal faces
+/// a 3D cell defined by a set of polygonal faces
 ///
 ///
-/// @section Instantiation Instantiation
+/// vtkPolyhedron is a concrete implementation that represents a 3D cell
+/// defined by a set of polygonal faces. The polyhedron should be watertight,
+/// non-self-intersecting and manifold (each edge is used twice).
 ///
-/// vtkPolyhedron is a concrete implementation of vtkCell that represents a 3D cell
-/// defined by a set of polygonal faces.
+/// Interpolation functions and weights are defined / computed using the
+/// method of Mean Value Coordinates (MVC). See the VTK class
+/// vtkMeanValueCoordinatesInterpolator for more information.
 ///
-/// To instantiate a vtkPolyhedron, like any vtkCell, one needs to define the
-/// following structures:
-/// - A list of point coordinates
-/// - A list of global point IDs
-///
-/// Note that the ordering of points coordinates or IDs is not important.
-/// However, it MUST be consistent between the two lists.
-///
-/// Unlike other kinds of cells (e.g. vtkVoxel), the topology is not directly deduced from points
-/// coordinates or point IDs ordering; it must be explicitly defined by providing a list of faces
-/// (see the SetFaces() method). Each face is represented as a sequence of global point Ids.
-///
-/// Once point coordinates, point IDs and faces are defined, the Initialize() method should be called
-/// in order to setup the internal structures and finalize the construction of the polyhedron.
-///
-/// Here is an example of vtkPolyhedron instantiation:
-/// @code{.cpp}
-///
-/// //  9 +------+.11
-/// //    |`.    | `.
-/// //    |13`+--+---+ 15
-/// //    |   |  |   |
-/// //  8 +---+--+.10|
-/// //     `. |    `.|
-/// //     12`+------+ 14
-/// //
-/// // (Global IDs are arbitrarily chosen between 8 and 15)
-///
-/// // Insert point coordinates
-/// polyhedron->GetPoints()->SetNumberOfPoints(8);
-/// polyhedron->GetPoints()->SetPoint(0, 0., 0., 0.); // 8
-/// polyhedron->GetPoints()->SetPoint(1, 0., 1., 0.); // 9
-/// polyhedron->GetPoints()->SetPoint(2, 1., 0., 0.); // 10
-/// polyhedron->GetPoints()->SetPoint(3, 1., 1., 0.); // 11
-/// polyhedron->GetPoints()->SetPoint(4, 0., 0., 1.); // 12
-/// polyhedron->GetPoints()->SetPoint(5, 0., 1., 1.); // 13
-/// polyhedron->GetPoints()->SetPoint(6, 1., 0., 1.); // 14
-/// polyhedron->GetPoints()->SetPoint(7, 1., 1., 1.); // 15
-///
-/// // Insert point IDs (global IDs)
-/// // Note that the canonical ordering (0, 1, ..., 8) is used
-/// // to correlate point Ids and coordinates
-/// polyhedron->GetPointIds()->Allocate(8);
-/// for (int i = 8; i < 16; ++i)
-/// {
-/// polyhedron->GetPointIds()->InsertNextId(i);
-/// }
-///
-/// // Describe faces, indexed on global IDs
-/// vtkIdType faces[31] = { 6, // Number of faces
-/// 4, 9 , 11, 10, 8 , // Number of points in the face + point IDs
-/// 4, 11, 15, 14, 10, // Faces are described counter-clockwise
-/// 4, 15, 13, 12, 14, // looking from the "outside" of the cell
-/// 4, 13, 9 , 8 , 12,
-/// 4, 14, 12, 8 , 10,
-/// 4, 13, 15, 11, 9 };
-///
-/// polyhedron->SetFaces(faces);
-///
-/// // Initialize the polyhedron
-/// // This will build internal structures and should be done before the proper
-/// // use of the cell.
-/// polyhedron->Initialize();
-/// @endcode
-///
-/// @section Specifications Specifications
-///
-/// Polyhedrons described by this class must conform to some criteria in order to avoid errors and
-/// guarantee good results in terms of visualization and processing.
-///
-/// These specifications are described as follows. Polyhedrons must:
-/// - be watertight : the faces describing the polyhedron should define an enclosed volume
-/// i.e. define the “inside” and the “outside” of the cell
-/// - have planar faces : all points defining a face should be in the same 2D plane
-/// - not be self-intersecting : for example, a face of the polyhedron can’t intersect other ones
-/// - not contain zero-thickness portions : adjacent faces should not overlap each other even
-/// partially
-/// - not contain disconnected elements : detached vertice(s), edge(s) or face(s)
-/// - be simply connected : vtkPolyhedron must describe a single polyhedron
-/// - not contain duplicate elements : each point index and each face description should be unique
-/// - not contain “internal” or “external” faces : for each face, one side should be “inside” the
-/// cell, the other side “outside”
-///
-/// In a more global perspective, polyhedrons must be watertight and manifold.
-/// In particular, each edge of the polyhedron must be adjacent to exactly two faces.
-/// Several algorithms like contour, clip or slice will assume that each edge of the polyhedron
-/// is adjacent to exactly two faces and will definitely lead to bad results (and generate numerous
-/// warnings) if this criterion is not fulfilled.
-///
-/// @section Limitations Limitations
-///
-/// The class does not require the polyhedron to be convex. However, the support of concave
-/// polyhedrons is currently limited. Concavity can lead to bad results with some filters,
-/// including:
-/// - Contour: the contour (surface) can be constructed outside of the cell,
-/// - Triangulate: the current tetrahedralization algorithm can modify the initial
-/// shape of the polygon (created tetrahedrons can change concave portions of the shape
-/// to convex ones).
-///
-/// @section OtherDetails Other details
-///
-/// Interpolation functions and weights are defined / computed using the method of Mean Value
-/// Coordinates (MVC). See the VTK class vtkMeanValueCoordinatesInterpolator for more information.
+/// The class does not require the polyhedron to be convex. However, the
+/// polygonal faces must be planar. Non-planar polygonal faces will
+/// definitely cause problems, especially in severely warped situations.
 ///
 /// @sa
-/// vtkCell3D vtkConvexPointSet vtkMeanValueCoordinatesInterpolator vtkPolyhedronUtilities
+/// vtkCell3D vtkConvexPointSet vtkMeanValueCoordinatesInterpolator
 #[allow(non_camel_case_types)]
 pub struct vtkPolyhedron(*mut core::ffi::c_void);
 impl vtkPolyhedron {
@@ -10856,15 +9712,8 @@ fn test_vtkSelection_create_drop() {
 ///
 /// * `vtkSelectionNode::CONNECTED_LAYERS()`: a qualifier used to expand the
 /// definition of selected elements to connected elements for the specified
-/// number of layers. Layers can only be positive to grow the selection.
-///
-/// * `vtkSelectionNode::CONNECTED_LAYERS_REMOVE_SEED()`: this qualifier indicates
-/// that when using a number of CONNECTED_LAYERS >= 1, the initial selection will
-/// not be kept.
-///
-/// * `vtkSelectionNode::CONNECTED_LAYERS_REMOVE_INTERMEDIATE_LAYERS()`: this qualifier
-/// indicates that when using a number of CONNECTED_LAYERS >= 2, the intermediate layers
-/// will not be kept.
+/// number of layers. Layers can be positive or negative to grow or shrink the
+/// selection respectively.
 ///
 /// * `vtkSelectionNode::INVERSE()`: a qualifier that causes the selection to be
 /// inverted i.e. all elements not chosen by the criteria are to be treated
@@ -11686,65 +10535,6 @@ fn test_vtkStaticPointLocator2D_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkStaticPointLocator2D(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// implicit object to represent cell connectivity
-///
-///
-/// vtkStructuredCellArray stores dataset topologies as an structured connectivity table
-/// listing the point ids that make up each cell.
-///
-/// Internally, the connectivity is stored as a vtkImplicitArray that is constructed
-/// using the SetData function by providing the dimensions of the dataset and a flag
-/// indicating whether the data should use voxel/pixel orientation.
-///
-/// This class was designed as a more performant alternative to vtkStructuredData::GetCellPoints.
-///
-/// @sa
-/// vtkCellArray vtkAbstractCellArray
-#[allow(non_camel_case_types)]
-pub struct vtkStructuredCellArray(*mut core::ffi::c_void);
-impl vtkStructuredCellArray {
-    /// Creates a new [vtkStructuredCellArray] wrapped inside `vtkNew`
-    #[doc(alias = "vtkStructuredCellArray")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkStructuredCellArray_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkStructuredCellArray_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkStructuredCellArray_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkStructuredCellArray_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkStructuredCellArray {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkStructuredCellArray {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkStructuredCellArray_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkStructuredCellArray_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkStructuredCellArray_create_drop() {
-    let obj = vtkStructuredCellArray::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkStructuredCellArray(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// helper class to aid working with structured
@@ -12791,16 +11581,13 @@ fn test_vtkUniformGrid_create_drop() {
     let new_obj = vtkUniformGrid(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// a multi-resolution dataset based on vtkUniformGrid
+/// a concrete implementation of vtkCompositeDataSet
 ///
 ///
-/// vtkUniformGridAMR (AMR stands for Adaptive Mesh Refinement)
-/// is a container for vtkUniformGrid. Each grid is added as a block of a given level.
-///
-/// The structure of the container is described in a vtkAMRInformation object.
+/// vtkUniformGridAMR is an AMR (hierarchical) composite dataset that holds vtkUniformGrids.
 ///
 /// @sa
-/// vtkOverlappingAMR, vtkNonOverlappingAMR, vtkAMRInformation, vtkUniformGridAMRDataIterator
+/// vtkUniformGridAMRDataIterator
 #[allow(non_camel_case_types)]
 pub struct vtkUniformGridAMR(*mut core::ffi::c_void);
 impl vtkUniformGridAMR {
@@ -12903,7 +11690,7 @@ fn test_vtkUniformGridAMRDataIterator_create_drop() {
 ///
 /// @par Thanks:
 /// This class was written by Philippe Pebay, NexGen Analytics 2017
-/// Modified to introduce Scales by Jacques-Bernard Lekien, CEA 2018.
+/// JB modify for introduce Scales by Jacques-Bernard Lekien, CEA 2018.
 /// This work was supported by Commissariat a l'Energie Atomique
 /// CEA, DAM, DIF, F-91297 Arpajon, France.
 #[allow(non_camel_case_types)]

@@ -65,9 +65,6 @@ fn test_vtkAmoebaMinimizer_create_drop() {
 /// - Fft means the Fast Fourier Transform algorithm
 /// - Prefix `R` stands for Real (meaning optimized function for real inputs)
 /// - Prefix `I` stands for Inverse
-///
-/// Some functions provides pointer-based version of themself in order to
-/// prevent copying memory when possible.
 #[allow(non_camel_case_types)]
 pub struct vtkFFT(*mut core::ffi::c_void);
 impl vtkFFT {

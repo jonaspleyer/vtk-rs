@@ -8,20 +8,6 @@
 // Include objects of this module
 #include<vtkAOSDataArrayTemplate.h>
 #include<vtkAbstractArray.h>
-#include<vtkAffineCharArray.h>
-#include<vtkAffineDoubleArray.h>
-#include<vtkAffineFloatArray.h>
-#include<vtkAffineIdTypeArray.h>
-#include<vtkAffineIntArray.h>
-#include<vtkAffineLongArray.h>
-#include<vtkAffineLongLongArray.h>
-#include<vtkAffineShortArray.h>
-#include<vtkAffineSignedCharArray.h>
-#include<vtkAffineUnsignedCharArray.h>
-#include<vtkAffineUnsignedIntArray.h>
-#include<vtkAffineUnsignedLongArray.h>
-#include<vtkAffineUnsignedLongLongArray.h>
-#include<vtkAffineUnsignedShortArray.h>
 #include<vtkAnimationCue.h>
 #include<vtkArchiver.h>
 #include<vtkArray.h>
@@ -34,7 +20,6 @@
 #include<vtkArraySort.h>
 #include<vtkArrayWeights.h>
 #include<vtkAtomicMutex.h>
-#include<vtkBatch.h>
 #include<vtkBitArray.h>
 #include<vtkBitArrayIterator.h>
 #include<vtkBoxMuellerRandomSequence.h>
@@ -48,34 +33,8 @@
 #include<vtkCollectionIterator.h>
 #include<vtkCommand.h>
 #include<vtkCommonInformationKeyManager.h>
-#include<vtkCompositeCharArray.h>
-#include<vtkCompositeDoubleArray.h>
-#include<vtkCompositeFloatArray.h>
-#include<vtkCompositeIdTypeArray.h>
-#include<vtkCompositeIntArray.h>
-#include<vtkCompositeLongArray.h>
-#include<vtkCompositeLongLongArray.h>
-#include<vtkCompositeShortArray.h>
-#include<vtkCompositeSignedCharArray.h>
-#include<vtkCompositeUnsignedCharArray.h>
-#include<vtkCompositeUnsignedIntArray.h>
-#include<vtkCompositeUnsignedLongArray.h>
-#include<vtkCompositeUnsignedLongLongArray.h>
-#include<vtkCompositeUnsignedShortArray.h>
-#include<vtkConstantCharArray.h>
-#include<vtkConstantDoubleArray.h>
-#include<vtkConstantFloatArray.h>
-#include<vtkConstantIdTypeArray.h>
-#include<vtkConstantIntArray.h>
-#include<vtkConstantLongArray.h>
-#include<vtkConstantLongLongArray.h>
-#include<vtkConstantShortArray.h>
-#include<vtkConstantSignedCharArray.h>
-#include<vtkConstantUnsignedCharArray.h>
-#include<vtkConstantUnsignedIntArray.h>
-#include<vtkConstantUnsignedLongArray.h>
-#include<vtkConstantUnsignedLongLongArray.h>
-#include<vtkConstantUnsignedShortArray.h>
+#include<vtkConditionVariable.h>
+#include<vtkCriticalSection.h>
 #include<vtkDataArray.h>
 #include<vtkDataArrayCollection.h>
 #include<vtkDataArrayCollectionIterator.h>
@@ -84,7 +43,6 @@
 #include<vtkDebugLeaksManager.h>
 #include<vtkDebugLeaks.h>
 #include<vtkDenseArray.h>
-#include<vtkDeserializer.h>
 #include<vtkDoubleArray.h>
 #include<vtkDynamicLoader.h>
 #include<vtkEventData.h>
@@ -103,20 +61,6 @@
 #include<vtkIdListCollection.h>
 #include<vtkIdTypeArray.h>
 #include<vtkIndent.h>
-#include<vtkIndexedCharArray.h>
-#include<vtkIndexedDoubleArray.h>
-#include<vtkIndexedFloatArray.h>
-#include<vtkIndexedIdTypeArray.h>
-#include<vtkIndexedIntArray.h>
-#include<vtkIndexedLongArray.h>
-#include<vtkIndexedLongLongArray.h>
-#include<vtkIndexedShortArray.h>
-#include<vtkIndexedSignedCharArray.h>
-#include<vtkIndexedUnsignedCharArray.h>
-#include<vtkIndexedUnsignedIntArray.h>
-#include<vtkIndexedUnsignedLongArray.h>
-#include<vtkIndexedUnsignedLongLongArray.h>
-#include<vtkIndexedUnsignedShortArray.h>
 #include<vtkInformation.h>
 #include<vtkInformationDataObjectKey.h>
 #include<vtkInformationDoubleKey.h>
@@ -142,20 +86,18 @@
 #include<vtkInformationVariantVectorKey.h>
 #include<vtkInformationVector.h>
 #include<vtkIntArray.h>
-#include<vtkInvoker.h>
 #include<vtkLargeInteger.h>
 #include<vtkLogger.h>
 #include<vtkLongArray.h>
 #include<vtkLongLongArray.h>
 #include<vtkLookupTable.h>
 #include<vtkMappedDataArray.h>
-#include<vtkMarshalContext.h>
 #include<vtkMath.h>
 #include<vtkMersenneTwister.h>
 #include<vtkMinimalStandardRandomSequence.h>
 #include<vtkMultiThreader.h>
+#include<vtkMutexLock.h>
 #include<vtkNew.h>
-#include<vtkNumberToString.h>
 #include<vtkOStrStreamWrapper.h>
 #include<vtkObject.h>
 #include<vtkObjectBase.h>
@@ -163,6 +105,7 @@
 #include<vtkObjectFactoryCollection.h>
 #include<vtkObjectFactory.h>
 #include<vtkOldStyleCallbackCommand.h>
+#include<vtkOutputWindow.h>
 #include<vtkOutputWindow.h>
 #include<vtkOverrideInformation.h>
 #include<vtkOverrideInformationCollection.h>
@@ -177,9 +120,11 @@
 #include<vtkSMPTools.h>
 #include<vtkSOADataArrayTemplate.h>
 #include<vtkScalarsToColors.h>
-#include<vtkSerializer.h>
 #include<vtkShortArray.h>
 #include<vtkSignedCharArray.h>
+#include<vtkConditionVariable.h>
+#include<vtkSimpleCriticalSection.h>
+#include<vtkMutexLock.h>
 #include<vtkSmartPointer.h>
 #include<vtkSmartPointerBase.h>
 #include<vtkSortDataArray.h>
@@ -187,7 +132,6 @@
 #include<vtkStdString.h>
 #include<vtkStringArray.h>
 #include<vtkStringOutputWindow.h>
-#include<vtkStringToken.h>
 #include<vtkTestDataArray.h>
 #include<vtkTimePointUtility.h>
 #include<vtkTimeStamp.h>
@@ -220,48 +164,6 @@
 #include<vtkXMLFileOutputWindow.h>
 
 // Implement declared functions
-extern "C" vtkNew < vtkAffineCharArray > vtkAffineCharArray_new () {return vtkNew < vtkAffineCharArray > () ;}
-extern "C" void vtkAffineCharArray_destructor (vtkNew < vtkAffineCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineCharArray_get_ptr (vtkNew < vtkAffineCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineDoubleArray > vtkAffineDoubleArray_new () {return vtkNew < vtkAffineDoubleArray > () ;}
-extern "C" void vtkAffineDoubleArray_destructor (vtkNew < vtkAffineDoubleArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineDoubleArray_get_ptr (vtkNew < vtkAffineDoubleArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineFloatArray > vtkAffineFloatArray_new () {return vtkNew < vtkAffineFloatArray > () ;}
-extern "C" void vtkAffineFloatArray_destructor (vtkNew < vtkAffineFloatArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineFloatArray_get_ptr (vtkNew < vtkAffineFloatArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineIdTypeArray > vtkAffineIdTypeArray_new () {return vtkNew < vtkAffineIdTypeArray > () ;}
-extern "C" void vtkAffineIdTypeArray_destructor (vtkNew < vtkAffineIdTypeArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineIdTypeArray_get_ptr (vtkNew < vtkAffineIdTypeArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineIntArray > vtkAffineIntArray_new () {return vtkNew < vtkAffineIntArray > () ;}
-extern "C" void vtkAffineIntArray_destructor (vtkNew < vtkAffineIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineIntArray_get_ptr (vtkNew < vtkAffineIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineLongArray > vtkAffineLongArray_new () {return vtkNew < vtkAffineLongArray > () ;}
-extern "C" void vtkAffineLongArray_destructor (vtkNew < vtkAffineLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineLongArray_get_ptr (vtkNew < vtkAffineLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineLongLongArray > vtkAffineLongLongArray_new () {return vtkNew < vtkAffineLongLongArray > () ;}
-extern "C" void vtkAffineLongLongArray_destructor (vtkNew < vtkAffineLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineLongLongArray_get_ptr (vtkNew < vtkAffineLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineShortArray > vtkAffineShortArray_new () {return vtkNew < vtkAffineShortArray > () ;}
-extern "C" void vtkAffineShortArray_destructor (vtkNew < vtkAffineShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineShortArray_get_ptr (vtkNew < vtkAffineShortArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineSignedCharArray > vtkAffineSignedCharArray_new () {return vtkNew < vtkAffineSignedCharArray > () ;}
-extern "C" void vtkAffineSignedCharArray_destructor (vtkNew < vtkAffineSignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineSignedCharArray_get_ptr (vtkNew < vtkAffineSignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineUnsignedCharArray > vtkAffineUnsignedCharArray_new () {return vtkNew < vtkAffineUnsignedCharArray > () ;}
-extern "C" void vtkAffineUnsignedCharArray_destructor (vtkNew < vtkAffineUnsignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineUnsignedCharArray_get_ptr (vtkNew < vtkAffineUnsignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineUnsignedIntArray > vtkAffineUnsignedIntArray_new () {return vtkNew < vtkAffineUnsignedIntArray > () ;}
-extern "C" void vtkAffineUnsignedIntArray_destructor (vtkNew < vtkAffineUnsignedIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineUnsignedIntArray_get_ptr (vtkNew < vtkAffineUnsignedIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineUnsignedLongArray > vtkAffineUnsignedLongArray_new () {return vtkNew < vtkAffineUnsignedLongArray > () ;}
-extern "C" void vtkAffineUnsignedLongArray_destructor (vtkNew < vtkAffineUnsignedLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineUnsignedLongArray_get_ptr (vtkNew < vtkAffineUnsignedLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineUnsignedLongLongArray > vtkAffineUnsignedLongLongArray_new () {return vtkNew < vtkAffineUnsignedLongLongArray > () ;}
-extern "C" void vtkAffineUnsignedLongLongArray_destructor (vtkNew < vtkAffineUnsignedLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineUnsignedLongLongArray_get_ptr (vtkNew < vtkAffineUnsignedLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAffineUnsignedShortArray > vtkAffineUnsignedShortArray_new () {return vtkNew < vtkAffineUnsignedShortArray > () ;}
-extern "C" void vtkAffineUnsignedShortArray_destructor (vtkNew < vtkAffineUnsignedShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAffineUnsignedShortArray_get_ptr (vtkNew < vtkAffineUnsignedShortArray > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkAnimationCue > vtkAnimationCue_new () {return vtkNew < vtkAnimationCue > () ;}
 extern "C" void vtkAnimationCue_destructor (vtkNew < vtkAnimationCue > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkAnimationCue_get_ptr (vtkNew < vtkAnimationCue > sself) {return sself . GetPointer () ;}
@@ -292,90 +194,9 @@ extern "C" void * vtkCollection_get_ptr (vtkNew < vtkCollection > sself) {return
 extern "C" vtkNew < vtkCollectionIterator > vtkCollectionIterator_new () {return vtkNew < vtkCollectionIterator > () ;}
 extern "C" void vtkCollectionIterator_destructor (vtkNew < vtkCollectionIterator > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkCollectionIterator_get_ptr (vtkNew < vtkCollectionIterator > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeCharArray > vtkCompositeCharArray_new () {return vtkNew < vtkCompositeCharArray > () ;}
-extern "C" void vtkCompositeCharArray_destructor (vtkNew < vtkCompositeCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeCharArray_get_ptr (vtkNew < vtkCompositeCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeDoubleArray > vtkCompositeDoubleArray_new () {return vtkNew < vtkCompositeDoubleArray > () ;}
-extern "C" void vtkCompositeDoubleArray_destructor (vtkNew < vtkCompositeDoubleArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeDoubleArray_get_ptr (vtkNew < vtkCompositeDoubleArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeFloatArray > vtkCompositeFloatArray_new () {return vtkNew < vtkCompositeFloatArray > () ;}
-extern "C" void vtkCompositeFloatArray_destructor (vtkNew < vtkCompositeFloatArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeFloatArray_get_ptr (vtkNew < vtkCompositeFloatArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeIdTypeArray > vtkCompositeIdTypeArray_new () {return vtkNew < vtkCompositeIdTypeArray > () ;}
-extern "C" void vtkCompositeIdTypeArray_destructor (vtkNew < vtkCompositeIdTypeArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeIdTypeArray_get_ptr (vtkNew < vtkCompositeIdTypeArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeIntArray > vtkCompositeIntArray_new () {return vtkNew < vtkCompositeIntArray > () ;}
-extern "C" void vtkCompositeIntArray_destructor (vtkNew < vtkCompositeIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeIntArray_get_ptr (vtkNew < vtkCompositeIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeLongArray > vtkCompositeLongArray_new () {return vtkNew < vtkCompositeLongArray > () ;}
-extern "C" void vtkCompositeLongArray_destructor (vtkNew < vtkCompositeLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeLongArray_get_ptr (vtkNew < vtkCompositeLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeLongLongArray > vtkCompositeLongLongArray_new () {return vtkNew < vtkCompositeLongLongArray > () ;}
-extern "C" void vtkCompositeLongLongArray_destructor (vtkNew < vtkCompositeLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeLongLongArray_get_ptr (vtkNew < vtkCompositeLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeShortArray > vtkCompositeShortArray_new () {return vtkNew < vtkCompositeShortArray > () ;}
-extern "C" void vtkCompositeShortArray_destructor (vtkNew < vtkCompositeShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeShortArray_get_ptr (vtkNew < vtkCompositeShortArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeSignedCharArray > vtkCompositeSignedCharArray_new () {return vtkNew < vtkCompositeSignedCharArray > () ;}
-extern "C" void vtkCompositeSignedCharArray_destructor (vtkNew < vtkCompositeSignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeSignedCharArray_get_ptr (vtkNew < vtkCompositeSignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeUnsignedCharArray > vtkCompositeUnsignedCharArray_new () {return vtkNew < vtkCompositeUnsignedCharArray > () ;}
-extern "C" void vtkCompositeUnsignedCharArray_destructor (vtkNew < vtkCompositeUnsignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeUnsignedCharArray_get_ptr (vtkNew < vtkCompositeUnsignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeUnsignedIntArray > vtkCompositeUnsignedIntArray_new () {return vtkNew < vtkCompositeUnsignedIntArray > () ;}
-extern "C" void vtkCompositeUnsignedIntArray_destructor (vtkNew < vtkCompositeUnsignedIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeUnsignedIntArray_get_ptr (vtkNew < vtkCompositeUnsignedIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeUnsignedLongArray > vtkCompositeUnsignedLongArray_new () {return vtkNew < vtkCompositeUnsignedLongArray > () ;}
-extern "C" void vtkCompositeUnsignedLongArray_destructor (vtkNew < vtkCompositeUnsignedLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeUnsignedLongArray_get_ptr (vtkNew < vtkCompositeUnsignedLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeUnsignedLongLongArray > vtkCompositeUnsignedLongLongArray_new () {return vtkNew < vtkCompositeUnsignedLongLongArray > () ;}
-extern "C" void vtkCompositeUnsignedLongLongArray_destructor (vtkNew < vtkCompositeUnsignedLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeUnsignedLongLongArray_get_ptr (vtkNew < vtkCompositeUnsignedLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCompositeUnsignedShortArray > vtkCompositeUnsignedShortArray_new () {return vtkNew < vtkCompositeUnsignedShortArray > () ;}
-extern "C" void vtkCompositeUnsignedShortArray_destructor (vtkNew < vtkCompositeUnsignedShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCompositeUnsignedShortArray_get_ptr (vtkNew < vtkCompositeUnsignedShortArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantCharArray > vtkConstantCharArray_new () {return vtkNew < vtkConstantCharArray > () ;}
-extern "C" void vtkConstantCharArray_destructor (vtkNew < vtkConstantCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantCharArray_get_ptr (vtkNew < vtkConstantCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantDoubleArray > vtkConstantDoubleArray_new () {return vtkNew < vtkConstantDoubleArray > () ;}
-extern "C" void vtkConstantDoubleArray_destructor (vtkNew < vtkConstantDoubleArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantDoubleArray_get_ptr (vtkNew < vtkConstantDoubleArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantFloatArray > vtkConstantFloatArray_new () {return vtkNew < vtkConstantFloatArray > () ;}
-extern "C" void vtkConstantFloatArray_destructor (vtkNew < vtkConstantFloatArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantFloatArray_get_ptr (vtkNew < vtkConstantFloatArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantIdTypeArray > vtkConstantIdTypeArray_new () {return vtkNew < vtkConstantIdTypeArray > () ;}
-extern "C" void vtkConstantIdTypeArray_destructor (vtkNew < vtkConstantIdTypeArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantIdTypeArray_get_ptr (vtkNew < vtkConstantIdTypeArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantIntArray > vtkConstantIntArray_new () {return vtkNew < vtkConstantIntArray > () ;}
-extern "C" void vtkConstantIntArray_destructor (vtkNew < vtkConstantIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantIntArray_get_ptr (vtkNew < vtkConstantIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantLongArray > vtkConstantLongArray_new () {return vtkNew < vtkConstantLongArray > () ;}
-extern "C" void vtkConstantLongArray_destructor (vtkNew < vtkConstantLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantLongArray_get_ptr (vtkNew < vtkConstantLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantLongLongArray > vtkConstantLongLongArray_new () {return vtkNew < vtkConstantLongLongArray > () ;}
-extern "C" void vtkConstantLongLongArray_destructor (vtkNew < vtkConstantLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantLongLongArray_get_ptr (vtkNew < vtkConstantLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantShortArray > vtkConstantShortArray_new () {return vtkNew < vtkConstantShortArray > () ;}
-extern "C" void vtkConstantShortArray_destructor (vtkNew < vtkConstantShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantShortArray_get_ptr (vtkNew < vtkConstantShortArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantSignedCharArray > vtkConstantSignedCharArray_new () {return vtkNew < vtkConstantSignedCharArray > () ;}
-extern "C" void vtkConstantSignedCharArray_destructor (vtkNew < vtkConstantSignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantSignedCharArray_get_ptr (vtkNew < vtkConstantSignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantUnsignedCharArray > vtkConstantUnsignedCharArray_new () {return vtkNew < vtkConstantUnsignedCharArray > () ;}
-extern "C" void vtkConstantUnsignedCharArray_destructor (vtkNew < vtkConstantUnsignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantUnsignedCharArray_get_ptr (vtkNew < vtkConstantUnsignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantUnsignedIntArray > vtkConstantUnsignedIntArray_new () {return vtkNew < vtkConstantUnsignedIntArray > () ;}
-extern "C" void vtkConstantUnsignedIntArray_destructor (vtkNew < vtkConstantUnsignedIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantUnsignedIntArray_get_ptr (vtkNew < vtkConstantUnsignedIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantUnsignedLongArray > vtkConstantUnsignedLongArray_new () {return vtkNew < vtkConstantUnsignedLongArray > () ;}
-extern "C" void vtkConstantUnsignedLongArray_destructor (vtkNew < vtkConstantUnsignedLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantUnsignedLongArray_get_ptr (vtkNew < vtkConstantUnsignedLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantUnsignedLongLongArray > vtkConstantUnsignedLongLongArray_new () {return vtkNew < vtkConstantUnsignedLongLongArray > () ;}
-extern "C" void vtkConstantUnsignedLongLongArray_destructor (vtkNew < vtkConstantUnsignedLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantUnsignedLongLongArray_get_ptr (vtkNew < vtkConstantUnsignedLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkConstantUnsignedShortArray > vtkConstantUnsignedShortArray_new () {return vtkNew < vtkConstantUnsignedShortArray > () ;}
-extern "C" void vtkConstantUnsignedShortArray_destructor (vtkNew < vtkConstantUnsignedShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkConstantUnsignedShortArray_get_ptr (vtkNew < vtkConstantUnsignedShortArray > sself) {return sself . GetPointer () ;}
+extern "C" vtkNew < vtkCriticalSection > vtkCriticalSection_new () {return vtkNew < vtkCriticalSection > () ;}
+extern "C" void vtkCriticalSection_destructor (vtkNew < vtkCriticalSection > sself) {sself . Reset () ; return ;}
+extern "C" void * vtkCriticalSection_get_ptr (vtkNew < vtkCriticalSection > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkDataArrayCollection > vtkDataArrayCollection_new () {return vtkNew < vtkDataArrayCollection > () ;}
 extern "C" void vtkDataArrayCollection_destructor (vtkNew < vtkDataArrayCollection > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkDataArrayCollection_get_ptr (vtkNew < vtkDataArrayCollection > sself) {return sself . GetPointer () ;}
@@ -388,9 +209,6 @@ extern "C" void * vtkDataArraySelection_get_ptr (vtkNew < vtkDataArraySelection 
 extern "C" vtkNew < vtkDebugLeaks > vtkDebugLeaks_new () {return vtkNew < vtkDebugLeaks > () ;}
 extern "C" void vtkDebugLeaks_destructor (vtkNew < vtkDebugLeaks > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkDebugLeaks_get_ptr (vtkNew < vtkDebugLeaks > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkDeserializer > vtkDeserializer_new () {return vtkNew < vtkDeserializer > () ;}
-extern "C" void vtkDeserializer_destructor (vtkNew < vtkDeserializer > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkDeserializer_get_ptr (vtkNew < vtkDeserializer > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkDoubleArray > vtkDoubleArray_new () {return vtkNew < vtkDoubleArray > () ;}
 extern "C" void vtkDoubleArray_destructor (vtkNew < vtkDoubleArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkDoubleArray_get_ptr (vtkNew < vtkDoubleArray > sself) {return sself . GetPointer () ;}
@@ -424,48 +242,6 @@ extern "C" void * vtkIdListCollection_get_ptr (vtkNew < vtkIdListCollection > ss
 extern "C" vtkNew < vtkIdTypeArray > vtkIdTypeArray_new () {return vtkNew < vtkIdTypeArray > () ;}
 extern "C" void vtkIdTypeArray_destructor (vtkNew < vtkIdTypeArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkIdTypeArray_get_ptr (vtkNew < vtkIdTypeArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedCharArray > vtkIndexedCharArray_new () {return vtkNew < vtkIndexedCharArray > () ;}
-extern "C" void vtkIndexedCharArray_destructor (vtkNew < vtkIndexedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedCharArray_get_ptr (vtkNew < vtkIndexedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedDoubleArray > vtkIndexedDoubleArray_new () {return vtkNew < vtkIndexedDoubleArray > () ;}
-extern "C" void vtkIndexedDoubleArray_destructor (vtkNew < vtkIndexedDoubleArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedDoubleArray_get_ptr (vtkNew < vtkIndexedDoubleArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedFloatArray > vtkIndexedFloatArray_new () {return vtkNew < vtkIndexedFloatArray > () ;}
-extern "C" void vtkIndexedFloatArray_destructor (vtkNew < vtkIndexedFloatArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedFloatArray_get_ptr (vtkNew < vtkIndexedFloatArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedIdTypeArray > vtkIndexedIdTypeArray_new () {return vtkNew < vtkIndexedIdTypeArray > () ;}
-extern "C" void vtkIndexedIdTypeArray_destructor (vtkNew < vtkIndexedIdTypeArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedIdTypeArray_get_ptr (vtkNew < vtkIndexedIdTypeArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedIntArray > vtkIndexedIntArray_new () {return vtkNew < vtkIndexedIntArray > () ;}
-extern "C" void vtkIndexedIntArray_destructor (vtkNew < vtkIndexedIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedIntArray_get_ptr (vtkNew < vtkIndexedIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedLongArray > vtkIndexedLongArray_new () {return vtkNew < vtkIndexedLongArray > () ;}
-extern "C" void vtkIndexedLongArray_destructor (vtkNew < vtkIndexedLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedLongArray_get_ptr (vtkNew < vtkIndexedLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedLongLongArray > vtkIndexedLongLongArray_new () {return vtkNew < vtkIndexedLongLongArray > () ;}
-extern "C" void vtkIndexedLongLongArray_destructor (vtkNew < vtkIndexedLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedLongLongArray_get_ptr (vtkNew < vtkIndexedLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedShortArray > vtkIndexedShortArray_new () {return vtkNew < vtkIndexedShortArray > () ;}
-extern "C" void vtkIndexedShortArray_destructor (vtkNew < vtkIndexedShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedShortArray_get_ptr (vtkNew < vtkIndexedShortArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedSignedCharArray > vtkIndexedSignedCharArray_new () {return vtkNew < vtkIndexedSignedCharArray > () ;}
-extern "C" void vtkIndexedSignedCharArray_destructor (vtkNew < vtkIndexedSignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedSignedCharArray_get_ptr (vtkNew < vtkIndexedSignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedUnsignedCharArray > vtkIndexedUnsignedCharArray_new () {return vtkNew < vtkIndexedUnsignedCharArray > () ;}
-extern "C" void vtkIndexedUnsignedCharArray_destructor (vtkNew < vtkIndexedUnsignedCharArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedUnsignedCharArray_get_ptr (vtkNew < vtkIndexedUnsignedCharArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedUnsignedIntArray > vtkIndexedUnsignedIntArray_new () {return vtkNew < vtkIndexedUnsignedIntArray > () ;}
-extern "C" void vtkIndexedUnsignedIntArray_destructor (vtkNew < vtkIndexedUnsignedIntArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedUnsignedIntArray_get_ptr (vtkNew < vtkIndexedUnsignedIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedUnsignedLongArray > vtkIndexedUnsignedLongArray_new () {return vtkNew < vtkIndexedUnsignedLongArray > () ;}
-extern "C" void vtkIndexedUnsignedLongArray_destructor (vtkNew < vtkIndexedUnsignedLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedUnsignedLongArray_get_ptr (vtkNew < vtkIndexedUnsignedLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedUnsignedLongLongArray > vtkIndexedUnsignedLongLongArray_new () {return vtkNew < vtkIndexedUnsignedLongLongArray > () ;}
-extern "C" void vtkIndexedUnsignedLongLongArray_destructor (vtkNew < vtkIndexedUnsignedLongLongArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedUnsignedLongLongArray_get_ptr (vtkNew < vtkIndexedUnsignedLongLongArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkIndexedUnsignedShortArray > vtkIndexedUnsignedShortArray_new () {return vtkNew < vtkIndexedUnsignedShortArray > () ;}
-extern "C" void vtkIndexedUnsignedShortArray_destructor (vtkNew < vtkIndexedUnsignedShortArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkIndexedUnsignedShortArray_get_ptr (vtkNew < vtkIndexedUnsignedShortArray > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkInformation > vtkInformation_new () {return vtkNew < vtkInformation > () ;}
 extern "C" void vtkInformation_destructor (vtkNew < vtkInformation > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkInformation_get_ptr (vtkNew < vtkInformation > sself) {return sself . GetPointer () ;}
@@ -481,9 +257,6 @@ extern "C" void * vtkInformationVector_get_ptr (vtkNew < vtkInformationVector > 
 extern "C" vtkNew < vtkIntArray > vtkIntArray_new () {return vtkNew < vtkIntArray > () ;}
 extern "C" void vtkIntArray_destructor (vtkNew < vtkIntArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkIntArray_get_ptr (vtkNew < vtkIntArray > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkInvoker > vtkInvoker_new () {return vtkNew < vtkInvoker > () ;}
-extern "C" void vtkInvoker_destructor (vtkNew < vtkInvoker > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkInvoker_get_ptr (vtkNew < vtkInvoker > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkLongArray > vtkLongArray_new () {return vtkNew < vtkLongArray > () ;}
 extern "C" void vtkLongArray_destructor (vtkNew < vtkLongArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkLongArray_get_ptr (vtkNew < vtkLongArray > sself) {return sself . GetPointer () ;}
@@ -493,9 +266,6 @@ extern "C" void * vtkLongLongArray_get_ptr (vtkNew < vtkLongLongArray > sself) {
 extern "C" vtkNew < vtkLookupTable > vtkLookupTable_new () {return vtkNew < vtkLookupTable > () ;}
 extern "C" void vtkLookupTable_destructor (vtkNew < vtkLookupTable > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkLookupTable_get_ptr (vtkNew < vtkLookupTable > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkMarshalContext > vtkMarshalContext_new () {return vtkNew < vtkMarshalContext > () ;}
-extern "C" void vtkMarshalContext_destructor (vtkNew < vtkMarshalContext > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkMarshalContext_get_ptr (vtkNew < vtkMarshalContext > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkMath > vtkMath_new () {return vtkNew < vtkMath > () ;}
 extern "C" void vtkMath_destructor (vtkNew < vtkMath > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkMath_get_ptr (vtkNew < vtkMath > sself) {return sself . GetPointer () ;}
@@ -541,9 +311,6 @@ extern "C" void * vtkReferenceCount_get_ptr (vtkNew < vtkReferenceCount > sself)
 extern "C" vtkNew < vtkScalarsToColors > vtkScalarsToColors_new () {return vtkNew < vtkScalarsToColors > () ;}
 extern "C" void vtkScalarsToColors_destructor (vtkNew < vtkScalarsToColors > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkScalarsToColors_get_ptr (vtkNew < vtkScalarsToColors > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkSerializer > vtkSerializer_new () {return vtkNew < vtkSerializer > () ;}
-extern "C" void vtkSerializer_destructor (vtkNew < vtkSerializer > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkSerializer_get_ptr (vtkNew < vtkSerializer > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkShortArray > vtkShortArray_new () {return vtkNew < vtkShortArray > () ;}
 extern "C" void vtkShortArray_destructor (vtkNew < vtkShortArray > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkShortArray_get_ptr (vtkNew < vtkShortArray > sself) {return sself . GetPointer () ;}

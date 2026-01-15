@@ -9,6 +9,7 @@
 #include<vtkServerSocket.h>
 #include<vtkSocket.h>
 #include<vtkSocketCollection.h>
+#include<vtkThreadMessager.h>
 #include<vtkTimerLog.h>
 #include<vtkTimerLog.h>
 #include<vtkTimerLog.h>
@@ -29,6 +30,9 @@ extern "C" void * vtkServerSocket_get_ptr (vtkNew < vtkServerSocket > sself) ;
 extern "C" vtkNew < vtkSocketCollection > vtkSocketCollection_new () ;
 extern "C" void vtkSocketCollection_destructor (vtkNew < vtkSocketCollection > sself) ;
 extern "C" void * vtkSocketCollection_get_ptr (vtkNew < vtkSocketCollection > sself) ;
+extern "C" vtkNew < vtkThreadMessager > vtkThreadMessager_new () ;
+extern "C" void vtkThreadMessager_destructor (vtkNew < vtkThreadMessager > sself) ;
+extern "C" void * vtkThreadMessager_get_ptr (vtkNew < vtkThreadMessager > sself) ;
 extern "C" vtkNew < vtkTimerLog > vtkTimerLog_new () ;
 extern "C" void vtkTimerLog_destructor (vtkNew < vtkTimerLog > sself) ;
 extern "C" void * vtkTimerLog_get_ptr (vtkNew < vtkTimerLog > sself) ;

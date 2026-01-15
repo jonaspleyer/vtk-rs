@@ -10,7 +10,6 @@
 #include<vtkAMRDataInternals.h>
 #include<vtkAMRInformation.h>
 #include<vtkAMRUtilities.h>
-#include<vtkAbstractCellArray.h>
 #include<vtkAbstractCellLinks.h>
 #include<vtkAbstractCellLocator.h>
 #include<vtkAbstractElectronicData.h>
@@ -20,7 +19,6 @@
 #include<vtkAnimationScene.h>
 #include<vtkAnnotation.h>
 #include<vtkAnnotationLayers.h>
-#include<vtkAnnulus.h>
 #include<vtkArrayData.h>
 #include<vtkAtom.h>
 #include<vtkAttributesErrorMetric.h>
@@ -44,25 +42,11 @@
 #include<vtkCell3D.h>
 #include<vtkCellArray.h>
 #include<vtkCellArrayIterator.h>
-#include<vtkCellAttribute.h>
-#include<vtkCellAttributeCalculator.h>
 #include<vtkCellData.h>
-#include<vtkCellGrid.h>
-#include<vtkCellGridBoundsQuery.h>
-#include<vtkCellGridCopyQuery.h>
-#include<vtkCellGridEvaluator.h>
-#include<vtkCellGridQuery.h>
-#include<vtkCellGridRangeQuery.h>
-#include<vtkCellGridResponder.h>
-#include<vtkCellGridResponderBase.h>
-#include<vtkCellGridResponders.h>
-#include<vtkCellGridSidesCache.h>
-#include<vtkCellGridSidesQuery.h>
 #include<vtkCellIterator.h>
 #include<vtkCellLinks.h>
 #include<vtkCellLocator.h>
 #include<vtkCellLocatorStrategy.h>
-#include<vtkCellMetadata.h>
 #include<vtkCellTreeLocator.h>
 #include<vtkCellTypes.h>
 #include<vtkClosestNPointsStrategy.h>
@@ -107,7 +91,6 @@
 #include<vtkExtractStructuredGridHelper.h>
 #include<vtkFieldData.h>
 #include<vtkFindCellStrategy.h>
-#include<vtkFrustum.h>
 #include<vtkGenericAdaptorCell.h>
 #include<vtkGenericAttribute.h>
 #include<vtkGenericAttributeCollection.h>
@@ -125,6 +108,7 @@
 #include<vtkGraphInternals.h>
 #include<vtkHexagonalPrism.h>
 #include<vtkHexahedron.h>
+#include<vtkHierarchicalBoxDataIterator.h>
 #include<vtkHierarchicalBoxDataSet.h>
 #include<vtkHigherOrderCurve.h>
 #include<vtkHigherOrderHexahedron.h>
@@ -134,18 +118,14 @@
 #include<vtkHigherOrderTriangle.h>
 #include<vtkHigherOrderWedge.h>
 #include<vtkHyperTree.h>
+#include<vtkHyperTreeCursor.h>
 #include<vtkHyperTreeGrid.h>
-#include<vtkHyperTreeGridGeometricLocator.h>
-#include<vtkHyperTreeGridLocator.h>
 #include<vtkHyperTreeGridNonOrientedCursor.h>
 #include<vtkHyperTreeGridNonOrientedGeometryCursor.h>
 #include<vtkHyperTreeGridNonOrientedMooreSuperCursor.h>
 #include<vtkHyperTreeGridNonOrientedMooreSuperCursorLight.h>
 #include<vtkHyperTreeGridNonOrientedSuperCursor.h>
 #include<vtkHyperTreeGridNonOrientedSuperCursorLight.h>
-#include<vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor.h>
-#include<vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor.h>
-#include<vtkHyperTreeGridNonOrientedUnlimitedSuperCursor.h>
 #include<vtkHyperTreeGridNonOrientedVonNeumannSuperCursor.h>
 #include<vtkHyperTreeGridNonOrientedVonNeumannSuperCursorLight.h>
 #include<vtkHyperTreeGridOrientedCursor.h>
@@ -225,7 +205,6 @@
 #include<vtkPolyVertex.h>
 #include<vtkPolygon.h>
 #include<vtkPolyhedron.h>
-#include<vtkPolyhedronUtilities.h>
 #include<vtkPyramid.h>
 #include<vtkQuad.h>
 #include<vtkQuadraticEdge.h>
@@ -260,10 +239,8 @@
 #include<vtkStaticCellLinksTemplate.h>
 #include<vtkStaticCellLocator.h>
 #include<vtkStaticEdgeLocatorTemplate.h>
-#include<vtkStaticFaceHashLinksTemplate.h>
 #include<vtkStaticPointLocator.h>
 #include<vtkStaticPointLocator2D.h>
-#include<vtkStructuredCellArray.h>
 #include<vtkStructuredData.h>
 #include<vtkStructuredExtent.h>
 #include<vtkStructuredGrid.h>
@@ -323,9 +300,6 @@ extern "C" void * vtkAnnotation_get_ptr (vtkNew < vtkAnnotation > sself) {return
 extern "C" vtkNew < vtkAnnotationLayers > vtkAnnotationLayers_new () {return vtkNew < vtkAnnotationLayers > () ;}
 extern "C" void vtkAnnotationLayers_destructor (vtkNew < vtkAnnotationLayers > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkAnnotationLayers_get_ptr (vtkNew < vtkAnnotationLayers > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkAnnulus > vtkAnnulus_new () {return vtkNew < vtkAnnulus > () ;}
-extern "C" void vtkAnnulus_destructor (vtkNew < vtkAnnulus > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkAnnulus_get_ptr (vtkNew < vtkAnnulus > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkArrayData > vtkArrayData_new () {return vtkNew < vtkArrayData > () ;}
 extern "C" void vtkArrayData_destructor (vtkNew < vtkArrayData > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkArrayData_get_ptr (vtkNew < vtkArrayData > sself) {return sself . GetPointer () ;}
@@ -380,39 +354,9 @@ extern "C" void * vtkCellArray_get_ptr (vtkNew < vtkCellArray > sself) {return s
 extern "C" vtkNew < vtkCellArrayIterator > vtkCellArrayIterator_new () {return vtkNew < vtkCellArrayIterator > () ;}
 extern "C" void vtkCellArrayIterator_destructor (vtkNew < vtkCellArrayIterator > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkCellArrayIterator_get_ptr (vtkNew < vtkCellArrayIterator > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellAttribute > vtkCellAttribute_new () {return vtkNew < vtkCellAttribute > () ;}
-extern "C" void vtkCellAttribute_destructor (vtkNew < vtkCellAttribute > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellAttribute_get_ptr (vtkNew < vtkCellAttribute > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellAttributeCalculator > vtkCellAttributeCalculator_new () {return vtkNew < vtkCellAttributeCalculator > () ;}
-extern "C" void vtkCellAttributeCalculator_destructor (vtkNew < vtkCellAttributeCalculator > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellAttributeCalculator_get_ptr (vtkNew < vtkCellAttributeCalculator > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkCellData > vtkCellData_new () {return vtkNew < vtkCellData > () ;}
 extern "C" void vtkCellData_destructor (vtkNew < vtkCellData > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkCellData_get_ptr (vtkNew < vtkCellData > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGrid > vtkCellGrid_new () {return vtkNew < vtkCellGrid > () ;}
-extern "C" void vtkCellGrid_destructor (vtkNew < vtkCellGrid > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGrid_get_ptr (vtkNew < vtkCellGrid > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridBoundsQuery > vtkCellGridBoundsQuery_new () {return vtkNew < vtkCellGridBoundsQuery > () ;}
-extern "C" void vtkCellGridBoundsQuery_destructor (vtkNew < vtkCellGridBoundsQuery > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridBoundsQuery_get_ptr (vtkNew < vtkCellGridBoundsQuery > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridCopyQuery > vtkCellGridCopyQuery_new () {return vtkNew < vtkCellGridCopyQuery > () ;}
-extern "C" void vtkCellGridCopyQuery_destructor (vtkNew < vtkCellGridCopyQuery > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridCopyQuery_get_ptr (vtkNew < vtkCellGridCopyQuery > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridEvaluator > vtkCellGridEvaluator_new () {return vtkNew < vtkCellGridEvaluator > () ;}
-extern "C" void vtkCellGridEvaluator_destructor (vtkNew < vtkCellGridEvaluator > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridEvaluator_get_ptr (vtkNew < vtkCellGridEvaluator > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridRangeQuery > vtkCellGridRangeQuery_new () {return vtkNew < vtkCellGridRangeQuery > () ;}
-extern "C" void vtkCellGridRangeQuery_destructor (vtkNew < vtkCellGridRangeQuery > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridRangeQuery_get_ptr (vtkNew < vtkCellGridRangeQuery > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridResponders > vtkCellGridResponders_new () {return vtkNew < vtkCellGridResponders > () ;}
-extern "C" void vtkCellGridResponders_destructor (vtkNew < vtkCellGridResponders > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridResponders_get_ptr (vtkNew < vtkCellGridResponders > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridSidesCache > vtkCellGridSidesCache_new () {return vtkNew < vtkCellGridSidesCache > () ;}
-extern "C" void vtkCellGridSidesCache_destructor (vtkNew < vtkCellGridSidesCache > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridSidesCache_get_ptr (vtkNew < vtkCellGridSidesCache > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkCellGridSidesQuery > vtkCellGridSidesQuery_new () {return vtkNew < vtkCellGridSidesQuery > () ;}
-extern "C" void vtkCellGridSidesQuery_destructor (vtkNew < vtkCellGridSidesQuery > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkCellGridSidesQuery_get_ptr (vtkNew < vtkCellGridSidesQuery > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkCellLinks > vtkCellLinks_new () {return vtkNew < vtkCellLinks > () ;}
 extern "C" void vtkCellLinks_destructor (vtkNew < vtkCellLinks > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkCellLinks_get_ptr (vtkNew < vtkCellLinks > sself) {return sself . GetPointer () ;}
@@ -500,9 +444,6 @@ extern "C" void * vtkExtractStructuredGridHelper_get_ptr (vtkNew < vtkExtractStr
 extern "C" vtkNew < vtkFieldData > vtkFieldData_new () {return vtkNew < vtkFieldData > () ;}
 extern "C" void vtkFieldData_destructor (vtkNew < vtkFieldData > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkFieldData_get_ptr (vtkNew < vtkFieldData > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkFrustum > vtkFrustum_new () {return vtkNew < vtkFrustum > () ;}
-extern "C" void vtkFrustum_destructor (vtkNew < vtkFrustum > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkFrustum_get_ptr (vtkNew < vtkFrustum > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkGenericAttributeCollection > vtkGenericAttributeCollection_new () {return vtkNew < vtkGenericAttributeCollection > () ;}
 extern "C" void vtkGenericAttributeCollection_destructor (vtkNew < vtkGenericAttributeCollection > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkGenericAttributeCollection_get_ptr (vtkNew < vtkGenericAttributeCollection > sself) {return sself . GetPointer () ;}
@@ -530,15 +471,15 @@ extern "C" void * vtkHexagonalPrism_get_ptr (vtkNew < vtkHexagonalPrism > sself)
 extern "C" vtkNew < vtkHexahedron > vtkHexahedron_new () {return vtkNew < vtkHexahedron > () ;}
 extern "C" void vtkHexahedron_destructor (vtkNew < vtkHexahedron > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHexahedron_get_ptr (vtkNew < vtkHexahedron > sself) {return sself . GetPointer () ;}
+extern "C" vtkNew < vtkHierarchicalBoxDataIterator > vtkHierarchicalBoxDataIterator_new () {return vtkNew < vtkHierarchicalBoxDataIterator > () ;}
+extern "C" void vtkHierarchicalBoxDataIterator_destructor (vtkNew < vtkHierarchicalBoxDataIterator > sself) {sself . Reset () ; return ;}
+extern "C" void * vtkHierarchicalBoxDataIterator_get_ptr (vtkNew < vtkHierarchicalBoxDataIterator > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkHierarchicalBoxDataSet > vtkHierarchicalBoxDataSet_new () {return vtkNew < vtkHierarchicalBoxDataSet > () ;}
 extern "C" void vtkHierarchicalBoxDataSet_destructor (vtkNew < vtkHierarchicalBoxDataSet > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHierarchicalBoxDataSet_get_ptr (vtkNew < vtkHierarchicalBoxDataSet > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkHyperTreeGrid > vtkHyperTreeGrid_new () {return vtkNew < vtkHyperTreeGrid > () ;}
 extern "C" void vtkHyperTreeGrid_destructor (vtkNew < vtkHyperTreeGrid > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHyperTreeGrid_get_ptr (vtkNew < vtkHyperTreeGrid > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkHyperTreeGridGeometricLocator > vtkHyperTreeGridGeometricLocator_new () {return vtkNew < vtkHyperTreeGridGeometricLocator > () ;}
-extern "C" void vtkHyperTreeGridGeometricLocator_destructor (vtkNew < vtkHyperTreeGridGeometricLocator > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkHyperTreeGridGeometricLocator_get_ptr (vtkNew < vtkHyperTreeGridGeometricLocator > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkHyperTreeGridNonOrientedCursor > vtkHyperTreeGridNonOrientedCursor_new () {return vtkNew < vtkHyperTreeGridNonOrientedCursor > () ;}
 extern "C" void vtkHyperTreeGridNonOrientedCursor_destructor (vtkNew < vtkHyperTreeGridNonOrientedCursor > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHyperTreeGridNonOrientedCursor_get_ptr (vtkNew < vtkHyperTreeGridNonOrientedCursor > sself) {return sself . GetPointer () ;}
@@ -551,12 +492,6 @@ extern "C" void * vtkHyperTreeGridNonOrientedMooreSuperCursor_get_ptr (vtkNew < 
 extern "C" vtkNew < vtkHyperTreeGridNonOrientedMooreSuperCursorLight > vtkHyperTreeGridNonOrientedMooreSuperCursorLight_new () {return vtkNew < vtkHyperTreeGridNonOrientedMooreSuperCursorLight > () ;}
 extern "C" void vtkHyperTreeGridNonOrientedMooreSuperCursorLight_destructor (vtkNew < vtkHyperTreeGridNonOrientedMooreSuperCursorLight > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHyperTreeGridNonOrientedMooreSuperCursorLight_get_ptr (vtkNew < vtkHyperTreeGridNonOrientedMooreSuperCursorLight > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor > vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_new () {return vtkNew < vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor > () ;}
-extern "C" void vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_destructor (vtkNew < vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor_get_ptr (vtkNew < vtkHyperTreeGridNonOrientedUnlimitedGeometryCursor > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor > vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_new () {return vtkNew < vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor > () ;}
-extern "C" void vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_destructor (vtkNew < vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor_get_ptr (vtkNew < vtkHyperTreeGridNonOrientedUnlimitedMooreSuperCursor > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkHyperTreeGridNonOrientedVonNeumannSuperCursor > vtkHyperTreeGridNonOrientedVonNeumannSuperCursor_new () {return vtkNew < vtkHyperTreeGridNonOrientedVonNeumannSuperCursor > () ;}
 extern "C" void vtkHyperTreeGridNonOrientedVonNeumannSuperCursor_destructor (vtkNew < vtkHyperTreeGridNonOrientedVonNeumannSuperCursor > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkHyperTreeGridNonOrientedVonNeumannSuperCursor_get_ptr (vtkNew < vtkHyperTreeGridNonOrientedVonNeumannSuperCursor > sself) {return sself . GetPointer () ;}
@@ -842,9 +777,6 @@ extern "C" void * vtkStaticPointLocator_get_ptr (vtkNew < vtkStaticPointLocator 
 extern "C" vtkNew < vtkStaticPointLocator2D > vtkStaticPointLocator2D_new () {return vtkNew < vtkStaticPointLocator2D > () ;}
 extern "C" void vtkStaticPointLocator2D_destructor (vtkNew < vtkStaticPointLocator2D > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkStaticPointLocator2D_get_ptr (vtkNew < vtkStaticPointLocator2D > sself) {return sself . GetPointer () ;}
-extern "C" vtkNew < vtkStructuredCellArray > vtkStructuredCellArray_new () {return vtkNew < vtkStructuredCellArray > () ;}
-extern "C" void vtkStructuredCellArray_destructor (vtkNew < vtkStructuredCellArray > sself) {sself . Reset () ; return ;}
-extern "C" void * vtkStructuredCellArray_get_ptr (vtkNew < vtkStructuredCellArray > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkStructuredExtent > vtkStructuredExtent_new () {return vtkNew < vtkStructuredExtent > () ;}
 extern "C" void vtkStructuredExtent_destructor (vtkNew < vtkStructuredExtent > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkStructuredExtent_get_ptr (vtkNew < vtkStructuredExtent > sself) {return sself . GetPointer () ;}

@@ -1,5 +1,5 @@
 use cmake::Config;
-use vtk_rs_link::{log, Result, WARN};
+use vtk_rs_link::{Result, WARN, log};
 fn build_cmake() {
     println!("cargo:rerun-if-changed=libvtkrs");
     let mut config = Config::new("libvtkrs");
@@ -20,7 +20,7 @@ fn main() -> Result<()> {
     build_cmake();
     let modules = vec![
         "vtksys",
-        "vtktoken",
+        // "vtktoken",
         "vtkCommonArchive",
         "vtkCommonColor",
         "vtkCommonComputationalGeometry",

@@ -3,31 +3,25 @@
 #include<vtkObjectBase.h>
 
 // Include objects of this module
-#include<vtkAggregateToPartitionedDataSetCollection.h>
 #include<vtkAlgorithm.h>
 #include<vtkAlgorithmOutput.h>
 #include<vtkAnnotationLayersAlgorithm.h>
 #include<vtkArrayDataAlgorithm.h>
 #include<vtkCachedStreamingDemandDrivenPipeline.h>
 #include<vtkCastToConcrete.h>
-#include<vtkCellGridAlgorithm.h>
 #include<vtkCompositeDataPipeline.h>
 #include<vtkCompositeDataSetAlgorithm.h>
 #include<vtkDataObjectAlgorithm.h>
 #include<vtkDataSetAlgorithm.h>
 #include<vtkDemandDrivenPipeline.h>
 #include<vtkDirectedGraphAlgorithm.h>
-#include<vtkEndFor.h>
 #include<vtkEnsembleSource.h>
-#include<vtkExecutionAggregator.h>
-#include<vtkExecutionRange.h>
 #include<vtkExecutive.h>
 #include<vtkExplicitStructuredGridAlgorithm.h>
 #include<vtkExtentRCBPartitioner.h>
 #include<vtkExtentSplitter.h>
 #include<vtkExtentTranslator.h>
 #include<vtkFilteringInformationKeyManager.h>
-#include<vtkForEach.h>
 #include<vtkGraphAlgorithm.h>
 #include<vtkHierarchicalBoxDataSetAlgorithm.h>
 #include<vtkHyperTreeGridAlgorithm.h>
@@ -55,6 +49,7 @@
 #include<vtkPolyDataAlgorithm.h>
 #include<vtkProgressObserver.h>
 #include<vtkReaderAlgorithm.h>
+#include<vtkReaderExecutive.h>
 #include<vtkRectilinearGridAlgorithm.h>
 #include<vtkSMPProgressObserver.h>
 #include<vtkScalarTree.h>
@@ -67,10 +62,8 @@
 #include<vtkStreamingDemandDrivenPipeline.h>
 #include<vtkStructuredGridAlgorithm.h>
 #include<vtkTableAlgorithm.h>
-#include<vtkTemporalAlgorithm.h>
 #include<vtkThreadedCompositeDataPipeline.h>
 #include<vtkThreadedImageAlgorithm.h>
-#include<vtkTimeRange.h>
 #include<vtkTreeAlgorithm.h>
 #include<vtkTrivialConsumer.h>
 #include<vtkTrivialProducer.h>
@@ -81,9 +74,6 @@
 #include<vtkUnstructuredGridBaseAlgorithm.h>
 
 // Declare exported functions
-extern "C" vtkNew < vtkAggregateToPartitionedDataSetCollection > vtkAggregateToPartitionedDataSetCollection_new () ;
-extern "C" void vtkAggregateToPartitionedDataSetCollection_destructor (vtkNew < vtkAggregateToPartitionedDataSetCollection > sself) ;
-extern "C" void * vtkAggregateToPartitionedDataSetCollection_get_ptr (vtkNew < vtkAggregateToPartitionedDataSetCollection > sself) ;
 extern "C" vtkNew < vtkAlgorithm > vtkAlgorithm_new () ;
 extern "C" void vtkAlgorithm_destructor (vtkNew < vtkAlgorithm > sself) ;
 extern "C" void * vtkAlgorithm_get_ptr (vtkNew < vtkAlgorithm > sself) ;
@@ -102,9 +92,6 @@ extern "C" void * vtkCachedStreamingDemandDrivenPipeline_get_ptr (vtkNew < vtkCa
 extern "C" vtkNew < vtkCastToConcrete > vtkCastToConcrete_new () ;
 extern "C" void vtkCastToConcrete_destructor (vtkNew < vtkCastToConcrete > sself) ;
 extern "C" void * vtkCastToConcrete_get_ptr (vtkNew < vtkCastToConcrete > sself) ;
-extern "C" vtkNew < vtkCellGridAlgorithm > vtkCellGridAlgorithm_new () ;
-extern "C" void vtkCellGridAlgorithm_destructor (vtkNew < vtkCellGridAlgorithm > sself) ;
-extern "C" void * vtkCellGridAlgorithm_get_ptr (vtkNew < vtkCellGridAlgorithm > sself) ;
 extern "C" vtkNew < vtkCompositeDataPipeline > vtkCompositeDataPipeline_new () ;
 extern "C" void vtkCompositeDataPipeline_destructor (vtkNew < vtkCompositeDataPipeline > sself) ;
 extern "C" void * vtkCompositeDataPipeline_get_ptr (vtkNew < vtkCompositeDataPipeline > sself) ;
@@ -123,9 +110,6 @@ extern "C" void * vtkDemandDrivenPipeline_get_ptr (vtkNew < vtkDemandDrivenPipel
 extern "C" vtkNew < vtkDirectedGraphAlgorithm > vtkDirectedGraphAlgorithm_new () ;
 extern "C" void vtkDirectedGraphAlgorithm_destructor (vtkNew < vtkDirectedGraphAlgorithm > sself) ;
 extern "C" void * vtkDirectedGraphAlgorithm_get_ptr (vtkNew < vtkDirectedGraphAlgorithm > sself) ;
-extern "C" vtkNew < vtkEndFor > vtkEndFor_new () ;
-extern "C" void vtkEndFor_destructor (vtkNew < vtkEndFor > sself) ;
-extern "C" void * vtkEndFor_get_ptr (vtkNew < vtkEndFor > sself) ;
 extern "C" vtkNew < vtkEnsembleSource > vtkEnsembleSource_new () ;
 extern "C" void vtkEnsembleSource_destructor (vtkNew < vtkEnsembleSource > sself) ;
 extern "C" void * vtkEnsembleSource_get_ptr (vtkNew < vtkEnsembleSource > sself) ;
@@ -141,9 +125,6 @@ extern "C" void * vtkExtentSplitter_get_ptr (vtkNew < vtkExtentSplitter > sself)
 extern "C" vtkNew < vtkExtentTranslator > vtkExtentTranslator_new () ;
 extern "C" void vtkExtentTranslator_destructor (vtkNew < vtkExtentTranslator > sself) ;
 extern "C" void * vtkExtentTranslator_get_ptr (vtkNew < vtkExtentTranslator > sself) ;
-extern "C" vtkNew < vtkForEach > vtkForEach_new () ;
-extern "C" void vtkForEach_destructor (vtkNew < vtkForEach > sself) ;
-extern "C" void * vtkForEach_get_ptr (vtkNew < vtkForEach > sself) ;
 extern "C" vtkNew < vtkGraphAlgorithm > vtkGraphAlgorithm_new () ;
 extern "C" void vtkGraphAlgorithm_destructor (vtkNew < vtkGraphAlgorithm > sself) ;
 extern "C" void * vtkGraphAlgorithm_get_ptr (vtkNew < vtkGraphAlgorithm > sself) ;
@@ -189,6 +170,9 @@ extern "C" void * vtkPolyDataAlgorithm_get_ptr (vtkNew < vtkPolyDataAlgorithm > 
 extern "C" vtkNew < vtkProgressObserver > vtkProgressObserver_new () ;
 extern "C" void vtkProgressObserver_destructor (vtkNew < vtkProgressObserver > sself) ;
 extern "C" void * vtkProgressObserver_get_ptr (vtkNew < vtkProgressObserver > sself) ;
+extern "C" vtkNew < vtkReaderExecutive > vtkReaderExecutive_new () ;
+extern "C" void vtkReaderExecutive_destructor (vtkNew < vtkReaderExecutive > sself) ;
+extern "C" void * vtkReaderExecutive_get_ptr (vtkNew < vtkReaderExecutive > sself) ;
 extern "C" vtkNew < vtkRectilinearGridAlgorithm > vtkRectilinearGridAlgorithm_new () ;
 extern "C" void vtkRectilinearGridAlgorithm_destructor (vtkNew < vtkRectilinearGridAlgorithm > sself) ;
 extern "C" void * vtkRectilinearGridAlgorithm_get_ptr (vtkNew < vtkRectilinearGridAlgorithm > sself) ;
@@ -219,9 +203,6 @@ extern "C" void * vtkTableAlgorithm_get_ptr (vtkNew < vtkTableAlgorithm > sself)
 extern "C" vtkNew < vtkThreadedCompositeDataPipeline > vtkThreadedCompositeDataPipeline_new () ;
 extern "C" void vtkThreadedCompositeDataPipeline_destructor (vtkNew < vtkThreadedCompositeDataPipeline > sself) ;
 extern "C" void * vtkThreadedCompositeDataPipeline_get_ptr (vtkNew < vtkThreadedCompositeDataPipeline > sself) ;
-extern "C" vtkNew < vtkTimeRange > vtkTimeRange_new () ;
-extern "C" void vtkTimeRange_destructor (vtkNew < vtkTimeRange > sself) ;
-extern "C" void * vtkTimeRange_get_ptr (vtkNew < vtkTimeRange > sself) ;
 extern "C" vtkNew < vtkTreeAlgorithm > vtkTreeAlgorithm_new () ;
 extern "C" void vtkTreeAlgorithm_destructor (vtkNew < vtkTreeAlgorithm > sself) ;
 extern "C" void * vtkTreeAlgorithm_get_ptr (vtkNew < vtkTreeAlgorithm > sself) ;

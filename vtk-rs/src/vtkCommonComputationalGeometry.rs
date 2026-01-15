@@ -588,7 +588,7 @@ fn test_vtkParametricEllipsoid_create_drop() {
 ///
 ///
 /// vtkParametricEnneper generates Enneper's surface.
-/// Enneper's surface is a self-intersecting minimal surface
+/// Enneper's surface is a a self-intersecting minimal surface
 /// possessing constant negative Gaussian curvature
 ///
 /// For further information about this surface, please consult the

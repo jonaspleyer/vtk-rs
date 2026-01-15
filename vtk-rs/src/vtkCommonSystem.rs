@@ -102,11 +102,7 @@ fn test_vtkDirectory_create_drop() {
 ///
 ///
 /// Launch a process on the current machine and get its standard output and
-/// standard error output. When `ExecuteInSystemShell` is false, arguments
-/// needs to be added separately using the `AddArgument` / `ClearArguments`
-/// API, otherwise command may not work correctly. If one does not know how to
-/// parse the arguments of the command it want to execute then
-/// `ExecuteInSystemShell` should be set to true.
+/// standard error output.
 #[allow(non_camel_case_types)]
 pub struct vtkExecutableRunner(*mut core::ffi::c_void);
 impl vtkExecutableRunner {
@@ -248,6 +244,56 @@ fn test_vtkSocketCollection_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkSocketCollection(ptr);
+    assert!(unsafe { new_obj._get_ptr().is_null() });
+}
+/// A class for performing inter-thread messaging
+///
+///
+/// vtkThreadMessager is a class that provides support for messaging between
+/// threads multithreaded using pthreads or Windows messaging.
+#[allow(non_camel_case_types)]
+pub struct vtkThreadMessager(*mut core::ffi::c_void);
+impl vtkThreadMessager {
+    /// Creates a new [vtkThreadMessager] wrapped inside `vtkNew`
+    #[doc(alias = "vtkThreadMessager")]
+    pub fn new() -> Self {
+        unsafe extern "C" {
+            fn vtkThreadMessager_new() -> *mut core::ffi::c_void;
+        }
+        Self(unsafe { &mut *vtkThreadMessager_new() })
+    }
+    #[cfg(test)]
+    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+        unsafe extern "C" {
+            fn vtkThreadMessager_get_ptr(
+                sself: *mut core::ffi::c_void,
+            ) -> *mut core::ffi::c_void;
+        }
+        unsafe { vtkThreadMessager_get_ptr(self.0) }
+    }
+}
+impl std::default::Default for vtkThreadMessager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl Drop for vtkThreadMessager {
+    fn drop(&mut self) {
+        unsafe extern "C" {
+            fn vtkThreadMessager_destructor(sself: *mut core::ffi::c_void);
+        }
+        unsafe { vtkThreadMessager_destructor(self.0) }
+        self.0 = core::ptr::null_mut();
+    }
+}
+#[test]
+fn test_vtkThreadMessager_create_drop() {
+    let obj = vtkThreadMessager::new();
+    let ptr = obj.0;
+    assert!(!ptr.is_null());
+    assert!(unsafe { !obj._get_ptr().is_null() });
+    drop(obj);
+    let new_obj = vtkThreadMessager(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// Timer support and logging

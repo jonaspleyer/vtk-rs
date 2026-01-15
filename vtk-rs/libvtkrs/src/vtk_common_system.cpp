@@ -12,6 +12,7 @@
 #include<vtkServerSocket.h>
 #include<vtkSocket.h>
 #include<vtkSocketCollection.h>
+#include<vtkThreadMessager.h>
 #include<vtkTimerLog.h>
 #include<vtkTimerLog.h>
 #include<vtkTimerLog.h>
@@ -32,6 +33,9 @@ extern "C" void * vtkServerSocket_get_ptr (vtkNew < vtkServerSocket > sself) {re
 extern "C" vtkNew < vtkSocketCollection > vtkSocketCollection_new () {return vtkNew < vtkSocketCollection > () ;}
 extern "C" void vtkSocketCollection_destructor (vtkNew < vtkSocketCollection > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkSocketCollection_get_ptr (vtkNew < vtkSocketCollection > sself) {return sself . GetPointer () ;}
+extern "C" vtkNew < vtkThreadMessager > vtkThreadMessager_new () {return vtkNew < vtkThreadMessager > () ;}
+extern "C" void vtkThreadMessager_destructor (vtkNew < vtkThreadMessager > sself) {sself . Reset () ; return ;}
+extern "C" void * vtkThreadMessager_get_ptr (vtkNew < vtkThreadMessager > sself) {return sself . GetPointer () ;}
 extern "C" vtkNew < vtkTimerLog > vtkTimerLog_new () {return vtkNew < vtkTimerLog > () ;}
 extern "C" void vtkTimerLog_destructor (vtkNew < vtkTimerLog > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkTimerLog_get_ptr (vtkNew < vtkTimerLog > sself) {return sself . GetPointer () ;}

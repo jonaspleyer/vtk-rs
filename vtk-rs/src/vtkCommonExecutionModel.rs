@@ -1,58 +1,3 @@
-/// Aggregate results in the vtkEndFor
-///
-///
-/// vtkAggregateToPartitionedDataSetCollection is an execution aggregator for the
-/// `vtkEndFor` filter that insert each iteration result in a partition of a
-/// vtkPartitionnedDataSetCollection.
-///
-/// @sa vtkEndFor, vtkForEach, vtkExecutionAggregator
-#[allow(non_camel_case_types)]
-pub struct vtkAggregateToPartitionedDataSetCollection(*mut core::ffi::c_void);
-impl vtkAggregateToPartitionedDataSetCollection {
-    /// Creates a new [vtkAggregateToPartitionedDataSetCollection] wrapped inside `vtkNew`
-    #[doc(alias = "vtkAggregateToPartitionedDataSetCollection")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkAggregateToPartitionedDataSetCollection_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkAggregateToPartitionedDataSetCollection_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkAggregateToPartitionedDataSetCollection_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkAggregateToPartitionedDataSetCollection_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkAggregateToPartitionedDataSetCollection {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkAggregateToPartitionedDataSetCollection {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkAggregateToPartitionedDataSetCollection_destructor(
-                sself: *mut core::ffi::c_void,
-            );
-        }
-        unsafe { vtkAggregateToPartitionedDataSetCollection_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkAggregateToPartitionedDataSetCollection_create_drop() {
-    let obj = vtkAggregateToPartitionedDataSetCollection::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkAggregateToPartitionedDataSetCollection(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
 /// Superclass for all sources, filters, and sinks in VTK.
 ///
 ///
@@ -404,64 +349,6 @@ fn test_vtkCastToConcrete_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkCastToConcrete(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Superclass for algorithms that produce only polydata as output
-///
-///
-///
-/// vtkCellGridAlgorithm is a convenience class to make writing algorithms
-/// easier. It is also designed to help transition old algorithms to the new
-/// pipeline architecture. There are some assumptions and defaults made by this
-/// class you should be aware of. This class defaults such that your filter
-/// will have one input port and one output port. If that is not the case
-/// simply change it with SetNumberOfInputPorts etc. See this class
-/// constructor for the default. This class also provides a FillInputPortInfo
-/// method that by default says that all inputs will be PolyData. If that
-/// isn't the case then please override this method in your subclass.
-#[allow(non_camel_case_types)]
-pub struct vtkCellGridAlgorithm(*mut core::ffi::c_void);
-impl vtkCellGridAlgorithm {
-    /// Creates a new [vtkCellGridAlgorithm] wrapped inside `vtkNew`
-    #[doc(alias = "vtkCellGridAlgorithm")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkCellGridAlgorithm_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkCellGridAlgorithm_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkCellGridAlgorithm_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkCellGridAlgorithm_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkCellGridAlgorithm {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkCellGridAlgorithm {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkCellGridAlgorithm_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkCellGridAlgorithm_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkCellGridAlgorithm_create_drop() {
-    let obj = vtkCellGridAlgorithm::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkCellGridAlgorithm(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// Executive supporting composite datasets.
@@ -823,65 +710,6 @@ fn test_vtkDirectedGraphAlgorithm_create_drop() {
     let new_obj = vtkDirectedGraphAlgorithm(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
-/// vtkEndFor define the end of the sub-pipeline to loop
-///
-///
-/// vtkEndFor works together with vtkForEach. It marks the end of the loop.
-/// Its goals is to use the given `vtkExecutionAggregator` to process the result
-/// of each iteration and provide an output dataset.
-///
-/// The default aggregator is vtkAggregateToPartitionedDataSetCollection, which
-/// build a vtkPartitionedDataSetCollection with each result in a separate partition.
-///
-/// > Largely inspired by the ttkForEach/ttkEndFor in the TTK project
-/// > (https://github.com/topology-tool-kit/ttk/tree/dev)
-///
-/// @sa vtkForEach, vtkExecutionAggregator
-#[allow(non_camel_case_types)]
-pub struct vtkEndFor(*mut core::ffi::c_void);
-impl vtkEndFor {
-    /// Creates a new [vtkEndFor] wrapped inside `vtkNew`
-    #[doc(alias = "vtkEndFor")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkEndFor_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkEndFor_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkEndFor_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkEndFor_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkEndFor {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkEndFor {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkEndFor_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkEndFor_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkEndFor_create_drop() {
-    let obj = vtkEndFor::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkEndFor(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
 /// source that manages dataset ensembles
 ///
 ///
@@ -1140,62 +968,6 @@ fn test_vtkExtentTranslator_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkExtentTranslator(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// Algorithm allowing to implement a for loop using the VTK pipeline and a sister filter
-///
-/// vtkEndFor
-///
-/// This filter begins a for loop that can execute a portion of a pipeline (sub-pipeline) a certain
-/// number of times. To be used in conjunction with the `vtkEndFor` filter that should end the loop.
-///
-/// > Largely inspired by the ttkForEach/ttkEndFor in the TTK project
-/// > (https://github.com/topology-tool-kit/ttk/tree/dev)
-///
-/// @sa vtkEndFor, vtkExecutionRange
-#[allow(non_camel_case_types)]
-pub struct vtkForEach(*mut core::ffi::c_void);
-impl vtkForEach {
-    /// Creates a new [vtkForEach] wrapped inside `vtkNew`
-    #[doc(alias = "vtkForEach")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkForEach_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkForEach_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkForEach_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkForEach_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkForEach {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkForEach {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkForEach_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkForEach_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkForEach_create_drop() {
-    let obj = vtkForEach::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkForEach(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// Superclass for algorithms that produce only graph as output
@@ -2033,6 +1805,66 @@ fn test_vtkProgressObserver_create_drop() {
     let new_obj = vtkProgressObserver(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
+/// Executive that works with vtkReaderAlgorithm and subclasses.
+///
+///
+/// @deprecated VTK 9.1.0. This is no longer needed. vtkReaderAlgorithm can now
+/// work with standard executive and hence this can be removed. Follows docs are
+/// no longer relevant and left for historical reasons.
+///
+/// vtkReaderExecutive is an executive that supports simplified API readers
+/// that are written by subclassing from the vtkReaderAlgorithm hierarchy.
+/// Currently, its main functionality is to call the basic reader API instead
+/// if the standard ProcessRequest() method that other algorithms use.
+/// In time, this is likely to add functionality such as caching. See
+/// vtkReaderAlgorithm for the API.
+///
+/// Note that this executive assumes that the reader has one output port.
+#[allow(non_camel_case_types)]
+pub struct vtkReaderExecutive(*mut core::ffi::c_void);
+impl vtkReaderExecutive {
+    /// Creates a new [vtkReaderExecutive] wrapped inside `vtkNew`
+    #[doc(alias = "vtkReaderExecutive")]
+    pub fn new() -> Self {
+        unsafe extern "C" {
+            fn vtkReaderExecutive_new() -> *mut core::ffi::c_void;
+        }
+        Self(unsafe { &mut *vtkReaderExecutive_new() })
+    }
+    #[cfg(test)]
+    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
+        unsafe extern "C" {
+            fn vtkReaderExecutive_get_ptr(
+                sself: *mut core::ffi::c_void,
+            ) -> *mut core::ffi::c_void;
+        }
+        unsafe { vtkReaderExecutive_get_ptr(self.0) }
+    }
+}
+impl std::default::Default for vtkReaderExecutive {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl Drop for vtkReaderExecutive {
+    fn drop(&mut self) {
+        unsafe extern "C" {
+            fn vtkReaderExecutive_destructor(sself: *mut core::ffi::c_void);
+        }
+        unsafe { vtkReaderExecutive_destructor(self.0) }
+        self.0 = core::ptr::null_mut();
+    }
+}
+#[test]
+fn test_vtkReaderExecutive_create_drop() {
+    let obj = vtkReaderExecutive::new();
+    let ptr = obj.0;
+    assert!(!ptr.is_null());
+    assert!(unsafe { !obj._get_ptr().is_null() });
+    drop(obj);
+    let new_obj = vtkReaderExecutive(ptr);
+    assert!(unsafe { new_obj._get_ptr().is_null() });
+}
 /// Superclass for algorithms that produce only rectilinear grid as output
 ///
 ///
@@ -2656,58 +2488,6 @@ fn test_vtkThreadedCompositeDataPipeline_create_drop() {
     assert!(unsafe { !obj._get_ptr().is_null() });
     drop(obj);
     let new_obj = vtkThreadedCompositeDataPipeline(ptr);
-    assert!(unsafe { new_obj._get_ptr().is_null() });
-}
-/// vtkExecutionRange using time to dispatch in a vtkForEach sub-pipeline
-///
-///
-/// vtkTimeRange is an execution range for the vtkForEach, that split execution by time steps.
-/// The resulting sub-pipeline will be executed once for each time step of the input dataset.
-///
-/// @sa vtkForEach, vtkExecutionRange, vtkTimeRange
-#[allow(non_camel_case_types)]
-pub struct vtkTimeRange(*mut core::ffi::c_void);
-impl vtkTimeRange {
-    /// Creates a new [vtkTimeRange] wrapped inside `vtkNew`
-    #[doc(alias = "vtkTimeRange")]
-    pub fn new() -> Self {
-        unsafe extern "C" {
-            fn vtkTimeRange_new() -> *mut core::ffi::c_void;
-        }
-        Self(unsafe { &mut *vtkTimeRange_new() })
-    }
-    #[cfg(test)]
-    unsafe fn _get_ptr(&self) -> *mut core::ffi::c_void {
-        unsafe extern "C" {
-            fn vtkTimeRange_get_ptr(
-                sself: *mut core::ffi::c_void,
-            ) -> *mut core::ffi::c_void;
-        }
-        unsafe { vtkTimeRange_get_ptr(self.0) }
-    }
-}
-impl std::default::Default for vtkTimeRange {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Drop for vtkTimeRange {
-    fn drop(&mut self) {
-        unsafe extern "C" {
-            fn vtkTimeRange_destructor(sself: *mut core::ffi::c_void);
-        }
-        unsafe { vtkTimeRange_destructor(self.0) }
-        self.0 = core::ptr::null_mut();
-    }
-}
-#[test]
-fn test_vtkTimeRange_create_drop() {
-    let obj = vtkTimeRange::new();
-    let ptr = obj.0;
-    assert!(!ptr.is_null());
-    assert!(unsafe { !obj._get_ptr().is_null() });
-    drop(obj);
-    let new_obj = vtkTimeRange(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
 }
 /// Superclass for algorithms that produce only Tree as output
