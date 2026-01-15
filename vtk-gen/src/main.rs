@@ -162,9 +162,18 @@ fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Re
     Ok(())
 }
 
-fn write_cargo_toml(writer: &mut impl std::io::Write) -> Result<()> {
+fn write_cargo_toml(writer: &mut impl std::io::Write, args: &Args) -> Result<()> {
     let input = include_str!("../Default/Cargo.toml");
     let manifest = cargo_toml::Manifest::from_str(input)?;
+
+    let manifest = cargo_toml::Manifest {
+        workspace: if args.workspace {
+            manifest.workspace
+        } else {
+            None
+        },
+        ..manifest
+    };
 
     let toml_string = toml::to_string_pretty(&manifest)?;
     write!(writer, "{}", toml_string)?;
@@ -227,6 +236,8 @@ struct Args {
     opath: std::path::PathBuf,
     #[arg(short, long, default_value = "WrapVTK")]
     wrap_vtk: std::path::PathBuf,
+    #[arg(long, default_value_t = false)]
+    workspace: bool,
 }
 
 fn main() -> Result<()> {
@@ -244,10 +255,10 @@ fn main() -> Result<()> {
         .map(|m| IRModule::new(m, &class_hierarchy))
         .collect::<Result<Vec<_>>>()?;
 
-    let opath = args.opath;
+    let opath = &args.opath;
 
     // Build directory where results will be generated into
-    create_folders(&opath)?;
+    create_folders(opath)?;
     create_cmake_lists_txt(&ir_modules, opath.join("libvtkrs"))?;
 
     for module in ir_modules.iter() {
@@ -274,7 +285,7 @@ fn main() -> Result<()> {
     write_rust_main(&ir_modules, &mut rust_lib)?;
 
     let mut cargo_toml = std::fs::File::create(opath.join("Cargo.toml"))?;
-    write_cargo_toml(&mut cargo_toml)?;
+    write_cargo_toml(&mut cargo_toml, &args)?;
 
     let mut build_rs = std::fs::File::create(opath.join("build.rs"))?;
     write_build_rs(&mut build_rs, &ir_modules)?;
