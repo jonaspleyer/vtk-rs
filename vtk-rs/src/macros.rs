@@ -265,6 +265,48 @@ macro_rules! perform_tests (
         crate::perform_tests!($name vtkObject);
     };
     ($name:ident vtkAlgorithm) => {
+        #[cfg(test)]
+        mod vtk_algorithm {
+            use super::*;
+            #[allow(unused)]
+            use crate::vtk_algorithm::vtkAlgorithm;
+
+            #[test]
+            fn executive() {
+                let obj = $name::new();
+                // This will create an executive if none was previously there
+                obj.get_executive();
+                assert!(obj.has_executive());
+            }
+
+            #[test]
+            fn port_information() {
+                let obj = $name::new();
+                if obj.get_number_of_input_ports() > 0 {
+                    obj.get_input_port_information(0);
+                }
+                if obj.get_number_of_output_ports() > 0 {
+                    obj.get_output_port_information(0);
+                }
+            }
+
+            #[test]
+            fn input_connection() {
+                let mut obj = $name::new();
+                if obj.get_number_of_input_ports() > 0 {
+                    obj.remove_all_input_connections(0);
+                    let n_inputs = obj.get_total_number_of_input_connections();
+                    assert_eq!(n_inputs, 0);
+                    let algo_output = crate::vtk_algorithm_output::AlgorithmOutput::new();
+                    obj.add_input_connection(0, &algo_output);
+                    // obj.set_input_connection(0, &algo_output);
+                }
+                if obj.get_number_of_output_ports() > 0 {
+                    let info = obj.get_output_port_information(0);
+                    assert!(info.is_some());
+                }
+            }
+        }
         crate::perform_tests!($name vtkObject);
     };
     ($name:ident vtkPolyData) => {

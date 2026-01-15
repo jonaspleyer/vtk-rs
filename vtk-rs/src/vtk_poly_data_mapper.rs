@@ -24,6 +24,30 @@ pub(crate) mod private {
     pub trait Sealed {}
 }
 
+// Children:
+// - vtkCompositePolyDataMapper
+//     - vtkCompositeSurfaceLICMapper
+//     - vtkHierarchicalPolyDataMapper
+//
+// - vtkOpenGLLowMemoryPolyDataMapper
+//     - vtkOpenGLLowMemoryBatchedPolyDataMapper
+//
+// - vtkOpenGLPolyDataMapper
+//     - vtkFastLabeledDataMapper
+//     - vtkOpenGLBatchedPolyDataMapper
+//     - vtkOpenGLGlyph3DHelper
+//     - vtkOpenGLPointGaussianMapperHelper
+//     - vtkOpenGLSphereMapper
+//     - vtkOpenGLStickMapper
+//     - vtkOpenGLSurfaceProbeVolumeMapper
+//     - vtkSurfaceLICMapper
+//
+// - vtkPointGaussianMapper
+//     - vtkOpenGLPointGaussianMapper
+//
+// - vtkWebGPUComputePointCloudMapper
+// - vtkWebGPUPolyDataMapper
+//     - vtkWebGPUBatchedPolyDataMapper
 /// [`vtkPolyDataMapper`](https://vtk.org/doc/nightly/html/classvtkPolyDataMapper.html)
 #[allow(non_camel_case_types)]
 pub trait vtkPolyDataMapper: private::Sealed {}
@@ -36,6 +60,6 @@ fn test_create_drop() {
 
 #[test]
 fn test_input() {
-    let mut pdm = PolyDataMapper::new();
+    PolyDataMapper::new();
     // pdm.set_input(2);
 }

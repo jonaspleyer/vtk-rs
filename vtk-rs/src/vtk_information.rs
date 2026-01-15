@@ -4,6 +4,7 @@ pub(crate) mod ffi {
         include!("vtk_information.h");
 
         pub(crate) type vtkInformation;
+        pub(crate) type vtkInformationKey;
 
         fn vtk_information_new() -> *mut vtkInformation;
         fn vtk_information_delete(information: Pin<&mut vtkInformation>);
@@ -28,4 +29,17 @@ impl Information {
     pub(crate) fn as_vtk_information_mut(&mut self) -> core::pin::Pin<&mut Self> {
         unsafe { self.ptr.as_mut().map_unchecked_mut(|x| x.as_mut()) }
     }
+}
+
+pub(crate) mod private {
+    pub trait Sealed {}
+}
+
+/// [`vtkInformationKey`](https://vtk.org/doc/nightly/html/classvtkInformationKey.html)
+#[allow(non_camel_case_types)]
+pub trait vtkInformationKey {
+    #[doc(hidden)]
+    fn as_vtk_information_key(&self) -> core::pin::Pin<&ffi::vtkInformationKey>;
+    #[doc(hidden)]
+    fn as_vtk_information_key_mut(&mut self) -> core::pin::Pin<&mut ffi::vtkInformationKey>;
 }

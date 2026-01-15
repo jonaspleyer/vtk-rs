@@ -1,6 +1,10 @@
 //! This crate provides bindings to the [VTK](https://vtk.org) project.
 //!
 //! It depends on system libraries which need to be preinstalled.
+//! The minimum required version is `9.1`.
+//!
+//! ## Features
+//! - `v094` include support for `VTK 9.4`.
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
