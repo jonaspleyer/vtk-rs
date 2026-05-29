@@ -13,6 +13,10 @@
 extern "C" vtkNew < vtkBufferedArchiver > vtkBufferedArchiver_new () {return vtkNew < vtkBufferedArchiver > () ;}
 extern "C" void vtkBufferedArchiver_destructor (vtkNew < vtkBufferedArchiver > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkBufferedArchiver_get_ptr (vtkNew < vtkBufferedArchiver > sself) {return sself . GetPointer () ;}
+extern "C" void vtkBufferedArchiver_set_archive_name (vtkNew < vtkBufferedArchiver > sself, const char * name) {sself->SetArchiveName(name);}
+extern "C" const char * vtkBufferedArchiver_get_archive_name (vtkNew < vtkBufferedArchiver > sself) {return sself->GetArchiveName();}
 extern "C" vtkNew < vtkPartitionedArchiver > vtkPartitionedArchiver_new () {return vtkNew < vtkPartitionedArchiver > () ;}
 extern "C" void vtkPartitionedArchiver_destructor (vtkNew < vtkPartitionedArchiver > sself) {sself . Reset () ; return ;}
 extern "C" void * vtkPartitionedArchiver_get_ptr (vtkNew < vtkPartitionedArchiver > sself) {return sself . GetPointer () ;}
+extern "C" void vtkPartitionedArchiver_set_archive_name (vtkNew < vtkPartitionedArchiver > sself, const char * name) {sself->SetArchiveName(name);}
+extern "C" const char * vtkPartitionedArchiver_get_archive_name (vtkNew < vtkPartitionedArchiver > sself) {return sself->GetArchiveName();}

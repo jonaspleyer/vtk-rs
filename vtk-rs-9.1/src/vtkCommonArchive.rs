@@ -27,6 +27,28 @@ impl vtkBufferedArchiver {
         unsafe { vtkBufferedArchiver_get_ptr(self.0) }
     }
 }
+impl crate::vtkCommonCore::VtkArchiver for vtkBufferedArchiver {
+    fn set_archive_name(&self, name: &str) {
+        unsafe extern "C" {
+            fn vtkBufferedArchiver_set_archive_name(
+                sself: *mut core::ffi::c_void,
+                name: *const core::ffi::c_char,
+            );
+        }
+        let c_name = std::ffi::CString::new(name).expect("CString::new failed");
+        unsafe { vtkBufferedArchiver_set_archive_name(self.0, c_name.as_ptr()) }
+    }
+    fn get_archive_name(&self) -> &str {
+        unsafe extern "C" {
+            fn vtkBufferedArchiver_get_archive_name(
+                sself: *mut core::ffi::c_void,
+            ) -> *const core::ffi::c_char;
+        }
+        let ptr = unsafe { vtkBufferedArchiver_get_archive_name(self.0) };
+        if ptr.is_null() { return ""; }
+        unsafe { std::ffi::CStr::from_ptr(ptr).to_str().unwrap_or("") }
+    }
+}
 impl std::default::Default for vtkBufferedArchiver {
     fn default() -> Self {
         Self::new()
@@ -50,6 +72,13 @@ fn test_vtkBufferedArchiver_create_drop() {
     drop(obj);
     let new_obj = vtkBufferedArchiver(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
+}
+#[test]
+fn test_vtkBufferedArchiver_set_archive_name() {
+    use crate::vtkCommonCore::VtkArchiver;
+    let obj = vtkBufferedArchiver::new();
+    obj.set_archive_name("test_archive");
+    assert_eq!(obj.get_archive_name(), "test_archive");
 }
 /// Writes an archive to several buffers
 ///
@@ -81,6 +110,28 @@ impl vtkPartitionedArchiver {
         unsafe { vtkPartitionedArchiver_get_ptr(self.0) }
     }
 }
+impl crate::vtkCommonCore::VtkArchiver for vtkPartitionedArchiver {
+    fn set_archive_name(&self, name: &str) {
+        unsafe extern "C" {
+            fn vtkPartitionedArchiver_set_archive_name(
+                sself: *mut core::ffi::c_void,
+                name: *const core::ffi::c_char,
+            );
+        }
+        let c_name = std::ffi::CString::new(name).expect("CString::new failed");
+        unsafe { vtkPartitionedArchiver_set_archive_name(self.0, c_name.as_ptr()) }
+    }
+    fn get_archive_name(&self) -> &str {
+        unsafe extern "C" {
+            fn vtkPartitionedArchiver_get_archive_name(
+                sself: *mut core::ffi::c_void,
+            ) -> *const core::ffi::c_char;
+        }
+        let ptr = unsafe { vtkPartitionedArchiver_get_archive_name(self.0) };
+        if ptr.is_null() { return ""; }
+        unsafe { std::ffi::CStr::from_ptr(ptr).to_str().unwrap_or("") }
+    }
+}
 impl std::default::Default for vtkPartitionedArchiver {
     fn default() -> Self {
         Self::new()
@@ -104,4 +155,11 @@ fn test_vtkPartitionedArchiver_create_drop() {
     drop(obj);
     let new_obj = vtkPartitionedArchiver(ptr);
     assert!(unsafe { new_obj._get_ptr().is_null() });
+}
+#[test]
+fn test_vtkPartitionedArchiver_set_archive_name() {
+    use crate::vtkCommonCore::VtkArchiver;
+    let obj = vtkPartitionedArchiver::new();
+    obj.set_archive_name("test_archive");
+    assert_eq!(obj.get_archive_name(), "test_archive");
 }

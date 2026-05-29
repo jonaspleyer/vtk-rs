@@ -88,6 +88,26 @@ impl ClassHierarchy {
             .filter_map(|name| self.classes.get(name))
     }
 
+    /// Returns true if `target` appears anywhere in the full ancestor chain of `class_name`.
+    pub fn has_ancestor(&self, class_name: &str, target: &str) -> bool {
+        let mut stack = vec![class_name.to_string()];
+        let mut visited = std::collections::HashSet::new();
+        while let Some(current) = stack.pop() {
+            if !visited.insert(current.clone()) {
+                continue;
+            }
+            if let Some((_, parents)) = self.tree.get(&current) {
+                for parent in parents {
+                    if parent == target {
+                        return true;
+                    }
+                    stack.push(parent.clone());
+                }
+            }
+        }
+        false
+    }
+
     pub fn has_dependant(&self, class: &Class) -> bool {
         self.dependents
             .get(&class.name.clone())
@@ -120,7 +140,8 @@ impl ClassHierarchy {
 
         let parent_methods: Vec<_> = all_parents
             .into_iter()
-            .flat_map(|class_name| self.classes[&class_name].methods.public.iter())
+            .filter_map(|class_name| self.classes.get(&class_name))
+            .flat_map(|c| c.methods.public.iter())
             .collect();
 
         let unique_methods: Vec<_> = self.classes[class_name]
@@ -131,8 +152,149 @@ impl ClassHierarchy {
             .filter(|x| !parent_methods.contains(&x))
             .filter(|x| x.signature.trim().chars().take(8).collect::<String>() != "template")
             .filter(|x| !x.signature.contains("typename"))
+            // C-style array parameters (e.g. `double pts[3]`) decay to pointers but WrapVTK
+            // records no pointer attribute for them. We can't bridge array parameters safely
+            // without explicit length info, so skip any method whose signature contains `[`.
+            .filter(|x| !x.signature.contains('['))
             .collect();
 
         Ok(unique_methods)
+    }
+}
+
+#[cfg(test)]
+mod inheritance_tests {
+    use super::*;
+    use crate::parse_wrap_vtk_xml::{
+        Access, CContext, Class, Constructor, Destructor, File, Inheritance, Method, Methods,
+        Module,
+    };
+
+    fn make_method(name: &str) -> Method {
+        Method {
+            name: name.to_string(),
+            property: None,
+            access: Access::Public,
+            is_const: false,
+            is_static: false,
+            is_virtual: true,
+            signature: format!("void {}()", name),
+            parameters: vec![],
+            comment: None,
+            return_type: None,
+        }
+    }
+
+    fn make_class(name: &str, parents: Vec<&str>, methods: Vec<&str>) -> Class {
+        Class {
+            name: name.to_string(),
+            is_abstract: false,
+            is_template: false,
+            comment: None,
+            base: vec![],
+            inheritance: if parents.is_empty() {
+                None
+            } else {
+                Some(Inheritance {
+                    context: parents
+                        .iter()
+                        .map(|p| CContext {
+                            name: p.to_string(),
+                            access: Access::Public,
+                        })
+                        .collect(),
+                })
+            },
+            methods: Methods {
+                public: methods.iter().map(|m| make_method(m)).collect(),
+                private: vec![],
+                protected: vec![],
+            },
+            typedefs: vec![],
+            properties: vec![],
+            members: vec![],
+            constructors: vec![Constructor {
+                access: Access::Public,
+                signature: String::new(),
+            }],
+            destructors: vec![Destructor {
+                access: Access::Public,
+                signature: String::new(),
+            }],
+        }
+    }
+
+    fn make_module(classes: Vec<Class>) -> Module {
+        Module {
+            name: "TestModule".to_string(),
+            path: std::path::PathBuf::new(),
+            files: vec![(
+                std::path::PathBuf::new(),
+                File {
+                    name: "test.h".to_string(),
+                    classes,
+                },
+            )],
+        }
+    }
+
+    #[test]
+    fn test_get_parent_names_direct_parent() {
+        let base = make_class("Base", vec![], vec!["BaseMethod"]);
+        let child = make_class("Child", vec!["Base"], vec!["ChildMethod"]);
+        let module = make_module(vec![base, child]);
+        let hierarchy = ClassHierarchy::new(&[module]).unwrap();
+
+        let parents: Vec<_> = hierarchy.get_parent_names("Child").into_iter().collect();
+        assert_eq!(parents, vec!["Base"]);
+    }
+
+    #[test]
+    fn test_get_parent_names_root_class_has_no_parents() {
+        let base = make_class("Base", vec![], vec!["BaseMethod"]);
+        let module = make_module(vec![base]);
+        let hierarchy = ClassHierarchy::new(&[module]).unwrap();
+
+        let parents: Vec<_> = hierarchy.get_parent_names("Base").into_iter().collect();
+        assert!(parents.is_empty());
+    }
+
+    #[test]
+    fn test_get_exposable_methods_unique_to_child() {
+        let base = make_class("Base", vec![], vec!["SharedMethod"]);
+        let child = make_class("Child", vec!["Base"], vec!["SharedMethod", "ChildOnly"]);
+        let module = make_module(vec![base, child]);
+        let hierarchy = ClassHierarchy::new(&[module]).unwrap();
+
+        let methods = hierarchy.get_exposable_methods("Child").unwrap();
+        let names: Vec<_> = methods.iter().map(|m| m.name.as_str()).collect();
+        assert_eq!(names, vec!["ChildOnly"]);
+    }
+
+    #[test]
+    fn test_get_exposable_methods_all_when_no_parent() {
+        let base = make_class("Base", vec![], vec!["Method1", "Method2"]);
+        let module = make_module(vec![base]);
+        let hierarchy = ClassHierarchy::new(&[module]).unwrap();
+
+        let methods = hierarchy.get_exposable_methods("Base").unwrap();
+        assert_eq!(methods.len(), 2);
+    }
+
+    #[test]
+    fn test_get_exposable_methods_filters_template_signatures() {
+        let mut class = make_class("Foo", vec![], vec![]);
+        class.methods.public.push(Method {
+            name: "TplMethod".to_string(),
+            signature: "template <typename T> void TplMethod()".to_string(),
+            ..make_method("TplMethod")
+        });
+        class.methods.public.push(make_method("NormalMethod"));
+        let module = make_module(vec![class]);
+        let hierarchy = ClassHierarchy::new(&[module]).unwrap();
+
+        let methods = hierarchy.get_exposable_methods("Foo").unwrap();
+        let names: Vec<_> = methods.iter().map(|m| m.name.as_str()).collect();
+        assert_eq!(names, vec!["NormalMethod"]);
     }
 }

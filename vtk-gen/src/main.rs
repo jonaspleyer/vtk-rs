@@ -158,6 +158,40 @@ fn write_rust_main(modules: &[IRModule], writer: &mut impl std::io::Write) -> Re
         ));
     }
 
+    // Re-export all constructable classes at crate root, stripping the `vtk` prefix.
+    // e.g. `vtkSphereSource` → `SphereSource`, `vtkNamedColors` → `NamedColors`.
+    let mut prelude_uses = quote::quote!();
+    for m in modules {
+        let mod_name = quote::format_ident!("{}", m.name);
+        for (class_name, class) in &m.classes {
+            if class.is_constructable() {
+                let alias_name = if class_name.starts_with("vtk") {
+                    class_name[3..].to_string()
+                } else {
+                    use convert_case::Casing;
+                    class_name.to_case(convert_case::Case::Pascal)
+                };
+                let class_ident = quote::format_ident!("{}", class_name);
+                let alias_ident = quote::format_ident!("{}", alias_name);
+                o1.extend(quote::quote!(
+                    pub use #mod_name::#class_ident as #alias_ident;
+                ));
+            }
+        }
+        // Collect all pub trait re-exports for the prelude (crate:: prefix required in Rust 2018+)
+        prelude_uses.extend(quote::quote!(
+            pub use crate::#mod_name::*;
+        ));
+    }
+
+    // Generate a prelude module that re-exports all traits via glob so users can write
+    // `use vtk_rs::prelude::*;` and call trait methods without explicit imports.
+    o1.extend(quote::quote!(
+        pub mod prelude {
+            #prelude_uses
+        }
+    ));
+
     format_quote_and_write(o1, writer)?;
     Ok(())
 }
@@ -217,10 +251,10 @@ fn write_build_rs(writer: &mut impl std::io::Write, ir_modules: &[IRModule]) -> 
             // Link to VTK
             let modules = vec![
                 "vtksys",
-                "vtktoken",
                 #(#module_names),*
             ];
             vtk_rs_link::link_cmake_project(modules)?;
+            println!("cargo:rustc-link-lib=tbb");
 
             Ok(())
         }
@@ -244,8 +278,11 @@ fn main() -> Result<()> {
     pretty_env_logger::init();
     let args = Args::parse();
 
-    // Obtain all modules
-    let modules = get_modules(args.wrap_vtk.join("build/xml/vtkCommon*"))?;
+    // Obtain all modules — scan both vtkCommon* and vtkFiltersSources
+    let mut modules = get_modules(args.wrap_vtk.join("build/xml/vtkCommon*"))?;
+    modules.extend(get_modules(args.wrap_vtk.join("build/xml/vtkFiltersSources"))?);
+    // Sort modules by name to ensure deterministic output
+    modules.sort_by(|a, b| a.name.cmp(&b.name));
 
     let class_hierarchy = ClassHierarchy::new(&modules)?;
 

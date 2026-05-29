@@ -1,16 +1,19 @@
 use vtk_rs as vtk;
+use vtk_rs::prelude::*;
 
 fn main() {
-    let colors = vtk::NamedColors::new();
+    let _colors = vtk::NamedColors::new();
 
     // Create a sphere
     let mut sphere_source = vtk::SphereSource::new();
-    sphere_source.set_center([0.; 3]);
+    sphere_source.set_center(0., 0., 0.);
     sphere_source.set_radius(5.0);
 
     // Make the surface smooth
     sphere_source.set_phi_resolution(100);
     sphere_source.set_theta_resolution(100);
+
+    println!("sphere source: {sphere_source:?}")
 
     /* let mut mapper = vtk::PolyDataMapper::new();
     mapper.set_input_connection(sphere_source.get_output_port());

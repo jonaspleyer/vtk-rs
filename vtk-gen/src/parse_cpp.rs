@@ -37,6 +37,9 @@ impl Parse for Path {
 #[derive(Debug, PartialEq)]
 pub enum CppType {
     Void,
+    /// Plain `char` (used for C strings and VTK_FILEPATH)
+    PlainChar,
+    /// Explicitly signed `signed char` (used for VTK typed data arrays, e.g. vtkSignedCharArray)
     SignedChar,
     UnsignedChar,
     ShortInt,
@@ -226,7 +229,7 @@ impl Parse for CppType {
                 "string" => Ok(CppType::String),
                 "type_info" => Ok(TypeInfo),
                 "size_t" => Ok(SizeT),
-                "char" => Ok(SignedChar),
+                "char" => Ok(PlainChar),
                 "ostream" => Ok(Ostream),
                 other => {
                     if other.trim().contains(" ") {
@@ -279,7 +282,7 @@ mod test {
     fn parse_types() -> Result<()> {
         let t0 = "char";
         let cpp_type = CppType::parse(t0)?;
-        assert_eq!(cpp_type, CppType::SignedChar);
+        assert_eq!(cpp_type, CppType::PlainChar);
 
         let t1 = "unsigned char";
         let cpp_type = CppType::parse(t1)?;
@@ -338,7 +341,7 @@ mod test {
         let map1 = "std::map<int, float>";
         parse_map!(map1, CppType::Int, CppType::Float);
         let map2 = "std::map<long, char>";
-        parse_map!(map2, CppType::LongInt, CppType::SignedChar);
+        parse_map!(map2, CppType::LongInt, CppType::PlainChar);
         let map3 = "map<unsigned char, double>";
         parse_map!(map3, CppType::UnsignedChar, CppType::Double);
 
@@ -364,7 +367,7 @@ mod test {
         let list1 = "std::list<float>";
         parse_list!(list1, CppType::Float);
         let list2 = "std::list<char>";
-        parse_list!(list2, CppType::SignedChar);
+        parse_list!(list2, CppType::PlainChar);
         let list3 = "std::list<unsigned char>";
         parse_list!(list3, CppType::UnsignedChar);
         let list4 = "std::list<map<int, char>>";
@@ -394,7 +397,7 @@ mod test {
         let vec2 = "std::vector<std::vector<int>>";
         parse_vec!(vec2, CppType::Vec(_));
         let vec3 = "vector<char>";
-        parse_vec!(vec3, CppType::SignedChar);
+        parse_vec!(vec3, CppType::PlainChar);
 
         Ok(())
     }
@@ -448,7 +451,7 @@ mod test {
         );
 
         let generic1 = "json<int, char>";
-        parse_generic!(generic1, "json", [CppType::Int, CppType::SignedChar]);
+        parse_generic!(generic1, "json", [CppType::Int, CppType::PlainChar]);
         let generic2 = "what::the<unsigned char, double, int>";
         parse_generic!(
             generic2,
@@ -484,7 +487,7 @@ mod test {
         let cpp_type = CppType::parse("&float")?;
         assert_eq!(cpp_type, CppType::Ref(Box::new(CppType::Float)));
         let cpp_type = CppType::parse("char*")?;
-        assert_eq!(cpp_type, CppType::Pointer(Box::new(CppType::SignedChar)));
+        assert_eq!(cpp_type, CppType::Pointer(Box::new(CppType::PlainChar)));
         let cpp_type = CppType::parse("unsigned char")?;
         assert_eq!(cpp_type, CppType::UnsignedChar);
 

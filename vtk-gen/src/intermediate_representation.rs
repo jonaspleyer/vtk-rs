@@ -9,7 +9,10 @@ use crate::parse_wrap_vtk_xml::{Access, Module};
 pub enum IRType {
     /// Type `()` or `void` in C++
     Unit,
+    /// Plain C `char` (used for C strings / VTK_FILEPATH parameters)
     c_char,
+    /// Explicitly `signed char` (used for VTK typed-data arrays, e.g. vtkSignedCharArray)
+    c_signed_char,
     c_short,
     c_int,
     c_long,
@@ -44,7 +47,8 @@ impl TryFrom<&CppType> for IRType {
         use IRType::*;
         let res = match value {
             Void => Unit,
-            SignedChar => c_char,
+            PlainChar => c_char,
+            SignedChar => c_signed_char,
             UnsignedChar => c_uchar,
             ShortInt => c_short,
             UnsignedShortInt => c_ushort,
@@ -97,12 +101,26 @@ impl From<crate::parse_cpp::Ident> for IRIdent {
 }
 
 pub struct IRMethod {
+    /// Full snake_case binding name, e.g. `vtk_sphere_source_set_radius`
     pub name: String,
+    /// Original PascalCase VTK method name, e.g. `SetRadius` (used in C++ call)
+    pub vtk_name: String,
     pub return_type: IRType,
     pub args: Vec<(IRIdent, IRType)>,
 }
 
 impl IRMethod {
+    /// Strip the class snake_case prefix to get the short method name.
+    /// e.g. `vtk_sphere_source_set_radius` → `set_radius` (for `vtkSphereSource`)
+    pub fn short_name(&self, class_name: &str) -> String {
+        use convert_case::Casing;
+        let prefix = format!("{}_", class_name.to_case(convert_case::Case::Snake));
+        self.name
+            .strip_prefix(&prefix)
+            .unwrap_or(&self.name)
+            .to_string()
+    }
+
     fn convert_from_class(class: &crate::Class, value: &crate::Method) -> Result<Self> {
         use crate::parse_cpp::Parse;
         let return_type = if let Some(crate::ReturnType { ret_type, pointer }) = &value.return_type
@@ -112,7 +130,13 @@ impl IRMethod {
                 Some(crate::Pointer::Ref) => CppType::Ref(Box::new(inner_ty)),
                 Some(crate::Pointer::Star) => CppType::Pointer(Box::new(inner_ty)),
                 Some(crate::Pointer::StarStar) => {
-                    CppType::Pointer(Box::new(CppType::Ref(Box::new(inner_ty))))
+                    anyhow::bail!("double pointer not bridgeable")
+                }
+                Some(crate::Pointer::StarStarConst) => {
+                    anyhow::bail!("const double pointer not bridgeable")
+                }
+                Some(crate::Pointer::StarStarStar) => {
+                    anyhow::bail!("triple pointer not bridgeable")
                 }
                 None => inner_ty,
             }
@@ -128,12 +152,28 @@ impl IRMethod {
             .map(|(n, param)| {
                 let name = match &param.name {
                     Some(name) => name.clone(),
-                    // TODO make this better
                     None => format!("p{n}"),
                 };
                 let name = crate::parse_cpp::Ident::parse(&name)?;
                 let name = IRIdent::from(name);
-                let cpp_ty = CppType::parse(&param.r#type)?;
+                let inner_ty = CppType::parse(&param.r#type)?;
+                // WrapVTK stores pointer/reference qualifiers separately from the type string,
+                // just like it does for return types.
+                let cpp_ty = match &param.pointer {
+                    Some(crate::Pointer::Ref) => CppType::Ref(Box::new(inner_ty)),
+                    Some(crate::Pointer::Star) => CppType::Pointer(Box::new(inner_ty)),
+                    Some(crate::Pointer::StarStar) => {
+                        anyhow::bail!("double pointer not bridgeable")
+                    }
+                    Some(crate::Pointer::StarStarConst) => {
+                        anyhow::bail!("const double pointer not bridgeable")
+                    }
+                    Some(crate::Pointer::StarStarStar) => {
+                        anyhow::bail!("triple pointer not bridgeable")
+                    }
+                    None if param.reference => CppType::Ref(Box::new(inner_ty)),
+                    None => inner_ty,
+                };
                 Ok((name, IRType::try_from(&cpp_ty)?))
             })
             .collect::<Result<Vec<_>>>()?;
@@ -141,6 +181,7 @@ impl IRMethod {
         use convert_case::*;
         Ok(IRMethod {
             name: format!("{}_{}", class.name, value.name).to_case(Case::Snake),
+            vtk_name: value.name.clone(),
             return_type,
             args,
         })
@@ -155,6 +196,8 @@ pub struct IRStruct {
     pub is_abstract: bool,
     pub is_template: bool,
     pub filename: String,
+    /// True when vtkObjectBase appears anywhere in the full ancestor chain (not just direct parents).
+    pub has_vtk_object_base_ancestor: bool,
     constructors: Vec<crate::parse_wrap_vtk_xml::Constructor>,
     destructors: Vec<crate::parse_wrap_vtk_xml::Destructor>,
 }
@@ -168,10 +211,6 @@ impl IRStruct {
         format!("{}_destructor", self.name)
     }
 
-    pub fn get_ptr_binding_name(&self) -> String {
-        format!("{}_get_ptr", self.name)
-    }
-
     pub(crate) fn is_constructable(&self) -> bool {
         self.constructors
             .iter()
@@ -180,9 +219,8 @@ impl IRStruct {
             && !self.is_abstract
             && !self.is_template
             && !self.exposable_methods.is_empty()
-            // This could be lifted in the future when considering objects which can be constructed
-            // not via vtkNew<..>()
-            && self.parents.iter().any(|c| c == "vtkObjectBase")
+            // Only vtkObjectBase subclasses have the New() / Delete() reference-counting API.
+            && self.has_vtk_object_base_ancestor
     }
 }
 
@@ -238,10 +276,27 @@ impl IRModule {
                                     }
                                 }
                             })
+                            // C doesn't support overloading: drop duplicate binding names,
+                            // keeping only the first overload seen for each name.
+                            .scan(std::collections::HashSet::new(), |seen, m| {
+                                if seen.insert(m.name.clone()) {
+                                    Some(Some(m))
+                                } else {
+                                    log::warn!(
+                                        "[IR] Skipping overloaded duplicate binding \"{}\" of class \"{}\"",
+                                        m.name,
+                                        class.name,
+                                    );
+                                    Some(None)
+                                }
+                            })
+                            .flatten()
                             .collect::<Vec<_>>(),
                         is_abstract: class.is_abstract,
                         is_template: class.is_template,
                         filename: filename.clone(),
+                        has_vtk_object_base_ancestor: class_hierarchy
+                            .has_ancestor(&class.name, "vtkObjectBase"),
                         constructors: class.constructors,
                         destructors: class.destructors,
                     },
@@ -253,5 +308,107 @@ impl IRModule {
             name,
             classes: internal_objects,
         })
+    }
+}
+
+// test helpers (available to all test modules in this crate)
+#[cfg(test)]
+impl IRMethod {
+    pub(crate) fn test_new(
+        name: &str,
+        vtk_name: &str,
+        return_type: IRType,
+        args: Vec<(IRIdent, IRType)>,
+    ) -> Self {
+        IRMethod {
+            name: name.to_string(),
+            vtk_name: vtk_name.to_string(),
+            return_type,
+            args,
+        }
+    }
+}
+
+#[cfg(test)]
+impl IRStruct {
+    pub(crate) fn test_new(name: &str, parents: Vec<&str>, methods: Vec<IRMethod>) -> Self {
+        use crate::parse_wrap_vtk_xml::{Access, Constructor, Destructor};
+        IRStruct {
+            name: name.to_string(),
+            description: vec![],
+            parents: parents.iter().map(|s| s.to_string()).collect(),
+            exposable_methods: methods,
+            is_abstract: false,
+            is_template: false,
+            filename: format!("{}.h", name),
+            has_vtk_object_base_ancestor: parents.contains(&"vtkObjectBase"),
+            constructors: vec![Constructor {
+                access: Access::Public,
+                signature: String::new(),
+            }],
+            destructors: vec![Destructor {
+                access: Access::Public,
+                signature: String::new(),
+            }],
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_short_name_strips_class_prefix() {
+        let m = IRMethod::test_new(
+            "vtk_sphere_source_set_radius",
+            "SetRadius",
+            IRType::Unit,
+            vec![],
+        );
+        assert_eq!(m.short_name("vtkSphereSource"), "set_radius");
+    }
+
+    #[test]
+    fn test_short_name_multi_word_class() {
+        let m = IRMethod::test_new(
+            "vtk_object_base_get_class_name",
+            "GetClassName",
+            IRType::Unit,
+            vec![],
+        );
+        assert_eq!(m.short_name("vtkObjectBase"), "get_class_name");
+    }
+
+    #[test]
+    fn test_short_name_no_matching_prefix_returns_full() {
+        let m = IRMethod::test_new("vtk_foo_bar", "FooBar", IRType::Unit, vec![]);
+        assert_eq!(m.short_name("vtkOther"), "vtk_foo_bar");
+    }
+
+    #[test]
+    fn test_is_constructable_happy_path() {
+        let s = IRStruct::test_new(
+            "vtkFoo",
+            vec!["vtkObjectBase"],
+            vec![IRMethod::test_new("vtk_foo_update", "Update", IRType::Unit, vec![])],
+        );
+        assert!(s.is_constructable());
+    }
+
+    #[test]
+    fn test_is_constructable_requires_objectbase_ancestor() {
+        let s = IRStruct::test_new(
+            "vtkFoo",
+            vec!["vtkOther"],
+            vec![IRMethod::test_new("vtk_foo_update", "Update", IRType::Unit, vec![])],
+        );
+        assert!(!s.is_constructable());
+    }
+
+    #[test]
+    fn test_is_constructable_requires_methods() {
+        let s = IRStruct::test_new("vtkFoo", vec!["vtkObjectBase"], vec![]);
+        assert!(!s.is_constructable());
     }
 }
