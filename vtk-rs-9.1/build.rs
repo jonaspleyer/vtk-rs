@@ -1,12 +1,19 @@
 use cmake::Config;
 use vtk_rs_link::{Result, WARN, log};
+
 fn build_cmake() {
     println!("cargo:rerun-if-changed=libvtkrs");
     let mut config = Config::new("libvtkrs");
+    
+    if let Ok(vtk_dir) = std::env::var("VTK_DIR") {
+        config.define("VTK_DIR", &vtk_dir);
+    }
+
     let dst = config.build();
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=vtkrs");
 }
+
 fn main() -> Result<()> {
     if std::env::var("DOCS_RS").is_ok() {
         return Ok(());
