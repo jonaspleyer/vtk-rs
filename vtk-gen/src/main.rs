@@ -266,14 +266,14 @@ fn main() -> Result<()> {
             opath
                 .join("libvtkrs")
                 .join("src")
-                .join(format!("{}.cpp", &module.name_snake_case())),
+                .join(format!("{}.cpp", module.name_snake_case())),
         )?;
         write_cpp_module(module, &mut cpp_file)?;
         let mut header_file = std::fs::File::create(
             opath
                 .join("libvtkrs")
                 .join("include")
-                .join(format!("{}.h", &module.name_snake_case())),
+                .join(format!("{}.h", module.name_snake_case())),
         )?;
         write_cpp_header(module, &mut header_file)?;
 
