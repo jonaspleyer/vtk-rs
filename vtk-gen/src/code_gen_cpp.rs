@@ -96,7 +96,7 @@ impl IRModule {
         writeln!(writer)?;
 
         writeln!(writer, "// Include objects of this module")?;
-        for (_, ir_struct) in self.classes.iter() {
+        for ir_struct in self.classes.values() {
             writeln!(writer, "#include<{}>", ir_struct.filename)?;
         }
         Ok(())
@@ -111,7 +111,7 @@ impl IRModule {
         writeln!(writer, "// Implement declared functions")?;
 
         // Include vtk libraries required
-        for (_, ir_struct) in self.classes.iter() {
+        for ir_struct in self.classes.values() {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor(writer)?;
             }
@@ -133,7 +133,7 @@ impl IRModule {
         writeln!(writer)?;
 
         writeln!(writer, "// Declare exported functions")?;
-        for (_, ir_struct) in self.classes.iter() {
+        for ir_struct in self.classes.values() {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor_headers(writer)?;
             }
