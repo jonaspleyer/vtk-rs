@@ -244,6 +244,22 @@ fn test_cpp_macro_repitition() {
     );
 }
 
+#[test]
+fn test_format_args_1() {
+    let out = format_args(&[(IRIdent("p0".to_string()), IRType::c_ulong)]).unwrap();
+    assert_eq!(out, "unsigned long p0");
+}
+
+#[test]
+fn test_format_args_2() {
+    let out = format_args(&[
+        (IRIdent("ident".to_string()), IRType::c_short),
+        (IRIdent("name".to_string()), IRType::bool),
+    ])
+    .unwrap();
+    assert_eq!(out, "short ident, bool name");
+}
+
 /* impl FormatCpp for Option<ReturnType> {
     fn to_cpp(&self, writer: &mut impl core::fmt::Write) -> Result<()> {
         match self {
