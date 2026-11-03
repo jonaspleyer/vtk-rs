@@ -200,8 +200,6 @@ impl crate::IRModule {
 
 impl quote::ToTokens for crate::IRModule {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let modname = syn::Ident::new(&self.name, proc_macro2::Span::call_site());
-
         // Identify traits as exposable methods of parent classes and provide default
         // implementations.
         let traits = self.identify_traits();
