@@ -153,17 +153,22 @@ impl IRModule {
     }
 }
 
+fn format_args(args: &[(IRIdent, IRType)]) -> Result<String> {
+    let mut params = String::new();
+    for (n, (ident, ty)) in args.iter().enumerate() {
+        params.push_str(ty.to_cpp_str()?.as_ref());
+        params.push(' ');
+        params.push_str(&ident.0);
+        if n + 1 < args.len() {
+            params.push_str(", ");
+        }
+    }
+    Ok(params)
+}
+
 impl IRStruct {
     fn method_to_cpp(&self, method: &IRMethod, writer: &mut impl std::io::Write) -> Result<()> {
-        let mut params = String::new();
-        for (n, (ident, ty)) in method.args.iter().enumerate() {
-            params.push_str(ty.to_cpp_str()?.as_ref());
-            params.push(' ');
-            params.push_str(&ident.0);
-            if n + 1 < method.args.len() {
-                params.push_str(", ");
-            }
-        }
+        let params = format_args(&method.args)?;
 
         let ty = &self.name;
         let spointer = if params.is_empty() {
