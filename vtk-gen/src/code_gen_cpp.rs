@@ -1,5 +1,5 @@
 use crate::Result;
-use crate::intermediate_representation::{IRMethod, IRModule, IRStruct, IRType};
+use crate::intermediate_representation::{IRIdent, IRMethod, IRModule, IRStruct, IRType};
 
 macro_rules! _cpp(
     (#(#$to:ident,)*) => {{
