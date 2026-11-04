@@ -68,7 +68,7 @@ impl CppToTokens for IRType {
             float => Ok("float"),
             double => Ok("double"),
             usize => Ok("size_t"),
-
+            Ostream => Ok("std::ostream"),
             _ => anyhow::bail!("type not implemented yet"),
         }
     }
@@ -79,6 +79,15 @@ impl IRModule {
         writeln!(writer, "// Default include in all modules")?;
         writeln!(writer, "#include<vtkNew.h>")?;
         writeln!(writer, "#include<vtkObjectBase.h>")?;
+        // If ostream is used, include headers
+        if self.classes.iter().any(|(_, class)| {
+            class
+                .exposable_methods
+                .iter()
+                .any(|method| method.args.iter().any(|(_, ty)| *ty == IRType::Ostream))
+        }) {
+            writeln!(writer, "#include<sstream>")?;
+        }
         writeln!(writer)?;
 
         writeln!(writer, "// Include objects of this module")?;

@@ -42,6 +42,7 @@ impl ToTokens for crate::IRType {
             },
             // This was handled above so we can simply apply the function to the inner type
             Const(irtype) => quote!(#irtype),
+            Ostream => quote!(#*mut core::ffi::c_void),
             String => quote!(String),
             Array(irtype, size) => quote!([#irtype; #size]),
             Vec(irtype) => quote!(Vec<#irtype>),
