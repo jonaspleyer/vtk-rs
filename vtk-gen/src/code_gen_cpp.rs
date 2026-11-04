@@ -33,37 +33,23 @@ macro_rules! cpp(
     }}
 );
 
-pub trait FormatCppStr {
+pub trait CppToTokens {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>>;
 }
 
-pub trait FormatCpp {
-    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()>;
-}
-
-impl<T> FormatCpp for T
-where
-    T: FormatCppStr,
-{
-    fn to_cpp(&self, writer: &mut impl std::io::Write) -> Result<()> {
-        write!(writer, "{}", self.to_cpp_str()?.as_ref())?;
-        Ok(())
-    }
-}
-
-impl FormatCppStr for String {
+impl CppToTokens for String {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
         Ok(self.as_str())
     }
 }
 
-impl FormatCppStr for &str {
+impl CppToTokens for &str {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
         Ok(self)
     }
 }
 
-impl FormatCppStr for IRType {
+impl CppToTokens for IRType {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
         use IRType::*;
         match self {
