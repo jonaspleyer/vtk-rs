@@ -88,6 +88,7 @@ impl TryFrom<&CppType> for IRType {
     }
 }
 
+#[derive(Debug)]
 pub struct IRIdent(pub String);
 
 impl From<crate::parse_cpp::Ident> for IRIdent {
@@ -96,8 +97,10 @@ impl From<crate::parse_cpp::Ident> for IRIdent {
     }
 }
 
+#[derive(Debug)]
 pub struct IRMethod {
     pub name: String,
+    pub vtk_name: String,
     pub return_type: IRType,
     pub args: Vec<(IRIdent, IRType)>,
 }
@@ -134,13 +137,22 @@ impl IRMethod {
                 let name = crate::parse_cpp::Ident::parse(&name)?;
                 let name = IRIdent::from(name);
                 let cpp_ty = CppType::parse(&param.r#type)?;
-                Ok((name, IRType::try_from(&cpp_ty)?))
+                if let Some(size) = &param.size {
+                    let size: usize = str::parse(size)?;
+                    Ok((
+                        name,
+                        IRType::try_from(&CppType::Array(Box::new(cpp_ty), size))?,
+                    ))
+                } else {
+                    Ok((name, IRType::try_from(&cpp_ty)?))
+                }
             })
             .collect::<Result<Vec<_>>>()?;
 
         use convert_case::*;
         Ok(IRMethod {
             name: format!("{}_{}", class.name, value.name).to_case(Case::Snake),
+            vtk_name: value.name.clone(),
             return_type,
             args,
         })

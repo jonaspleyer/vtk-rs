@@ -101,7 +101,7 @@ impl IRModule {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor(writer)?;
             }
-            /* for method in ir_struct.exposable_methods.iter() {
+            for method in ir_struct.exposable_methods.iter() {
                 match ir_struct.method_to_cpp(method, writer) {
                     Ok(_) => (),
                     Err(e) => log::warn!(
@@ -109,7 +109,7 @@ impl IRModule {
                         method.name
                     ),
                 }
-            }*/
+            }
         }
         Ok(())
     }
@@ -139,36 +139,45 @@ impl IRModule {
     }
 }
 
-fn format_args(args: &[(IRIdent, IRType)]) -> Result<String> {
+fn format_args(args: &[(IRIdent, IRType)]) -> Result<(String, String)> {
     let mut params = String::new();
+    let mut names = String::new();
     for (n, (ident, ty)) in args.iter().enumerate() {
         params.push_str(ty.to_cpp_str()?.as_ref());
         params.push(' ');
         params.push_str(&ident.0);
+        names.push_str(&ident.0);
         if n + 1 < args.len() {
             params.push_str(", ");
+            names.push_str(", ");
         }
     }
-    Ok(params)
+    Ok((params, names))
 }
 
 impl IRStruct {
     fn method_to_cpp(&self, method: &IRMethod, writer: &mut impl std::io::Write) -> Result<()> {
-        let params = format_args(&method.args)?;
+        let (params_full, param_names) = format_args(&method.args)?;
 
         let ty = &self.name;
-        let spointer = if params.is_empty() {
+        let spointer = if params_full.is_empty() {
             cpp!(vtkNew<#ty> self)?
         } else {
             cpp!(vtkNew<#ty> self)?
         };
 
         let ret = &method.return_type;
-        let vtk_name = &method.name;
+        let vtk_name = &method.vtk_name;
         let binding = format!("{}_{}", self.name, method.name);
-        let method = cpp!(#ret #binding (#spointer, #(#params),*) {
-            return self->#vtk_name(#(params),*);
-        })?;
+        let method = if params_full.is_empty() {
+            cpp!(extern "C" #ret #binding (#spointer) {
+                return self->#vtk_name();
+            })?
+        } else {
+            cpp!(extern "C" #ret #binding (#spointer, #params_full) {
+                return self->#vtk_name(#param_names);
+            })?
+        };
         writeln!(writer, "{}", method)?;
 
         Ok(())
@@ -232,13 +241,13 @@ fn test_cpp_macro_repitition() {
 
 #[test]
 fn test_format_args_1() {
-    let out = format_args(&[(IRIdent("p0".to_string()), IRType::c_ulong)]).unwrap();
+    let (out, _) = format_args(&[(IRIdent("p0".to_string()), IRType::c_ulong)]).unwrap();
     assert_eq!(out, "unsigned long p0");
 }
 
 #[test]
 fn test_format_args_2() {
-    let out = format_args(&[
+    let (out, _) = format_args(&[
         (IRIdent("ident".to_string()), IRType::c_short),
         (IRIdent("name".to_string()), IRType::bool),
     ])

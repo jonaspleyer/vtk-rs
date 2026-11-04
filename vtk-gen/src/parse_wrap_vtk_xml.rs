@@ -216,6 +216,9 @@ pub struct Parameter {
     #[serde(default = "Default::default")]
     #[serde(deserialize_with = "option_one_to_bool")]
     pub reference: bool,
+    #[serde(rename = "@size")]
+    #[serde(default = "Default::default")]
+    pub size: Option<String>,
 }
 
 #[derive(Deserialize, PartialEq, Debug, Clone)]

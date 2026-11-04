@@ -75,6 +75,7 @@ impl ToTokens for crate::IRMethod {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let crate::IRMethod {
             name,
+            vtk_name: _,
             return_type,
             args,
         } = &self;
