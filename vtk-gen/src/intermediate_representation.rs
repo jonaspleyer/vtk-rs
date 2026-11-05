@@ -269,7 +269,7 @@ fn convert_exposable_methods(
     class: &Class,
 ) -> Result<Vec<IRMethod>> {
     let methods = class_hierarchy.get_exposable_methods(&class.name)?;
-    let mut overloads = methods.iter().fold(HashMap::new(), |mut acc, x| {
+    let overloads = methods.iter().fold(HashMap::new(), |mut acc, x| {
         acc.entry(x.name.clone())
             .and_modify(|x| *x = true)
             .or_insert(false);
