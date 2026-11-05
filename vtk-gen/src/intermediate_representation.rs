@@ -166,6 +166,9 @@ impl IRMethod {
                 Some(crate::Pointer::StarStar) => {
                     CppType::Pointer(Box::new(CppType::Ref(Box::new(inner_ty))))
                 }
+                // Exotic pointer spellings (`***`, `*const`, ...) are treated as a plain pointer;
+                // code generation will bail on them for now.
+                Some(crate::Pointer::Other) => CppType::Pointer(Box::new(inner_ty)),
                 None => inner_ty,
             }
         } else {
@@ -186,15 +189,26 @@ impl IRMethod {
                 let name = crate::parse_cpp::Ident::parse(&name)?;
                 let name = IRIdent::from(name);
                 let cpp_ty = CppType::parse(&param.r#type)?;
+                // A fixed-size array parameter (e.g. `double tuple[3]`) is encoded via `size`.
                 if let Some(size) = &param.size {
                     let size: usize = str::parse(size)?;
-                    Ok((
+                    return Ok((
                         name,
                         IRType::try_from(&CppType::Array(Box::new(cpp_ty), size))?,
-                    ))
-                } else {
-                    Ok((name, IRType::try_from(&cpp_ty)?))
+                    ));
                 }
+                // Apply the parameter's pointer/reference qualifier, mirroring return types.
+                let cpp_ty = match &param.pointer {
+                    Some(crate::Pointer::Ref) => CppType::Ref(Box::new(cpp_ty)),
+                    Some(crate::Pointer::Star) => CppType::Pointer(Box::new(cpp_ty)),
+                    Some(crate::Pointer::StarStar) => {
+                        CppType::Pointer(Box::new(CppType::Ref(Box::new(cpp_ty))))
+                    }
+                    Some(crate::Pointer::Other) => CppType::Pointer(Box::new(cpp_ty)),
+                    None if param.reference => CppType::Ref(Box::new(cpp_ty)),
+                    None => cpp_ty,
+                };
+                Ok((name, IRType::try_from(&cpp_ty)?))
             })
             .collect::<Result<Vec<_>>>()?;
 

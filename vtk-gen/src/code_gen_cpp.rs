@@ -159,6 +159,20 @@ impl IRModule {
     }
 }
 
+/// Whether a type contains a fixed-size array anywhere in its structure.
+///
+/// Arrays are mapped to a decayed pointer (`T*`), which is correct for parameters (a C array
+/// parameter decays to a pointer) but *not* for return values: a VTK method returning
+/// `std::array<T, N>` returns it by value, which is not convertible to `T*`. Such methods are
+/// bailed on for now.
+fn contains_array(ty: &IRType) -> bool {
+    match ty {
+        IRType::Array(..) => true,
+        IRType::Const(inner) | IRType::Ref(inner) | IRType::Pointer(inner) => contains_array(inner),
+        _ => false,
+    }
+}
+
 fn add_refs_pointers(ident: &str, ty: &IRType) -> String {
     match ty {
         IRType::Ref(ty) => add_refs_pointers(&format!("&{}", ident), ty),
@@ -185,6 +199,9 @@ fn format_args(args: &[(IRIdent, IRType)]) -> Result<(String, String)> {
 
 impl IRStruct {
     fn method_to_cpp(&self, method: &IRMethod, writer: &mut impl std::io::Write) -> Result<()> {
+        if contains_array(&method.return_type) {
+            anyhow::bail!("array return types are not supported yet");
+        }
         let (params_full, param_names) = format_args(&method.args)?;
 
         let ty = &self.name;

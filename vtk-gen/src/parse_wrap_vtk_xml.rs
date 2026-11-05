@@ -216,6 +216,8 @@ pub struct Parameter {
     #[serde(default = "Default::default")]
     #[serde(deserialize_with = "option_one_to_bool")]
     pub reference: bool,
+    #[serde(rename = "@pointer")]
+    pub pointer: Option<Pointer>,
     #[serde(rename = "@size")]
     #[serde(default = "Default::default")]
     pub size: Option<String>,
@@ -303,6 +305,11 @@ pub enum Pointer {
     Star,
     #[serde(rename = "**")]
     StarStar,
+    /// Any other (rarer) pointer spelling such as `***`, `*const` or `*const*`.
+    /// These are treated as plain pointers downstream, which currently bail during code
+    /// generation rather than aborting parsing of the whole corpus.
+    #[serde(other)]
+    Other,
 }
 
 #[derive(Deserialize, PartialEq, Debug, Clone)]
@@ -553,12 +560,14 @@ mod test_parsing {
                     name: Some("os".into()),
                     r#type: "ostream".into(),
                     reference: true,
+                    pointer: None,
                     size: None,
                 },
                 Parameter {
                     name: Some("indent".into()),
                     r#type: "vtkIndent".into(),
                     reference: false,
+                    pointer: None,
                     size: Some("4".to_string()),
                 }
             ]
@@ -615,6 +624,16 @@ mod test_parsing {
             }]
         );
 
+        Ok(())
+    }
+
+    #[test]
+    fn parse_param_pointer() -> Result<()> {
+        let param: Parameter = serde_xml_rs::SerdeXml::new()
+            .overlapping_sequences(true)
+            .from_str(r#"<param name="relativePath" type="const char" pointer="*" />"#)?;
+        assert_eq!(param.pointer, Some(Pointer::Star));
+        assert_eq!(param.r#type, "const char");
         Ok(())
     }
 
