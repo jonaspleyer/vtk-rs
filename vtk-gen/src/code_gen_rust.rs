@@ -221,7 +221,7 @@ impl quote::ToTokens for crate::IRModule {
         for class in self.classes.values() {
             if class.is_constructable() {
                 let mut methods = quote::quote!();
-                for method in class.exposable_methods.iter().take(2) {
+                for method in class.exposable_methods.iter() {
                     methods.extend(quote::quote!(#method));
                 }
                 let class_name = syn::Ident::new(&class.name, proc_macro2::Span::call_site());
