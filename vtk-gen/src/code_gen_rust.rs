@@ -20,7 +20,7 @@ impl ToTokens for crate::IRType {
             c_short => quote!(core::ffi::c_short),
             c_int => quote!(core::ffi::c_int),
             c_long => quote!(core::ffi::c_long),
-            c_longlong => quote!(core::ffi::c_uchar),
+            c_longlong => quote!(core::ffi::c_longlong),
             c_uchar => quote!(core::ffi::c_uchar),
             c_ushort => quote!(core::ffi::c_ushort),
             c_uint => quote!(core::ffi::c_uint),
