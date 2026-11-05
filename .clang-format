@@ -10,8 +10,16 @@ AlignConsecutiveAssignments:
 
 AlignAfterOpenBracket: BlockIndent
 QualifierAlignment: Left
-# BreakAfterReturnType: All
 BreakBeforeBraces: Attach
+
+# Function signatures:
+# - keep the whole signature on one line when it fits in ColumnLimit
+# - otherwise break after the opening '(' (BlockIndent puts ')' on its own line)
+# - keep the return type on the same line as the (possibly overflowing) name
+# - put each parameter on its own line only once they no longer fit on one line
+AllowAllParametersOfDeclarationOnNextLine: true
+BinPackParameters: OnePerLine
+PenaltyReturnTypeOnItsOwnLine: 100000000
 
 BraceWrapping:
     AfterFunction: false
