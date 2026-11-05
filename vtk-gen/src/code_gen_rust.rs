@@ -44,7 +44,13 @@ impl ToTokens for crate::IRType {
             Const(irtype) => quote!(#irtype),
             Ostream => quote!(#*mut core::ffi::c_void),
             String => quote!(String),
-            Array(irtype, size) => quote!([#irtype; #size]),
+            // A C array parameter decays to a pointer, so it is passed across the FFI boundary
+            // by pointer. The fixed size is retained on the pointee for safety/clarity, and the
+            // mutability mirrors the C++ side (const arrays are passed as `*const`).
+            Array(irtype, size) => match irtype.as_ref() {
+                Const(inner) => quote!(*const [#inner; #size]),
+                _ => quote!(*mut [#irtype; #size]),
+            },
             Vec(irtype) => quote!(Vec<#irtype>),
             Map(irtype1, irtype2) => quote!(std::collections::HashMap<#irtype1, #irtype2>),
             LinkedList(irtype) => quote!(std::collections::LinkedList<#irtype>),
@@ -240,6 +246,26 @@ impl quote::ToTokens for crate::IRModule {
             #bindings
         ));
     }
+}
+
+#[test]
+fn test_array_tokens_are_pointers() {
+    use crate::IRType::*;
+    use quote::ToTokens;
+
+    // Mutable array -> `*mut [T; N]`
+    let mutable = Array(Box::new(double), 3);
+    assert_eq!(
+        mutable.to_token_stream().to_string(),
+        quote::quote!(*mut [core::ffi::c_double; 3usize]).to_string()
+    );
+
+    // Const array -> `*const [T; N]`
+    let constant = Array(Box::new(Const(Box::new(c_uchar))), 4);
+    assert_eq!(
+        constant.to_token_stream().to_string(),
+        quote::quote!(*const [core::ffi::c_uchar; 4usize]).to_string()
+    );
 }
 
 impl quote::ToTokens for crate::parse_cpp::Ident {

@@ -52,25 +52,30 @@ impl CppToTokens for &str {
 impl CppToTokens for IRType {
     fn to_cpp_str(&self) -> Result<impl AsRef<str>> {
         use IRType::*;
-        match self {
-            Unit => Ok("void"),
-            c_uchar => Ok("unsigned char"),
-            c_ushort => Ok("unsigned short"),
-            c_uint => Ok("unsigned int"),
-            c_ulong => Ok("unsigned long"),
-            c_ulonglong => Ok("unsigned long long"),
-            c_char => Ok("char"),
-            c_short => Ok("short"),
-            c_int => Ok("int"),
-            c_long => Ok("long"),
-            c_longlong => Ok("long long"),
-            bool => Ok("bool"),
-            float => Ok("float"),
-            double => Ok("double"),
-            usize => Ok("size_t"),
-            Ostream => Ok("std::ostream"),
+        let out = match self {
+            Unit => "void".to_string(),
+            c_uchar => "unsigned char".to_string(),
+            c_ushort => "unsigned short".to_string(),
+            c_uint => "unsigned int".to_string(),
+            c_ulong => "unsigned long".to_string(),
+            c_ulonglong => "unsigned long long".to_string(),
+            c_char => "char".to_string(),
+            c_short => "short".to_string(),
+            c_int => "int".to_string(),
+            c_long => "long".to_string(),
+            c_longlong => "long long".to_string(),
+            bool => "bool".to_string(),
+            float => "float".to_string(),
+            double => "double".to_string(),
+            usize => "size_t".to_string(),
+            Ostream => "std::ostream".to_string(),
+            Const(ty) => format!("const {}", ty.to_cpp_str()?.as_ref()),
+            // A C array parameter (e.g. `double tuple[3]`) decays to a pointer, so it is passed
+            // across the FFI boundary by pointer. The fixed size is retained on the Rust side.
+            Array(ty, _size) => format!("{}*", ty.to_cpp_str()?.as_ref()),
             _ => anyhow::bail!("type not implemented yet"),
-        }
+        };
+        Ok(out)
     }
 }
 
@@ -276,6 +281,28 @@ fn test_format_args_2() {
     ])
     .unwrap();
     assert_eq!(out, "short ident, bool name");
+}
+
+#[test]
+fn test_format_args_array() {
+    // A C array parameter decays to a pointer and must be passed by pointer across FFI.
+    let (params, names) = format_args(&[(
+        IRIdent("tuple".to_string()),
+        IRType::Array(Box::new(IRType::double), 3),
+    )])
+    .unwrap();
+    assert_eq!(params, "double* tuple");
+    assert_eq!(names, "tuple");
+}
+
+#[test]
+fn test_format_args_const_array() {
+    let (params, _) = format_args(&[(
+        IRIdent("rgba".to_string()),
+        IRType::Array(Box::new(IRType::Const(Box::new(IRType::c_uchar))), 4),
+    )])
+    .unwrap();
+    assert_eq!(params, "const unsigned char* rgba");
 }
 
 /* impl FormatCpp for Option<ReturnType> {
