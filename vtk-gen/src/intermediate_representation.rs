@@ -198,6 +198,9 @@ impl IRMethod {
             })
             .collect::<Result<Vec<_>>>()?;
 
+        if args.iter().any(|(_, ty)| ty == &IRType::Unit) {
+            anyhow::bail!("Currently not supporting void in method arguments");
+        }
         use convert_case::*;
         Ok(IRMethod {
             name: format!("{}_{}", class.name, value.name).to_case(Case::Snake),
