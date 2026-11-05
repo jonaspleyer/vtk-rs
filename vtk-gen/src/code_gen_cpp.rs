@@ -115,14 +115,14 @@ impl IRModule {
         for ir_struct in self.classes.values() {
             if ir_struct.is_constructable() {
                 ir_struct.build_constructor(writer)?;
-            }
-            for method in ir_struct.exposable_methods.iter() {
-                match ir_struct.method_to_cpp(method, writer) {
-                    Ok(_) => (),
-                    Err(e) => log::warn!(
-                        "[Cpp] skipping method \"{}\" due to error: \"{e}\"",
-                        method.name
-                    ),
+                for method in ir_struct.exposable_methods.iter() {
+                    match ir_struct.method_to_cpp(method, writer) {
+                        Ok(_) => (),
+                        Err(e) => log::warn!(
+                            "[Cpp] skipping method \"{}\" due to error: \"{e}\"",
+                            method.name
+                        ),
+                    }
                 }
             }
         }
