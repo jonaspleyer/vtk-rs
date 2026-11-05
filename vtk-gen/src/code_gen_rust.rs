@@ -75,13 +75,15 @@ impl ToTokens for IRIdent {
 impl ToTokens for crate::IRMethod {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let crate::IRMethod {
-            name,
+            name: _,
             vtk_name: _,
             return_type,
             args,
+            overload: _,
         } = &self;
 
-        let name = quote::format_ident!("{name}");
+        let binding = self.format_binding();
+        let name = quote::format_ident!("{binding}");
         let args = args.iter().map(|(name, ty)| quote::quote!(#name: #ty));
         let code = quote::quote!(fn #name (#(#args),*) -> #return_type;);
 

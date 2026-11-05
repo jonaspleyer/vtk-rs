@@ -177,7 +177,7 @@ impl IRStruct {
 
         let ret = &method.return_type;
         let vtk_name = &method.vtk_name;
-        let binding = format!("{}_{}", self.name, method.name);
+        let binding = method.format_binding();
         let method = if params_full.is_empty() {
             cpp!(extern "C" #ret #binding (#spointer) {
                 return self->#vtk_name();

@@ -1,9 +1,9 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
 use crate::Result;
 use crate::inheritance_hierarchy::{ClassHierarchy, ClassName};
 use crate::parse_cpp::CppType;
-use crate::parse_wrap_vtk_xml::{Access, Module};
+use crate::parse_wrap_vtk_xml::{Access, Class, Module};
 
 #[allow(non_camel_case_types)]
 pub enum IRType {
@@ -89,6 +89,48 @@ impl TryFrom<&CppType> for IRType {
     }
 }
 
+impl IRType {
+    fn to_snake_case(&self) -> String {
+        use IRType::*;
+        let out = match self {
+            Unit => "void",
+            c_char => "c_char",
+            c_short => "c_short",
+            c_int => "c_int",
+            c_long => "c_long",
+            c_longlong => "c_longlong",
+            c_uchar => "c_uchar",
+            c_ushort => "c_ushort",
+            c_uint => "c_uint",
+            c_ulong => "c_ulong",
+            c_ulonglong => "c_ulonglong",
+            bool => "bool",
+            float => "float",
+            double => "double",
+            usize => "usize",
+            File => "file",
+            FileMode => "fileMode",
+            Ref(ty) => &format!("ref_{}", ty.to_snake_case()),
+            Pointer(ty) => &format!("ptr_{}", ty.to_snake_case()),
+            Const(ty) => &format!("const_{}", ty.to_snake_case()),
+            Ostream => "ostream",
+            String => "string",
+            Array(ty, size) => &format!("{}_{size}", ty.to_snake_case()),
+            Vec(ty) => &format!("vec_{}", ty.to_snake_case()),
+            Map(ty1, ty2) => &format!("map_{}_{}", ty1.to_snake_case(), ty2.to_snake_case()),
+            LinkedList(ty) => &format!("linkedlist_{}", ty.to_snake_case()),
+            Path(path) => {
+                let mut o = std::string::String::new();
+                for x in path.0.iter() {
+                    o.push_str(&format!("_{}", x))
+                }
+                &format!("path_{}", o)
+            }
+        };
+        out.to_string()
+    }
+}
+
 #[derive(Debug)]
 pub struct IRIdent(pub String);
 
@@ -104,10 +146,15 @@ pub struct IRMethod {
     pub vtk_name: String,
     pub return_type: IRType,
     pub args: Vec<(IRIdent, IRType)>,
+    pub overload: bool,
 }
 
 impl IRMethod {
-    fn convert_from_class(class: &crate::Class, value: &crate::Method) -> Result<Self> {
+    fn convert_from_class(
+        class: &crate::Class,
+        value: &crate::Method,
+        overload: bool,
+    ) -> Result<Self> {
         use crate::parse_cpp::Parse;
         let return_type = if let Some(crate::ReturnType { ret_type, pointer }) = &value.return_type
         {
@@ -156,7 +203,19 @@ impl IRMethod {
             vtk_name: value.name.clone(),
             return_type,
             args,
+            overload,
         })
+    }
+
+    pub(crate) fn format_binding(&self) -> String {
+        let mut output = self.name.clone();
+        if self.overload {
+            for arg in self.args.iter() {
+                output.push('_');
+                output.push_str(&arg.1.to_snake_case());
+            }
+        }
+        output
     }
 }
 
@@ -204,6 +263,37 @@ pub struct IRModule {
     pub classes: BTreeMap<ClassName, IRStruct>,
 }
 
+fn convert_exposable_methods(
+    class_hierarchy: &ClassHierarchy,
+    class: &Class,
+) -> Result<Vec<IRMethod>> {
+    let methods = class_hierarchy.get_exposable_methods(&class.name)?;
+    let mut overloads = methods.iter().fold(HashMap::new(), |mut acc, x| {
+        acc.entry(x.name.clone())
+            .and_modify(|x| *x = true)
+            .or_insert(false);
+        acc
+    });
+    let res = methods
+        .into_iter()
+        .filter_map(|method| {
+            match IRMethod::convert_from_class(class, &method, overloads[&method.name]) {
+                Ok(x) => Some(x),
+                Err(e) => {
+                    log::warn!(
+                        "[IR] Skipping method \"{}\" with signature \"{}\" of class \"{}\" due to error: \"{e}\"",
+                            method.name,
+                            method.signature,
+                            class.name,
+                        );
+                    None
+                }
+            }
+        })
+        .collect::<Vec<_>>();
+    Ok(res)
+}
+
 impl IRModule {
     pub(crate) fn contains_exposable_content(&self) -> bool {
         self.classes.iter().any(|x| x.1.is_constructable())
@@ -214,44 +304,31 @@ impl IRModule {
         let internal_objects = module
             .files
             .into_iter()
-            .flat_map(|(_, file)| file.classes.into_iter().map(move |x| (file.name.clone(), x)))
+            .flat_map(|(_, file)| {
+                file.classes
+                    .into_iter()
+                    .map(move |x| (file.name.clone(), x))
+            })
             .map(|(filename, class)| {
                 Ok((
                     class.name.clone(),
                     IRStruct {
                         name: class.name.clone(),
-                        description: class.comment.as_ref()
-                            .map(|x| x
-                                .lines()
-                                .map(|x| x
-                                    .trim()
-                                    .to_string()
-                                ).collect::<Vec<String>>()
-                            )
+                        description: class
+                            .comment
+                            .as_ref()
+                            .map(|x| {
+                                x.lines()
+                                    .map(|x| x.trim().to_string())
+                                    .collect::<Vec<String>>()
+                            })
                             .unwrap_or(vec![]),
                         parents: class_hierarchy
                             .get_parent_names(&class.name)
                             .into_iter()
                             .cloned()
                             .collect(),
-                        exposable_methods: class_hierarchy
-                            .get_exposable_methods(&class.name)?
-                            .into_iter()
-                            .filter_map(|method| {
-                                match IRMethod::convert_from_class(&class, &method) {
-                                    Ok(x) => Some(x),
-                                    Err(e) => {
-                                        log::warn!(
-                                            "[IR] Skipping method \"{}\" with signature \"{}\" of class \"{}\" due to error: \"{e}\"",
-                                            method.name,
-                                            method.signature,
-                                            class.name,
-                                        );
-                                        None
-                                    }
-                                }
-                            })
-                            .collect::<Vec<_>>(),
+                        exposable_methods: convert_exposable_methods(class_hierarchy, &class)?,
                         is_abstract: class.is_abstract,
                         is_template: class.is_template,
                         filename: filename.clone(),
