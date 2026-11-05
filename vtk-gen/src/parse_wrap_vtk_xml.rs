@@ -462,7 +462,7 @@ mod test_parsing {
             combine the output of several classes.
     </comment>
     <param name="os" type="ostream" reference="1" />
-    <param name="indent" type="vtkIndent" />
+    <param name="indent" type="vtkIndent" size="4" />
     <return type="void" />
 </method>"#;
 
@@ -553,11 +553,13 @@ mod test_parsing {
                     name: Some("os".into()),
                     r#type: "ostream".into(),
                     reference: true,
+                    size: None,
                 },
                 Parameter {
                     name: Some("indent".into()),
                     r#type: "vtkIndent".into(),
                     reference: false,
+                    size: Some("4".to_string()),
                 }
             ]
         );
