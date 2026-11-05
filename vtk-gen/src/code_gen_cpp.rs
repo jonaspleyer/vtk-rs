@@ -91,8 +91,14 @@ impl IRModule {
         writeln!(writer)?;
 
         writeln!(writer, "// Include objects of this module")?;
-        for ir_struct in self.classes.values() {
-            writeln!(writer, "#include<{}>", ir_struct.filename)?;
+        // Collect all classes and include them
+        let includes: std::collections::BTreeSet<_> = self
+            .classes
+            .values()
+            .map(|ir_struct| &ir_struct.filename)
+            .collect();
+        for filename in includes {
+            writeln!(writer, "#include<{}>", filename)?;
         }
         Ok(())
     }
