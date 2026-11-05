@@ -154,6 +154,14 @@ impl IRModule {
     }
 }
 
+fn add_refs_pointers(ident: &str, ty: &IRType) -> String {
+    match ty {
+        IRType::Ref(ty) => add_refs_pointers(&format!("&{}", ident), ty),
+        IRType::Pointer(ty) => add_refs_pointers(&format!("*{}", ident), ty),
+        _ => ident.to_string(),
+    }
+}
+
 fn format_args(args: &[(IRIdent, IRType)]) -> Result<(String, String)> {
     let mut params = String::new();
     let mut names = String::new();
@@ -161,7 +169,7 @@ fn format_args(args: &[(IRIdent, IRType)]) -> Result<(String, String)> {
         params.push_str(ty.to_cpp_str()?.as_ref());
         params.push(' ');
         params.push_str(&ident.0);
-        names.push_str(&ident.0);
+        names.push_str(&add_refs_pointers(&ident.0, ty));
         if n + 1 < args.len() {
             params.push_str(", ");
             names.push_str(", ");
